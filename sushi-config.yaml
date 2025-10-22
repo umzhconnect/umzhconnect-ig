@@ -1,0 +1,80 @@
+# Example/Documentation for the IG YML file
+# https://fshschool.org/docs/sushi/configuration/#exhaustive-example
+
+# Package name
+# https://confluence.hl7.org/display/FHIR/NPM+Package+Specification#NPMPackageSpecification-Packagename
+id: ch.fhir.ig.ch-ig
+canonical: http://fhir.ch/ig/ch-ig
+name: CH_IG
+title: "CH IG (R4)"
+description: Template for HL7.ch FHIR Implementation Guides
+status: draft # draft | active | retired | unknown
+license: CC0-1.0
+copyright: CC0-1.0
+jurisdiction: urn:iso:std:iso:3166#CHE
+date: 2025-12-10
+version: 1.2.3 # 1.2.2 published in May 2025
+fhirVersion: 4.0.1
+copyrightYear: 2024+
+releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
+publisher:
+  name: HL7 Switzerland
+contact:
+  - name: HL7 Switzerland
+    telecom:
+      - system: url
+        value: https://www.hl7.ch/
+
+dependencies:
+  ch.fhir.ig.ch-core: current
+  hl7.fhir.extensions.r5: 4.0.1
+  hl7.fhir.uv.xver-r5.r4: 0.0.1-snapshot-2 # https://packages2.fhir.org/packages/
+
+pages:
+  index.md:
+    title: Home
+  guidance.md:
+    title: Guidance
+  profiles.md:
+    title: Profiles
+  extensions.md:
+    title: Extensions
+  terminology.md:
+    title: Terminology
+  changelog.md:
+    title: Changelog  
+
+menu:
+  Home: index.html
+  Guidance: guidance.html
+  Profiles: profiles.html
+  Extensions: extensions.html
+  Terminology: terminology.html
+  Artifacts: artifacts.html
+
+resources:
+  Encounter/xver-encounter-r4:
+    name: Cross-Version Encounter R4
+    description: Example for CH IG Encounter using a backport extension for a new introduced resource element in R5 (Encounter.subjectStatus).
+    exampleBoolean: true
+    profile:
+      - http://fhir.ch/ig/ch-ig/StructureDefinition/ch-ig-encounter
+
+# Parameters
+  # Core FHIR: http://build.fhir.org/codesystem-guide-parameter-code.html
+  # FHIR Tools IG: http://build.fhir.org/ig/FHIR/fhir-tools-ig/branches/master/CodeSystem-ig-parameters.html
+parameters:
+  excludettl: true
+  allow-extensible-warnings: true
+  display-warnings: true 
+  path-expansion-params: '../../expansion-params.json'  # for using SNOMED CT Swiss Extension
+  pin-canonicals: pin-multiples
+  path-resource:
+    - input/resources  
+
+FSHOnly: false
+applyExtensionMetadataToRoot: false
+instanceOptions:
+  setMetaProfile: always
+  setId: always
+  manualSliceOrdering: true

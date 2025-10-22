@@ -1,0 +1,12 @@
+# temporary folders
+input-cache/**
+output/**
+temp/**
+template/**
+fsh-generated/**
+
+# jar files
+*.jar
+
+# editing files and folders
+.vscode/**

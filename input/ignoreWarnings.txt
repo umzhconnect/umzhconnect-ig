@@ -1,0 +1,7 @@
+== Suppressed Messages ==
+
+# Caused through underlying structure (snapshot)
+The extension http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet|%
+The extension http://hl7.org/fhir/StructureDefinition/regex|%
+The repeating element has a pattern. The pattern will apply to all the repeats (this has not been clear to all users)
+None of the codings provided are in the value set 'IdentifierType' (http://hl7.org/fhir/ValueSet/identifier-type|%

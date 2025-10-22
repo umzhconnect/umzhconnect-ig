@@ -1,0 +1,11 @@
+{
+  "package-id" : "ch.fhir.ig.ch-ig",
+  "version" : "1.2.3",
+  "path" : "http://fhir.ch/ig/ch-ig/1.2.3",
+  "mode" : "milestone",
+  "status" : "trial-use",
+  "sequence" : "STU",
+  "desc" : "Template for HL7.ch FHIR Implementation Guides",
+  "changes" : "index.html",
+  "first": false
+}
