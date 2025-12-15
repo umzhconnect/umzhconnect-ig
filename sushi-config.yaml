@@ -27,6 +27,7 @@ contact:
 
 dependencies:
   ch.fhir.ig.ch-core: current
+  ch.fhir.ig.ch-etoc: 3.0.0 # https://fhir.ch/ig/ch-etoc/index.html
   hl7.fhir.extensions.r5: 4.0.1
   hl7.fhir.uv.xver-r5.r4: 0.0.1-snapshot-2 # https://packages2.fhir.org/packages/
 
@@ -42,7 +43,9 @@ pages:
   terminology.md:
     title: Terminology
   changelog.md:
-    title: Changelog  
+    title: Changelog
+  usecase-referral-orthopedic.md:
+    title: Referral - Orthopedic Surgery
 
 menu:
   Home: index.html
@@ -50,6 +53,8 @@ menu:
   Profiles: profiles.html
   Extensions: extensions.html
   Terminology: terminology.html
+  Use Cases:
+    Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
   Artifacts: artifacts.html
 
 resources:
