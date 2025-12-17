@@ -3,34 +3,32 @@
 
 # Package name
 # https://confluence.hl7.org/display/FHIR/NPM+Package+Specification#NPMPackageSpecification-Packagename
-id: ch.fhir.ig.ch-ig
-canonical: http://fhir.ch/ig/ch-ig
-name: CH_IG
-title: "CH IG (R4)"
-description: Template for HL7.ch FHIR Implementation Guides
+id: ch.fhir.ig.ch-umzh-connect
+canonical: http://fhir.ch/ig/ch-umzh-connect
+name: CHUMZHConnect
+title: "CH UMZH Connect IG (R4)"
+description: FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes
 status: draft # draft | active | retired | unknown
 license: CC0-1.0
 copyright: CC0-1.0
 jurisdiction: urn:iso:std:iso:3166#CHE
 date: 2025-12-10
-version: 1.2.3 # 1.2.2 published in May 2025
+version: 1.0.0-cibuild # 1.2.2 published in May 2025
 fhirVersion: 4.0.1
 copyrightYear: 2024+
 releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
 publisher:
-  name: HL7 Switzerland
+  name: UMZH
 contact:
-  - name: HL7 Switzerland
+  - name: UMZH
     telecom:
       - system: url
-        value: https://www.hl7.ch/
+        value: https://umzh.uzh.ch/
 
 dependencies:
-  ch.fhir.ig.ch-core: current
-  ch.fhir.ig.ch-etoc: 3.0.0 # https://fhir.ch/ig/ch-etoc/index.html
-  hl7.fhir.extensions.r5: 4.0.1
-  hl7.fhir.uv.xver-r5.r4: 0.0.1-snapshot-2 # https://packages2.fhir.org/packages/
-
+  ch.fhir.ig.ch-core: 6.0.0 # https://fhir.ch/ig/ch-core/index.html
+  ch.fhir.ig.ch-etoc: 3.0.1 # https://fhir.ch/ig/ch-etoc/index.html
+  hl7.fhir.uv.cow: 1.0.0-ballot 
 pages:
   index.md:
     title: Home
@@ -57,13 +55,6 @@ menu:
     Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
   Artifacts: artifacts.html
 
-resources:
-  Encounter/xver-encounter-r4:
-    name: Cross-Version Encounter R4
-    description: Example for CH IG Encounter using a backport extension for a new introduced resource element in R5 (Encounter.subjectStatus).
-    exampleBoolean: true
-    profile:
-      - http://fhir.ch/ig/ch-ig/StructureDefinition/ch-ig-encounter
 
 # Parameters
   # Core FHIR: http://build.fhir.org/codesystem-guide-parameter-code.html

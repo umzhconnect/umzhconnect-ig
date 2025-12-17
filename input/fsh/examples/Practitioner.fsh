@@ -1,5 +1,5 @@
 Instance: HansMuster
-InstanceOf: ChIgPractitioner
+InstanceOf: CHCorePractitioner
 Usage: #example
 Title: "Hans Muster"
 Description: "Example for CH IG Practitioner."
