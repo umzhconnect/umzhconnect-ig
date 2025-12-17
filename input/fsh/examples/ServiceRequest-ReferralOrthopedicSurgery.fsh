@@ -1,5 +1,5 @@
 Instance: ReferralOrthopedicSurgery
-InstanceOf: ChEtocServiceRequest
+InstanceOf: ChUmzhConnectServiceRequest
 Usage: #example
 Title: "Referral Orthopedic Surgery"
 Description: "Example ServiceRequest for a referral to orthopedic surgery for knee replacement evaluation using the CH eTOC profile."

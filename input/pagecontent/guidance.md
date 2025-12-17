@@ -32,16 +32,3 @@ You can embed [instance fragments](https://build.fhir.org/ig/FHIR/ig-guidance/fr
 
 TODO
 
-### Cross-Versioning
-See details about [extensions for converting between versions](https://build.fhir.org/versions.html#extensions) (see also [FHIR Cross-Version Mapping Pack](https://build.fhir.org/ig/HL7/fhir-cross-version/)).
-
-CH IG example using a backport extension: [Cross-Version Encounter R4](Encounter-xver-encounter-r4.html):
-
-{% fragment Encounter/xver-encounter-r4 XML EXCEPT:id|extension %}
-
-CH IG profile using a backport extension: [CH IG Encounter](StructureDefinition-ch-ig-encounter.html)
-
-### Guidelines HL7 Switzerland
-- [Guidelines for Swiss IG Development](https://github.com/hl7ch/ch-core/wiki/Guidelines-for-Swiss-IG-Development)
-- [HL7.ch FHIR IG Balloting](https://github.com/hl7ch/ch-core/wiki/HL7.ch-FHIR-IG-Balloting)
-- [HL7 Switzerland IG template for IG Publisher](https://github.com/hl7ch/ig-template/?tab=readme-ov-file#hl7-switzerland-ig-template-for-ig-publisher): propose a change-link, logos, css adjustments

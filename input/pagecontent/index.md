@@ -1,10 +1,7 @@
 ### Introduction
-**CH IG** is a template for creating a FHIR implementation guide (IG) published by [HL7 Switzerland](https://www.hl7.ch/).     
-The source is available in the [GitHub Repository](https://github.com/ahdis/ch-ig).
 
-For detailed instructions and best practice approaches for developing implementation guides, see the [Guidance](guidance.html) page.
+**CH UMZH Connect** is a FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes
 
-<span style="color: red;"><em>✂️ Template starts here - delete everything above for your own IG ✂️</em></span>
 
 <div markdown="1" class="stu-note">
 
