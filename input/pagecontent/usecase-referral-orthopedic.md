@@ -5,6 +5,14 @@ Comorbidities: The patient is already being treated for heart problems in cardio
 
 [Example ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html)
 
+[Example Task (Initial - Referral Orthopedic Surgery)](Task-TaskReferralOrthopedicSurgery.html)
+
+[Example Task (Updated - with Questionnaire)](Task-TaskReferralOrthopedicSurgeryUpdated.html)
+
+[Example Questionnaire (Smoking Status)](Questionnaire-QuestionnaireSmokingStatus.html)
+
+[Example QuestionnaireResponse (Smoking Status)](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html)
+
 #### Overview
 
 ```mermaid
@@ -16,7 +24,7 @@ sequenceDiagram
     HospitalP->>HospitalP: Create ServiceRequest SR-HospitalP001
     HospitalP->>HospitalF: Create Task (focus: SR-HospitalP001)
     activate HospitalF
-    HospitalF->>HospitalP: Task T-UKB001 created
+    HospitalF-->>HospitalP: Notify Task T-UKB001 created
     deactivate HospitalF
     end
     
@@ -28,8 +36,18 @@ sequenceDiagram
     deactivate HospitalP
     end
     
+    rect rgb(191, 223, 255)
+    HospitalF->>HospitalF: Update Task T-UKB001<br/>(add input: Questionnaire smoking status)
+    HospitalF-->>HospitalP: Notify Task update
+    activate HospitalP
+    HospitalP->>HospitalF: Fetch Task T-UKB001
+    HospitalF->>HospitalP: Response (Task incl. Questionnaire)
+    HospitalP->>HospitalP: Fill out Questionnaire
+    HospitalP->>HospitalF: Post QuestionnaireResponse (smoking status)
+    deactivate HospitalP
+    end
+    
     rect rgb(255, 230, 204)
-    Note over HospitalF: Outpatient phase **E-UKB001**:<br/>- Create Patient P-UKB001<br/>- Create Outpatient Encounter E-UKB001<br/>- Store diagnoses/meds from SR-HospitalP001
     Note over HospitalF: Create Appointment A-UKB001 (initial consult)
     HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: in-progress, output: A-UKB001)
     HospitalF-->>HospitalP: Notify Task update
@@ -42,7 +60,7 @@ sequenceDiagram
     end
 
     rect rgb(204, 255, 204)
-    Note over HospitalF: Inpatient phase **E-UKB002**:<br/>- Create Inpatient Encounter E-UKB002 (surgery)<br/>- Copy diagnoses/meds from E-UKB001<br/>- Create Appointment A-UKB003 (surgery)
+    Note over HospitalF: Create Appointment A-UKB003 (surgery)
     HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: in-progress, output: A-UKB003)
     HospitalF-->>HospitalP: Notify Task update
     end
@@ -71,4 +89,24 @@ The following table indicates the source of each field in the ServiceRequest:
 | `reasonReference` | Referenced | Primary diagnosis: [Suspected ACL Rupture](Condition-SuspectedACLRupture.html). If the primary diagnosis is unknown, all diagnoses go to supportingInfo as Condition. |
 | `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html) |
 | `note.text` | Manual entry | Free-text clinical note entered ad-hoc for the referral |
+
+#### Task Field Sources
+
+The following table indicates the source of each field in the Task:
+
+| Field | Source | Description |
+|-------|--------|-------------|
+| `status` | Hard-coded | Initial Task: `ready` (created by Placer). Updated Task: `in-progress` (after Fulfiller accepts and updates) |
+| `intent` | Hard-coded | Fixed value `order` |
+| `priority` | Hard-coded | Fixed value `routine` |
+| `code` | ?? | define orthopedic knee as service here? |
+| `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
+| `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
+| `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
+| `owner` | Hard-coded | Initial Task: HospitalF (Fulfiller). The organization responsible for fulfilling the task |
+| `authoredOn` | Current date | Date when the Task was created by the Placer |
+| `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
+| `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |
+| `input[0].type` | Hard-coded | SNOMED CT code 385705008 "Request for information" (only for Questionnaire) |
+| `input[0].valueReference` | Referenced | Reference to the [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only for Questionnaire) |
 
