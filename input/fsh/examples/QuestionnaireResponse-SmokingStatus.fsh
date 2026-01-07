@@ -4,7 +4,7 @@ Usage: #example
 Title: "Smoking Status Questionnaire Response"
 Description: "QuestionnaireResponse sent by HospitalP (Placer) to HospitalF (Fulfiller) providing the patient's smoking status."
 * status = #completed
-* questionnaire = "Questionnaire/QuestionnaireSmokingStatus"
+* questionnaire = Canonical(QuestionnaireSmokingStatus)
 * subject = Reference(PetraMeier)
 * authored = "2025-12-16"
 * author = Reference(HansMusterRole)
