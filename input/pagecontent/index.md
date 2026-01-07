@@ -3,6 +3,17 @@
 **CH UMZH Connect** is a FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes
 
 
+### Principles
+
+* **Task at Fulfiller**: This Implementation Guide follows the [Task at Fulfiller](https://build.fhir.org/ig/HL7/fhir-cow-ig/en/fulfiller-determination.html#task-at-fulfiller) principle from the FHIR Clinical Order Workflows (COW) Implementation Guide. The Placer creates a ServiceRequest and POSTs a Task to the Fulfiller's FHIR server, with the ServiceRequest referenced in `Task.basedOn`. The Fulfiller manages the Task lifecycle and updates the Placer about progress and outcomes.
+
+* **Resource Querying**: The Placer SHALL support the `_include` parameter for querying the ServiceRequest along with all referenced resources.
+
+
+### Security
+* Authentication, Authorization and Consent Management is specified in the TODO: Link to security guide
+
+
 <div markdown="1" class="stu-note">
 
 [Changelog](changelog.html) with significant changes, open and closed issues.
