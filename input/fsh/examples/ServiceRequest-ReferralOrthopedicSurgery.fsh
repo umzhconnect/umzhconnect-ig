@@ -7,7 +7,7 @@ Description: "Example ServiceRequest for a referral to orthopedic surgery for kn
 * identifier[placerOrderIdentifier].value = "REF-2025-001"
 * status = #active
 * intent = #order
-* category = $sct#306206005 "Referral to service"
+* category = $sct#183545006 "Referral to orthopedic service (procedure)"
 * subject = Reference(PetraMeier)
 * requester = Reference(HansMusterRole)
 * authoredOn = "2025-12-15"
