@@ -12,6 +12,7 @@ Description: "Example ServiceRequest for a referral to orthopedic surgery for kn
 * requester = Reference(HansMusterRole)
 * authoredOn = "2025-12-15"
 * reasonReference = Reference(SuspectedACLRupture)
+* insurance = Reference(CoverageMeier)
 * supportingInfo[0] = Reference(HeartFailureHFrEF)
 * supportingInfo[1] = Reference(MedicationEntresto)
 * supportingInfo[2] = Reference(MedicationConcor)
