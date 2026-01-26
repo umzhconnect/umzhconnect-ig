@@ -5,3 +5,4 @@ Alias: $sct-ch =                        http://snomed.info/sct|http://snomed.inf
 Alias: $icd10 =                         http://fhir.de/CodeSystem/bfarm/icd-10-gm
 Alias: $ucum =                          http://unitsofmeasure.org
 Alias: $dcm =                           http://dicom.nema.org/resources/ontology/DCM
+Alias: $v2-0203 =                       http://terminology.hl7.org/CodeSystem/v2-0203
