@@ -60,7 +60,7 @@ Title: "PET Scan Whole Body (external)"
 * identifier[0].system = "urn:dicom:uid"
 * identifier[0].value = "urn:oid:1.3.6.1.7.1.34920.32661028.1144.8635"
 * status = #available
-* modality = $dcm#PET
+* modality = $dcm#PT
 * subject = Reference(PetraMeier)
 * started = "2026-01-18"
 * numberOfSeries = 3
