@@ -33,8 +33,16 @@ dependencies:
 pages:
   index.md:
     title: Home
-  guidance.md:
-    title: Guidance
+  guidance-solution-concept.md:
+    title: Guidance - Solution Concept
+  guidance-security-concept.md:
+    title: Guidance - Security Concept
+  usecase-referral-orthopedic.md:
+    title: Referral - Orthopedic Surgery
+  usecase-referral-sarcoma-tumorboard.md:
+    title: Referral - Sarcoma Tumor Board
+  security.md:
+    title: Security
   profiles.md:
     title: Profiles
   extensions.md:
@@ -43,20 +51,19 @@ pages:
     title: Terminology
   changelog.md:
     title: Changelog
-  usecase-referral-orthopedic.md:
-    title: Referral - Orthopedic Surgery
-  usecase-referral-sarcoma-tumorboard.md:
-    title: Referral - Sarcoma Tumor Board
 
 menu:
   Home: index.html
-  Guidance: guidance.html
-  Profiles: profiles.html
-  Extensions: extensions.html
-  Terminology: terminology.html
   Use Cases:
     Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
     Referral - Sarcoma Tumor Board: usecase-referral-sarcoma-tumorboard.html
+  Guidance:
+    Guidance - Solution Concept: guidance-solution-concept.html
+    Guidance - Security Concept: guidance-security-concept.html
+  Security: security.html
+  Profiles: profiles.html
+  Extensions: extensions.html
+  Terminology: terminology.html
   Artifacts: artifacts.html
 
 
