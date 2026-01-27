@@ -6,8 +6,6 @@ Description: "Updated Task after HospitalF (Fulfiller) has accepted the initial 
 * status = #in-progress
 * intent = #order
 * priority = #routine
-// TODO: define orthopedic knee as service here?
-//* code = $sct#306206005 "Referral to service"
 * basedOn = Reference(ReferralOrthopedicSurgery)
 * for = Reference(PetraMeier)
 * requester = Reference(HansMusterRole)
@@ -15,6 +13,6 @@ Description: "Updated Task after HospitalF (Fulfiller) has accepted the initial 
 * authoredOn = "2025-12-15"
 * lastModified = "2025-12-16"
 * focus = Reference(ReferralOrthopedicSurgery)
-* input[0].type = $sct#385705008 "Request for information"
+* input[0].type = $sct#273510007 "Health assessment questionnaire"
 * input[0].valueReference = Reference(QuestionnaireSmokingStatus)
 
