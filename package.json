@@ -1,0 +1,27 @@
+{
+  "name": "ch.fhir.ig.ch-umzh-connect",
+  "version": "0.1.0",
+  "description": "CH UMZH Connect IG",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umzhconnect/umzhconnect-ig.git"
+  },
+  "author": "HL7 Switzerland",
+  "license": "CC0-1.0",
+  "scripts": {
+    "build:ig": "./scripts/_genonce.sh",
+    "build:ig:continuous": "./scripts/_gencontinuous.sh",
+    "update:publisher": "cd scripts && ._updatePublisher.sh",
+    "serve:ig": "cd output && http-server -p 8080",
+    "open:ig": "open output/index.html"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "keywords": [
+    "fhir",
+    "hl7",
+    "switzerland",
+    "implementation-guide"
+  ]
+} 
