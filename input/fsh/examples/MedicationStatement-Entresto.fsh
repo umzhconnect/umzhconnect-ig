@@ -7,8 +7,13 @@ Description: "Entresto (Sacubitril/valsartan 97/103 mg) for heart failure treatm
 * status = #active
 * medicationReference = Reference(MedEntresto)
 * subject = Reference(PetraMeier)
-* dosage.text = "97/103 mg once daily"
+* dosage.timing.repeat.boundsPeriod.start = "2025-12-19"
+* dosage.timing.repeat.when[0] = #MORN
+* dosage.timing.repeat.when[+] = #NOON
+* dosage.timing.repeat.when[+] = #EVE
 * dosage.route = $edqm#20053000 "Oral use"
+* dosage.doseAndRate.doseQuantity = 1 $ucum#{Piece} "Stk"
+
 
 Instance: MedEntresto
 InstanceOf: CHCoreMedication
