@@ -4,19 +4,14 @@ Usage: #definition
 * name = "UMZHconnectRestServer"
 * status = #active
 * date = "2026-01-27T16:12:05.435+01:00"
-* publisher = "Not provided"
-* kind = #instance
-* software.name = "UMZH FHIR Server"
-* software.version = "0.9-draft"
-* implementation.description = "HAPI FHIR R4 Server"
-* implementation.url = "http://localhost:8080/fhir"
+* kind = #requirements
+* description = "UMZH Connect API requirements"
 * fhirVersion = #4.0.1
 * format = #application/fhir+json
 
 * rest.mode = #server
 
 * rest.resource[0].type = #AllergyIntolerance
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/AllergyIntolerance"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -27,7 +22,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Condition
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Condition"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -38,7 +32,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #DiagnosticReport
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/DiagnosticReport"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -49,7 +42,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Immunization
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Immunization"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -60,7 +52,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #MedicationStatement
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/MedicationStatement"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -71,7 +62,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Observation
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Observation"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -82,7 +72,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Patient
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Patient"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -93,7 +82,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Practitioner
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Practitioner"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -104,7 +92,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Procedure
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Procedure"
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false
@@ -115,7 +102,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Questionnaire
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Questionnaire"
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].versioning = #versioned-update
@@ -127,7 +113,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #QuestionnaireResponse
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse"
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #update
 * rest.resource[=].interaction[+].code = #read
@@ -141,7 +126,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Plan/proposal/order fulfilled by this questionnaire response"
 
 * rest.resource[+].type = #ServiceRequest
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/ServiceRequest"
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].versioning = #versioned-update
@@ -156,7 +140,6 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Task
-* rest.resource[=].profile = "http://hl7.org/fhir/StructureDefinition/Task"
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #update
 * rest.resource[=].interaction[+].code = #read
