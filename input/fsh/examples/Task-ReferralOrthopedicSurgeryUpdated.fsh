@@ -1,5 +1,5 @@
 Instance: TaskReferralOrthopedicSurgeryUpdated
-InstanceOf: Task
+InstanceOf: ChUmzhConnectCoordinationTask
 Usage: #example
 Title: "Task for Referral Orthopedic Surgery (Updated with Questionnaire)"
 Description: "Updated Task after HospitalF (Fulfiller) has accepted the initial Task and added a reference to the Questionnaire to request smoking status from HospitalP (Placer)."
