@@ -12,7 +12,7 @@ Description: "Updated Task after HospitalF (Fulfiller) has accepted the initial 
 * owner = Reference(http://hospitalp.example.org/fhir/Organization/HospitalF)
 * authoredOn = "2025-12-15"
 * lastModified = "2025-12-16"
-* focus = Reference(https://hospitalp.example.org/fhir/ReferralOrthopedicSurgery)
+* focus = Reference(http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 * input[0].type = $sct#273510007 "Health assessment questionnaire"
 * input[0].valueReference = Reference(QuestionnaireSmokingStatus)
 
