@@ -1,0 +1,29 @@
+# docker-compose.yml
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  hapi-hospital-f:
+    image: hapiproject/hapi:latest
+    environment:
+      - "hapi.fhir.allow_external_references=true"
+    labels:
+      - "traefik.http.routers.hospitalf.rule=Host(`hospitalf.example.org`)"
+      - "traefik.http.services.hospitalf.loadbalancer.server.port=8080"
+
+  hapi-hospital-p:
+    image: hapiproject/hapi:latest
+    environment:
+      - "hapi.fhir.allow_external_references=true"
+    labels:
+      - "traefik.http.routers.hospitalp.rule=Host(`hospitalp.example.org`)"
+      - "traefik.http.services.hospitalp.loadbalancer.server.port=8080"

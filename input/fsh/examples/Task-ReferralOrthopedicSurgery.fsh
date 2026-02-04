@@ -6,10 +6,10 @@ Description: "Initial Task created by HospitalP (Placer) based on the ServiceReq
 * status = #ready
 * intent = #order
 * priority = #routine
-* basedOn = Reference(ReferralOrthopedicSurgery)
-* for = Reference(PetraMeier)
-* requester = Reference(HansMusterRole)
-* owner = Reference(HospitalF)
+* basedOn = Reference(http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
+* for = Reference(http://hospitalp.example.org/fhir/Patient/PetraMeier)
+* requester = Reference(http://hospitalp.example.org/fhir/PractitionerRole/HansMusterRole)
+* owner = Reference(Organization/HospitalF)
 * authoredOn = "2025-12-15"
-* focus = Reference(ReferralOrthopedicSurgery)
+* focus = Reference(http:///hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 

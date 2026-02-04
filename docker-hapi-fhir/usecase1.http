@@ -1,0 +1,165 @@
+### Usecase 1 
+
+### Setup Placer
+PUT http://hospitalp.example.org/fhir/Organization/HospitalP
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Organization-HospitalP.json
+
+
+###
+POST http://hospitalp.example.org/fhir/SearchParameter
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-sevicerequest-reasonreference.json
+
+###
+POST http://hospitalp.example.org/fhir/SearchParameter
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-sevicerequest-supportinginfo.json
+
+###
+PUT http://hospitalp.example.org/fhir/Practitioner/HansMuster
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Practitioner-HansMuster.json
+
+###
+PUT http://hospitalp.example.org/fhir/PractitionerRole/HansMusterRole
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/PractitionerRole-HansMusterRole.json
+
+
+###
+PUT http://hospitalp.example.org/fhir/Patient/PetraMeier
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Patient-PetraMeier.json
+
+###
+PUT http://hospitalp.example.org/fhir/Coverage/CoverageMeier
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Coverage-CoverageMeier.json
+
+###
+PUT http://hospitalp.example.org/fhir/Condition/SuspectedACLRupture
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Condition-SuspectedACLRupture.json
+
+###
+PUT http://hospitalp.example.org/fhir/Condition/HeartFailureHFrEF
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Condition-HeartFailureHFrEF.json
+
+###
+PUT http://hospitalp.example.org/fhir/MedicationStatement/MedicationEntresto
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/MedicationStatement-MedicationEntresto.json
+
+###
+PUT http://hospitalp.example.org/fhir/MedicationStatement/MedicationConcor
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
+
+###
+PUT http://hospitalp.example.org/fhir/MedicationStatement/MedicationConcor
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
+
+
+### Create ServiceTask on Placer (use PUT instead of POST to use the same id's)
+PUT http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/ServiceRequest-ReferralOrthopedicSurgery.json
+
+
+### Setup Fulfiller
+PUT http://hospitalf.example.org/fhir/Organization/HospitalF
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Organization-HospitalF.json
+
+
+### Create Task on Fulfiller (hospitalf) (use PUT instead of POST to use the same id's)
+PUT http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgery
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Task-TaskReferralOrthopedicSurgery.json
+
+
+### Updated the status (we use PATCH, but would be probably a PUT
+PATCH http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgery
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "Parameters",
+  "parameter": [ {
+    "name": "operation",
+    "part": [ {
+      "name": "type",
+      "valueCode": "replace"
+    }, {
+      "name": "path",
+      "valueString": "Task.status"
+    }, {
+      "name": "value",
+      "valueCode": "accepted"
+    } ]
+  } ]
+}
+
+
+### Receive the ServiceRequest from the Fulfiller
+GET http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+
+### Receive the ServiceRequest from the Fulfiller by _id
+GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+
+### Receive the ServiceRequest from the Fulfiller by _id. 
+### _include=PractitionerRole:practitioner -> does not work out of the box (maybe because indirect)
+### for reasonReference, insurance supportingInfo we need do define search parameters and configure them on the hapi-fhir server, otherwise the resources will not be returned
+
+GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:requester
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+###
+GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:ch-umzhconnectig-sevicerequest-reasonreference
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+###
+GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=*
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
