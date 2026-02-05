@@ -6,13 +6,13 @@ Description: "Updated Task after HospitalF (Fulfiller) has accepted the initial 
 * status = #in-progress
 * intent = #order
 * priority = #routine
-* basedOn = Reference(ReferralOrthopedicSurgery)
-* for = Reference(PetraMeier)
-* requester = Reference(HansMusterRole)
-* owner = Reference(HospitalF)
+* basedOn = Reference(http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
+* for = Reference(http://hospitalp.example.org/fhir/Patient/PetraMeier)
+* requester = Reference(http://hospitalp.example.org/fhir/PractitionerRole/HansMusterRole)
+* owner = Reference(http://hospitalp.example.org/fhir/Organization/HospitalF)
 * authoredOn = "2025-12-15"
 * lastModified = "2025-12-16"
-* focus = Reference(ReferralOrthopedicSurgery)
+* focus = Reference(http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 * input[0].type = $sct#273510007 "Health assessment questionnaire"
 * input[0].valueReference = Reference(QuestionnaireSmokingStatus)
 
