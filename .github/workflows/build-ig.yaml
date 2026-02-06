@@ -1,0 +1,72 @@
+name: Build FHIR IG
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled] # Trigger on PR actions like opening or updating a PR
+    branches:
+      - main # Only triggers for pull requests targeting the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node (for SUSHI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install SUSHI
+        run: npm install -g fsh-sushi
+
+      - name: Run SUSHI
+        run: |
+          echo "Running SUSHI..."
+          sushi . 2>&1 | tee sushi.log
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache IG Publisher
+        id: cache-publisher
+        uses: actions/cache@v4
+        with:
+          path: ./input-cache/publisher.jar
+          key: ig-publisher-jar
+
+      - name: Download IG Publisher if not cached
+        if: steps.cache-publisher.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p input-cache
+          curl -L https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar \
+            -o input-cache/publisher.jar
+
+      - name: Run IG Publisher
+        run: |
+          java -jar input-cache/publisher.jar -ig ig.ini 2>&1 | tee build.log
+        continue-on-error: true
+
+      - name: Check for errors and warnings
+        run: |
+          echo "---- IG Build Summary ----"
+          grep -E "ERROR|WARNING" -n build.log || true
+
+          # Fail the build if any ERROR appears
+          if grep -q "ERROR" build.log; then
+            echo "❌ IG build contains errors"
+            exit 1
+          fi
+
+          echo "✅ IG build completed without errors"
+
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ig-build-output
+      #     path: output
