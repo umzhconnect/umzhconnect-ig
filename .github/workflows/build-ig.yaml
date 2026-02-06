@@ -14,6 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Install Ruby (required for Jekyll)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # Jekyll works well with 3.1
+
+      # Install Jekyll + Bundler
+      - name: Install Jekyll
+        run: |
+          gem install bundler
+          gem install jekyll
+
       - name: Set up Node (for SUSHI)
         uses: actions/setup-node@v4
         with:
