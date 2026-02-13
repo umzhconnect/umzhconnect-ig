@@ -89,7 +89,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `requester` | Referenced | the referring physician with their organizational context |
 | `authoredOn` | Current date | Date when the referral was created |
 | `reasonReference` | Referenced | Primary diagnosis: [Suspected ACL Rupture](Condition-SuspectedACLRupture.html). If the primary diagnosis is unknown, all diagnoses go to supportingInfo as Condition. |
-| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html) |
+| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html) |
 | `note.text` | Manual entry | Free-text clinical note entered ad-hoc for the referral |
 
 #### Task Field Sources
