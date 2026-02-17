@@ -17,60 +17,51 @@ Comorbidities: The patient is already being treated for heart problems in cardio
 
 ```mermaid
 sequenceDiagram
-    actor HospitalP as HospitalP (Placer)
-    actor HospitalF as HospitalF (Fulfiller)
-    
-    rect rgb(191, 223, 255)
-    HospitalP->>HospitalP: Create ServiceRequest SR-HospitalP001
-    HospitalP->>HospitalF: Create Task (focus: SR-HospitalP001)
+    title Referral - Orthopedic Surgery
+
+    participant HospitalP as HospitalP(lacer)
+    participant HospitalF as HospitalF(ulfiller)
+    activate HospitalP
+    HospitalP->>HospitalP: POST ServiceRequest-ReferralOrthopedicSurgery
+    HospitalP->>HospitalF: POST Task (basedOn/focus: ServiceRequest-ReferralOrthopedicSurgery)
     activate HospitalF
-    HospitalF-->>HospitalP: Notify Task T-UKB001 created
+    HospitalF-->>HospitalP: created
+    deactivate HospitalP
     deactivate HospitalF
-    end
     
-    rect rgb(191, 223, 255)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: accepted)
-    HospitalF->>HospitalP: Request Resources (Diagnoses, Medications)
+    HospitalF->>HospitalP: GET Resources (Diagnoses, Medications, Reports)
+    activate HospitalF
     activate HospitalP
-    HospitalP->>HospitalF: Resources Response
+    HospitalP-->>HospitalF: return search results (Bundle)
+    deactivate HospitalF
     deactivate HospitalP
-    end
-    
-    rect rgb(191, 223, 255)
-    HospitalF->>HospitalF: Create Questionnaire (smoking status)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(owner: Placer, businessStatus: on-hold,<br/>output: Questionnaire)
-    HospitalF-->>HospitalP: Notify Task update
+
+    Note over HospitalF: Request additional information<br/>(smoking status) via Questionnaire
+    HospitalF->>HospitalF: Update Task<br/>(owner: HospitalP, businessStatus: on-hold,<br/>output: QuestionnaireSmokingStatusaire)
+    activate HospitalF
+    HospitalF-->>HospitalP: Notify Task updated
     activate HospitalP
-    HospitalP->>HospitalF: Fetch Task T-UKB001
-    HospitalF->>HospitalP: Response (Task incl. Questionnaire)
-    HospitalP->>HospitalP: Fill out Questionnaire
-    HospitalP->>HospitalF: Post QuestionnaireResponse (smoking status)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(owner: Fulfiller, businessStatus: in-progress,<br/>input: QuestionnaireResponse)
+    HospitalP->>HospitalF: GET Task
+    HospitalF-->>HospitalP: Return Task
+    HospitalP->>HospitalF: GET Questionnaire by canonical
+    HospitalF-->>HospitalP: Return QuestionnaireSmokingStatus
+    HospitalP-->>HospitalP: Practitioner fills out Questionnaire
+    HospitalP->>HospitalF: POST QuestionnaireResponse
+    HospitalF-->>HospitalP: created
+    HospitalP->>HospitalF: PATCH Task (owner: HospitalF, input: QuestionnaireResponseSmokingStatus)
+    HospitalF-->>HospitalP: updated
     deactivate HospitalP
-    end
-    
-    rect rgb(255, 230, 204)
-    Note over HospitalF: Create Appointment A-UKB001 (initial consult)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: in-progress, output: A-UKB001)
-    HospitalF-->>HospitalP: Notify Task update
-    end
+    deactivate HospitalF
 
-    rect rgb(255, 230, 204)
-    Note over HospitalF: Create Appointment A-UKB002 (preop)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: in-progress, output: A-UKB002)
-    HospitalF-->>HospitalP: Notify Task update
-    end
+    HospitalF->>HospitalF: Update Task<br/>(businessStatus: completed, output: Report)
+    activate HospitalF
+    HospitalF-->>HospitalP: Notify Task updated
+    activate HospitalP
+    HospitalP->> HospitalF: GET Task?_id=...&_include=Task:ch-umzhconnectig-task-outputreference
+    HospitalF-->>HospitalP: return result (Bundle)
+    deactivate HospitalP
+    deactivate HospitalF
 
-    rect rgb(204, 255, 204)
-    Note over HospitalF: Create Appointment A-UKB003 (surgery)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: in-progress, output: A-UKB003)
-    HospitalF-->>HospitalP: Notify Task update
-    end
-    
-    rect rgb(204, 255, 204)
-    HospitalF->>HospitalF: Update Task T-UKB001<br/>(status: completed, output: R-UKB001)
-    HospitalF-->>HospitalP: Notify Task update
-    end
 
 ```
 
@@ -84,7 +75,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `identifier[placerOrderIdentifier].value` | Generated | Unique referral order number (e.g., REF-2025-001) |
 | `status` | Hard-coded | Fixed value `active` |
 | `intent` | Hard-coded | Fixed value `order` |
-| `category` | [VS CH UMZH Connect ServiceRequest Category](ValueSet-ch-umzh-connect-servicerequest-category.html) | SNOMED CT code 308461008 "Referral to radiology service (procedure)" |
+| `category` | [VS CH UMZH Connect ServiceRequest Category](ValueSet-ch-umzh-connect-servicerequest-category.html) | SNOMED CT code 183545006 "Referral to orthopedic service (procedure)" |
 | `subject` | Referenced | the patient being referred |
 | `requester` | Referenced | the referring physician with their organizational context |
 | `authoredOn` | Current date | Date when the referral was created |
@@ -110,7 +101,7 @@ The following table indicates the source of each field in the Task:
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
 | `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |
 | `output[0].type` | Hard-coded | `273510007` (only when Questionnaire is created) |
-| `output[0].valueReference` | Referenced | Reference to the [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Questionnaire is created) |
+| `output[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Questionnaire is created) |
 | `input[0].type` | Hard-coded | `273510007` (only when QuestionnaireResponse is created) |
 | `input[0].valueReference` | Referenced | Reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
 
