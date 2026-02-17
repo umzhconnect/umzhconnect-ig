@@ -49,3 +49,16 @@ Usage: #definition
 * expression = "Task.output.value as Reference"
 * xpathUsage = #normal
 * multipleAnd = true
+
+Instance: ch-umzhconnectig-task-outputcanonical
+InstanceOf: SearchParameter
+Usage: #definition
+* name = "ch-umzhconnectig-task-outputcanonical"
+* description = "Custom search parameter for Task.output.valueCanonical"
+* status = #active
+* code = #ch-umzhconnectig-task-outputcanonical
+* base = #Task
+* type = #reference
+* expression = "Task.output.value as Canonical"
+* xpathUsage = #normal
+* multipleAnd = true

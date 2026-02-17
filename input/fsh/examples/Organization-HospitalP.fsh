@@ -1,7 +1,7 @@
 Instance: HospitalP
 InstanceOf: CHCoreOrganization
 Usage: #example
-Title: "Universitätsspital Zürich"
+Title: "HospitalP(lacer)"
 Description: "Example Organization for HospitalP(lacer)."
 * name = "HospitalP(lacer)"
 * alias = "HospitalP"

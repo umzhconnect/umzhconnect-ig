@@ -86,6 +86,13 @@ Accept: application/fhir+json
 
 < ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
 
+###
+PUT http://hospitalp.example.org/fhir/DocumentReference/DocCardiologyAttachment
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/DocumentReference-DocCardiologyAttachment.json
+
 
 ### Create ServiceTask on Placer (use PUT instead of POST to use the same id's)
 PUT http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
@@ -116,6 +123,13 @@ Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-outputreference.json
+
+###
+POST http://hospitalf.example.org/fhir/SearchParameter
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-outputcanonical.json
 
 
 ### Create Task on Fulfiller (hospitalf) (use PUT instead of POST to use the same id's)
@@ -178,19 +192,19 @@ GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurge
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
-### Create Updated Task on Fulfiller (TODO, should acually maniupulate above Task, just for testing here)
-PUT http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
-Content-Type: application/fhir+json
-Accept: application/fhir+json
-
-< ./../fsh-generated/resources/Task-TaskReferralOrthopedicSurgeryUpdated.json
-
 ###
 PUT http://hospitalf.example.org/fhir/Questionnaire/QuestionnaireSmokingStatus
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Questionnaire-QuestionnaireSmokingStatus.json
+
+### Create Updated Task on Fulfiller (TODO, should acually maniupulate above Task, just for testing here)
+PUT http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/Task-TaskReferralOrthopedicSurgeryUpdated.json
 
 
 ### Get Task on Fulfiller
@@ -199,7 +213,21 @@ Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 
-### Get Task on Fulfiller
-GET http://hospitalf.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:ch-umzhconnectig-task-inputreference&_include=Task:ch-umzhconnectig-task-outputreference
+### Get Task on Fulfiller (including Questionnaire)
+GET http://hospitalf.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:ch-umzhconnectig-task-inputreference&_include=Task:ch-umzhconnectig-task-outputcanonical
 Content-Type: application/fhir+json
 Accept: application/fhir+json
+
+
+### Get QuestionnaireSmokingStatus on Fulfiller explicitly by Canonical
+GET http://hospitalf.example.org/fhir/Questionnaire?url=http://hospitalf.example.org/ch-umzh-connect/QuestionnaireSmokingStatus
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+### POST QuestionnaireResponse on Fulfiller
+# Note: usually would POST instead of PUT and NOT specify id (QuestionnaireResponseSmokingStatus) here
+PUT http://hospitalf.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/QuestionnaireResponseSmokingStatus.json
