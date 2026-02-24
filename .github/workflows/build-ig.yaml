@@ -64,18 +64,64 @@ jobs:
           java -jar input-cache/publisher.jar -ig ig.ini 2>&1 | tee build.log
         continue-on-error: true
 
-      - name: Check for errors and warnings
+      - name: Parse and Report QA Errors
         run: |
-          echo "---- IG Build Summary ----"
-          grep -E "ERROR|WARNING" -n build.log || true
+          python3 << 'PYEOF'
+          import xml.etree.ElementTree as ET
+          import sys
+          import os
 
-          # Fail the build if any ERROR appears
-          if grep -q "ERROR" build.log; then
-            echo "❌ IG build contains errors"
-            exit 1
-          fi
+          QA_FILE = "output/qa.xml"
 
-          echo "✅ IG build completed without errors"
+          if not os.path.exists(QA_FILE):
+              print("❌ qa.xml not found - the build may have failed before completing.")
+              sys.exit(1)
+
+          NS = "http://hl7.org/fhir"
+          FILE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
+
+          tree = ET.parse(QA_FILE)
+          root = tree.getroot()
+
+          errors = []
+
+          for entry in root.findall(f"{{{NS}}}entry"):
+              outcome = entry.find(f"{{{NS}}}resource/{{{NS}}}OperationOutcome")
+              if outcome is None:
+                  continue
+
+              file_name = "Unknown file"
+              for ext in outcome.findall(f"{{{NS}}}extension"):
+                  if ext.get("url") == FILE_EXT_URL:
+                      val = ext.find(f"{{{NS}}}valueString")
+                      if val is not None:
+                          file_name = val.get("value", "Unknown file")
+
+              for issue in outcome.findall(f"{{{NS}}}issue"):
+                  severity_el = issue.find(f"{{{NS}}}severity")
+                  if severity_el is None or severity_el.get("value") != "error":
+                      continue
+
+                  details_text = issue.find(f"{{{NS}}}details/{{{NS}}}text")
+                  message = details_text.get("value", "No message") if details_text is not None else "No message"
+
+                  expression_el = issue.find(f"{{{NS}}}expression")
+                  expression = expression_el.get("value", "") if expression_el is not None else ""
+
+                  errors.append((file_name, expression, message))
+
+          if errors:
+              print(f"❌ {len(errors)} error(s) found in qa.xml:\n")
+              for i, (f, expr, msg) in enumerate(errors, 1):
+                  print(f"[{i}] File:       {f}")
+                  if expr:
+                      print(f"     Expression: {expr}")
+                  print(f"     Message:    {msg}")
+                  print()
+              sys.exit(1)
+          else:
+              print("✅ No errors found in qa.xml.")
+          PYEOF
 
       # - name: Upload build artifacts
       #   uses: actions/upload-artifact@v4
