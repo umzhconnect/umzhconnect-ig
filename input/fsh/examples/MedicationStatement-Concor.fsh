@@ -18,7 +18,7 @@ Usage: #inline
 * code.coding[0] = urn:oid:2.51.1.1#7680473110395 "Concor (Filmtabl 10 mg) Blist"
 * code.coding[1] = $atc#C07AB07 "Bisoprolol"
 * code.text = "Concor (Filmtabl 10 mg) Blist"
-* form.coding[0] = $edqm#0221000 "Filmtablette"
+* form.coding[0] = $edqm#10221000 "Filmtablette"
 * ingredient[0].itemCodeableConcept.coding[0] = $sct#386869006 "Bisoprolol fumarat"
 * ingredient[0].itemCodeableConcept.text = "Bisoprolol fumarat"
 //* ingredient[0].strength.numerator = 10 $ucum#mg "mg"

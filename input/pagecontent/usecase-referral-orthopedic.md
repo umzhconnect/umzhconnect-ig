@@ -100,8 +100,8 @@ The following table indicates the source of each field in the Task:
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
 | `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |
-| `output[0].type` | Hard-coded | `273510007` (only when Questionnaire is created) |
-| `output[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Questionnaire is created) |
-| `input[0].type` | Hard-coded | `273510007` (only when QuestionnaireResponse is created) |
-| `input[0].valueReference` | Referenced | Reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
+| `input[0].type` | Hard-coded | `273510007` (only when Questionnaire is created) |
+| `input[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Questionnaire is created) |
+| `output[0].type` | Hard-coded | `273510007` (only when QuestionnaireResponse is created) |
+| `output[0].valueReference` | Referenced | Reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
 
