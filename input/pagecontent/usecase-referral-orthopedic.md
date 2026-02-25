@@ -37,7 +37,7 @@ sequenceDiagram
     deactivate HospitalP
 
     Note over HospitalF: Request additional information<br/>(smoking status) via Questionnaire
-    HospitalF->>HospitalF: Update Task<br/>(owner: HospitalP, businessStatus: on-hold,<br/>output: QuestionnaireSmokingStatusaire)
+    HospitalF->>HospitalF: Update Task<br/>(owner: HospitalP, businessStatus: on-hold,<br/>output: QuestionnaireSmokingStatus)
     activate HospitalF
     HospitalF-->>HospitalP: Notify Task updated
     activate HospitalP
