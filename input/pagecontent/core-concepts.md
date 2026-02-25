@@ -6,7 +6,7 @@ The UMZH-connect project aims to improve digital connectivity for referrals and 
 
 This implementation guide is based on the core principles of [Clinical Order Workflow IG](http://hl7.org/fhir/uv/cow/ImplementationGuide/hl7.fhir.uv.cow) with a focus on the [Task at Fulfiller](https://build.fhir.org/ig/HL7/fhir-cow-ig/en/fulfiller-determination.html#task-at-fulfiller).
 
-The COW (clinical order workflow) focues on making clinical data available by API to relevant actors and notifying the partners about task in contrast to sending the bundled data to the partner in commonly used 'fire-and-forget' mode.
+The COW (clinical order workflow) focuses on making clinical data available by API to relevant actors and notifying the partners about task in contrast to sending the bundled data to the partner in commonly used 'fire-and-forget' mode.
 
 The COW refers to the requestor, referrer, and prescriber as the **Placer** - the party who initiates the task, and the performer as the **Fulfiller** - the party the performs the requested service.
 As central element and business onject (also a FHIR resource) serves the **CoordinationTask** (resourceType Task) which links resources - inputs and outputs - between the participating parties and manages workflow patterns (i.e. states etc.)

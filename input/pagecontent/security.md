@@ -87,6 +87,34 @@ The FHIR specification supports a dedicated consent resource. Any FHIR server im
 
 Below is an example of the sequence of a request for a referenced resource and the authorization verification, permit and return, or deny workflow.
 
+```mermaid
+sequenceDiagram
+  title Referral and External Service Requests Resource Fetching Flow
+
+  participant C as Client (Fulfiller)
+  participant AS as Authorization Server
+  participant AG as API Gateway (Placer)
+  participant PE as Policy Engine
+  participant FHIR as FHIR Server / Consent Store (Placer)
+
+  Note over C,AS: Machine-to-machine: Client Credentials flow
+  C->>AS: Token request (client auth) + requested scopes<br/>(+ consent_id context if used)
+  AS-->>C: Access token (scopes + claims)<br/>(optional: includes consent_id claim, <br/>optional: sender-constrained)
+
+  C->>AG: API request + Authorization: Bearer <token>
+  AG->>AG: Validate token (sig, iss, aud, exp, scopes)<br/>(+ validate sender-constraint if FAPI)
+  AG->>PE: AuthZ decision request:<br/>(client identity, requested <br/>operation/resource,<br/>consent context from token/headers)
+  PE->>FHIR: Fetch/validate Consent (by consent_id)<br/>+ evaluate rules / ownership / audience
+  PE->>FHIR: Evaluate whether requested resource(s)<br/>are in ServiceRequest graph referenced by consent
+  PE-->>AG: Permit / Deny
+  alt Permit
+    AG->>FHIR: Forward request
+    FHIR->>C: Response: return permitted resources<br/>(+ optional fine-grained enforcement)
+  else Deny
+    AG-->>C: 403 Forbidden
+  end
+```
+
 ### Authorization enforcement
 
 An enterprise grade web-service architecture, involves a number of steps for processing an HTTP request - DMZ / Firewall, TLS (HTTPS) termination, authentication, request routing, request processing and fine-grained authorization on resource server, etc.
@@ -113,7 +141,7 @@ Our generapproach is to whitelist only the neccessary endpoints and parameters r
 
 ### Security enhancement
 
-As the basic client credentials flow is subject to a number of security weaknesses We define a stepwise security up-leveling approach for client authentication. Initial integrations may start with basic client credentials to enable rapid onboarding and piloting. As participants move to production and access higher-risk scopes, authentication is upgraded to private_key_jwt, replacing shared secrets with asymmetric keys registered during onboarding—without requiring a central PKI. For the highest assurance scenarios, the ecosystem supports mutual TLS (mTLS), strengthening client identity binding and reducing token replay risks. This staged model preserves a consistent authorization flow while providing a clear, operationally manageable path to stronger security.
+As the basic client credentials flow is subject to a number of security weaknesses, we define a stepwise security up-leveling approach for client authentication. Initial integrations may start with basic client credentials to enable rapid onboarding and piloting. As participants move to production and access higher-risk scopes, authentication is upgraded to private_key_jwt, replacing shared secrets with asymmetric keys registered during onboarding—without requiring a central PKI. For the highest assurance scenarios, the ecosystem supports mutual TLS (mTLS), strengthening client identity binding and reducing token replay risks. This staged model preserves a consistent authorization flow while providing a clear, operationally manageable path to stronger security.
 
 The **authorization model and APIs remain stable**, while the **client authentication method** is strengthened over time. This makes the ecosystem scalable: partners can join quickly with minimal operational overhead, and then adopt stronger mechanisms when justified by risk, regulatory requirements, or production needs.
 

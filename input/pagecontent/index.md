@@ -8,11 +8,12 @@ The goal is to establish an API framework that allows participants, as API consu
 
 Initial Use Cases focus on the following resource types:
 * Order, service request and clinical question
-* Diagnoses
-* Medical history
-* Medication
-* Procedures
 * Administrative data (personal details, insurance, etc.)
+* Diagnoses
+* Medication
+* Allergies
+* Reports (documents)
+* ImagingStudies
 
 These content areas are intended to be expandable in the future.
 
