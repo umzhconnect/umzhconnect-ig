@@ -1,3 +1,23 @@
+// RuleSets for CapabilityStatement resource definitions
+
+RuleSet: ResourceDefaults
+* rest.resource[=].versioning = #versioned-update
+* rest.resource[=].conditionalCreate = false
+* rest.resource[=].conditionalUpdate = false
+
+RuleSet: IdSearchParam
+* rest.resource[=].searchParam.name = "_id"
+* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam.type = #token
+* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+
+RuleSet: ReadOnlyResource(type)
+* rest.resource[+].type = #{type}
+* rest.resource[=].interaction.code = #read
+* insert ResourceDefaults
+* insert IdSearchParam
+
+
 Instance: ChUmzhConnectCapabilityStatement
 InstanceOf: CapabilityStatement
 Usage: #definition
@@ -11,142 +31,57 @@ Usage: #definition
 
 * rest.mode = #server
 
-* rest.resource[0].type = #AllergyIntolerance
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+// Read-only resources with _id search
+* insert ReadOnlyResource(AllergyIntolerance)
+* insert ReadOnlyResource(Condition)
+* insert ReadOnlyResource(Consent)
+* insert ReadOnlyResource(Coverage)
+* insert ReadOnlyResource(DiagnosticReport)
+* insert ReadOnlyResource(Immunization)
+* insert ReadOnlyResource(MedicationStatement)
+* insert ReadOnlyResource(Observation)
+* insert ReadOnlyResource(Organization)
+* insert ReadOnlyResource(Patient)
+* insert ReadOnlyResource(Practitioner)
+* insert ReadOnlyResource(PractitionerRole)
+* insert ReadOnlyResource(Procedure)
 
-* rest.resource[+].type = #Condition
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #DiagnosticReport
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #Immunization
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #MedicationStatement
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #Observation
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #Patient
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #Practitioner
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
-* rest.resource[+].type = #Procedure
-* rest.resource[=].interaction.code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
-
+// Questionnaire: read + search-type
 * rest.resource[+].type = #Questionnaire
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+* insert ResourceDefaults
+* insert IdSearchParam
 
+// QuestionnaireResponse: search-type, update, read, create
 * rest.resource[+].type = #QuestionnaireResponse
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #update
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
+* insert ResourceDefaults
 * rest.resource[=].searchParam.name = "based-on"
 * rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/QuestionnaireResponse-based-on"
 * rest.resource[=].searchParam.type = #reference
 * rest.resource[=].searchParam.documentation = "Plan/proposal/order fulfilled by this questionnaire response"
 
+// ServiceRequest: search-type, read + searchIncludes
 * rest.resource[+].type = #ServiceRequest
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
+* insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:requester"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+* insert IdSearchParam
 
+// Task: search-type, update, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #update
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
+* insert ResourceDefaults
 * rest.resource[=].searchParam[0].name = "owner"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-owner"
 * rest.resource[=].searchParam[=].type = #reference

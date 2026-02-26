@@ -6,7 +6,7 @@
 id: ch.fhir.ig.ch-umzh-connect
 canonical: http://fhir.ch/ig/ch-umzh-connect
 name: CHUMZHConnect
-title: "CH UMZH Connect IG (R4)"
+title: 'CH UMZH Connect IG (R4)'
 description: FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes
 status: draft # draft | active | retired | unknown
 license: CC0-1.0
@@ -29,14 +29,18 @@ dependencies:
   ch.fhir.ig.ch-core: 6.0.0 # https://fhir.ch/ig/ch-core/index.html
   ch.fhir.ig.ch-etoc: 3.0.1 # https://fhir.ch/ig/ch-etoc/index.html
   ch.fhir.ig.ch-orf: 3.0.2 # https://fhir.ch/ig/ch-orf/index.html
-  hl7.fhir.uv.cow: 1.0.0-ballot 
+  hl7.fhir.uv.cow: 1.0.0-ballot
 pages:
   index.md:
     title: Home
-  guidance-solution-concept.md:
-    title: Guidance - Solution Concept
-  guidance-security-concept.md:
-    title: Guidance - Security Concept
+  background.md:
+    title: Background
+  core-concepts.md:
+    title: Core Concepts
+  guidance-reference-architecture.md:
+    title: Guidance - Reference Architecture
+  guidance-security-implementation.md:
+    title: Guidance - Security Implementation
   usecase-referral-orthopedic.md:
     title: Referral - Orthopedic Surgery
   usecase-referral-sarcoma-tumorboard.md:
@@ -54,30 +58,31 @@ pages:
 
 menu:
   Home: index.html
+  Background: background.html
+  Core Concepts: core-concepts.html
+  Security: security.html
+  Guidance:
+    Reference Architecture: guidance-reference-architecture.html
+    Security Implementation: guidance-security-implementation.html
   Use Cases:
     Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
     Referral - Sarcoma Tumor Board: usecase-referral-sarcoma-tumorboard.html
-  Guidance:
-    Guidance - Solution Concept: guidance-solution-concept.html
-    Guidance - Security Concept: guidance-security-concept.html
-  Security: security.html
   Profiles: profiles.html
   Extensions: extensions.html
   Terminology: terminology.html
   Artifacts: artifacts.html
 
-
 # Parameters
-  # Core FHIR: http://build.fhir.org/codesystem-guide-parameter-code.html
-  # FHIR Tools IG: http://build.fhir.org/ig/FHIR/fhir-tools-ig/branches/master/CodeSystem-ig-parameters.html
+# Core FHIR: http://build.fhir.org/codesystem-guide-parameter-code.html
+# FHIR Tools IG: http://build.fhir.org/ig/FHIR/fhir-tools-ig/branches/master/CodeSystem-ig-parameters.html
 parameters:
   excludettl: true
   allow-extensible-warnings: true
-  display-warnings: true 
-  path-expansion-params: '../../expansion-params.json'  # for using SNOMED CT Swiss Extension
+  display-warnings: true
+  path-expansion-params: '../../expansion-params.json' # for using SNOMED CT Swiss Extension
   pin-canonicals: pin-multiples
   path-resource:
-    - input/resources  
+    - input/resources
 
 FSHOnly: false
 applyExtensionMetadataToRoot: false

@@ -1,0 +1,130 @@
+name: Build FHIR IG
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled] # Trigger on PR actions like opening or updating a PR
+    branches:
+      - main # Only triggers for pull requests targeting the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Ruby (required for Jekyll)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # Jekyll works well with 3.1
+
+      # Install Jekyll + Bundler
+      - name: Install Jekyll
+        run: |
+          gem install bundler
+          gem install jekyll
+
+      - name: Set up Node (for SUSHI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install SUSHI
+        run: npm install -g fsh-sushi
+
+      - name: Run SUSHI
+        run: |
+          echo "Running SUSHI..."
+          sushi . 2>&1 | tee sushi.log
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache IG Publisher
+        id: cache-publisher
+        uses: actions/cache@v4
+        with:
+          path: ./input-cache/publisher.jar
+          key: ig-publisher-jar
+
+      - name: Download IG Publisher if not cached
+        if: steps.cache-publisher.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p input-cache
+          curl -L https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar \
+            -o input-cache/publisher.jar
+
+      - name: Run IG Publisher
+        run: |
+          java -jar input-cache/publisher.jar -ig ig.ini 2>&1 | tee build.log
+        continue-on-error: true
+
+      - name: Parse and Report QA Errors
+        run: |
+          python3 << 'PYEOF'
+          import xml.etree.ElementTree as ET
+          import sys
+          import os
+
+          QA_FILE = "output/qa.xml"
+
+          if not os.path.exists(QA_FILE):
+              print("❌ qa.xml not found - the build may have failed before completing.")
+              sys.exit(1)
+
+          NS = "http://hl7.org/fhir"
+          FILE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-file"
+
+          tree = ET.parse(QA_FILE)
+          root = tree.getroot()
+
+          errors = []
+
+          for entry in root.findall(f"{{{NS}}}entry"):
+              outcome = entry.find(f"{{{NS}}}resource/{{{NS}}}OperationOutcome")
+              if outcome is None:
+                  continue
+
+              file_name = "Unknown file"
+              for ext in outcome.findall(f"{{{NS}}}extension"):
+                  if ext.get("url") == FILE_EXT_URL:
+                      val = ext.find(f"{{{NS}}}valueString")
+                      if val is not None:
+                          file_name = val.get("value", "Unknown file")
+
+              for issue in outcome.findall(f"{{{NS}}}issue"):
+                  severity_el = issue.find(f"{{{NS}}}severity")
+                  if severity_el is None or severity_el.get("value") != "error":
+                      continue
+
+                  details_text = issue.find(f"{{{NS}}}details/{{{NS}}}text")
+                  message = details_text.get("value", "No message") if details_text is not None else "No message"
+
+                  expression_el = issue.find(f"{{{NS}}}expression")
+                  expression = expression_el.get("value", "") if expression_el is not None else ""
+
+                  errors.append((file_name, expression, message))
+
+          if errors:
+              print(f"❌ {len(errors)} error(s) found in qa.xml:\n")
+              for i, (f, expr, msg) in enumerate(errors, 1):
+                  print(f"[{i}] File:       {f}")
+                  if expr:
+                      print(f"     Expression: {expr}")
+                  print(f"     Message:    {msg}")
+                  print()
+              sys.exit(1)
+          else:
+              print("✅ No errors found in qa.xml.")
+          PYEOF
+
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ig-build-output
+      #     path: output
