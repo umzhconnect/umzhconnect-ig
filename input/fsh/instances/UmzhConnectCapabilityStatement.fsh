@@ -31,6 +31,26 @@ Usage: #definition
 * rest.resource[=].searchParam.type = #token
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
+* rest.resource[+].type = #Consent
+* rest.resource[=].interaction.code = #read
+* rest.resource[=].versioning = #versioned-update
+* rest.resource[=].conditionalCreate = false
+* rest.resource[=].conditionalUpdate = false
+* rest.resource[=].searchParam.name = "_id"
+* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam.type = #token
+* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+
+* rest.resource[+].type = #Coverage
+* rest.resource[=].interaction.code = #read
+* rest.resource[=].versioning = #versioned-update
+* rest.resource[=].conditionalCreate = false
+* rest.resource[=].conditionalUpdate = false
+* rest.resource[=].searchParam.name = "_id"
+* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam.type = #token
+* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+
 * rest.resource[+].type = #DiagnosticReport
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
@@ -71,6 +91,16 @@ Usage: #definition
 * rest.resource[=].searchParam.type = #token
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
+* rest.resource[+].type = #Organization
+* rest.resource[=].interaction.code = #read
+* rest.resource[=].versioning = #versioned-update
+* rest.resource[=].conditionalCreate = false
+* rest.resource[=].conditionalUpdate = false
+* rest.resource[=].searchParam.name = "_id"
+* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam.type = #token
+* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+
 * rest.resource[+].type = #Patient
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
@@ -82,6 +112,16 @@ Usage: #definition
 * rest.resource[=].searchParam.documentation = "Logical id of this artifact"
 
 * rest.resource[+].type = #Practitioner
+* rest.resource[=].interaction.code = #read
+* rest.resource[=].versioning = #versioned-update
+* rest.resource[=].conditionalCreate = false
+* rest.resource[=].conditionalUpdate = false
+* rest.resource[=].searchParam.name = "_id"
+* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam.type = #token
+* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+
+* rest.resource[+].type = #PractitionerRole
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].versioning = #versioned-update
 * rest.resource[=].conditionalCreate = false

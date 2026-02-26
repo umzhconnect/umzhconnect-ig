@@ -198,7 +198,7 @@ Mandate Level 3 when **any** of the following applies:
 
 ### Scope-based policy mapping
 
-If the paper defines scopes, you can map them like:
+A possible scope mapping may look like:
 
 - **Read-only, low-risk scopes** → Level 1 in sandbox; Level 2 in production.
 - **Write / workflow-triggering scopes** → Level 2 minimum.
@@ -219,7 +219,5 @@ mTLS and other additional security enhancements are included in the definition o
 - add mTLS transport security to all connections
 - populate tokens with cryptographic information
 - how to pass cryptographic information between transport and application layer
-
-A detailed walk through you find [here](TBD)
 
 FAPI2.0 enforcement adds requirements to classical certification management with PKI-infrastructure. Reference implementations (like Denmark) make use of a central PKI-infrastructure and certificate issuance and signing which reduces client side complexity (trust store etc) however requires central trust and single point of failure risk.

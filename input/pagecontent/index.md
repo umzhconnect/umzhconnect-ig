@@ -39,13 +39,16 @@ The detailed security concept can be found here:
 
 ### Use cases
 
+[Orthopedic referral](usecase-referral-orthopedic.html)
+[Sarcome tumorboard referral](usecase-referral-sarcoma-tumorboard.html)
 
-
+<!-- 
 <div markdown="1" class="stu-note">
 
 [Changelog](changelog.html) with significant changes, open and closed issues.
 
 </div>
+-->
 
 <!-- **Download**: You can download this implementation guide in the [NPM package](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) format from [here](package.tgz). -->
 
