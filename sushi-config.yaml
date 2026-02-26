@@ -27,6 +27,7 @@ contact:
 
 dependencies:
   ch.fhir.ig.ch-core: 6.0.0 # https://fhir.ch/ig/ch-core/index.html
+  ch.fhir.ig.ch-emed: 6.0.0 # https://fhir.ch/ig/ch-emed/index.html
   ch.fhir.ig.ch-etoc: 3.0.1 # https://fhir.ch/ig/ch-etoc/index.html
   ch.fhir.ig.ch-orf: 3.0.2 # https://fhir.ch/ig/ch-orf/index.html
   hl7.fhir.uv.cow: 1.0.0-ballot 
