@@ -16,5 +16,6 @@ Description: "Example ServiceRequest for a referral to orthopedic surgery for kn
 * supportingInfo[0] = Reference(HeartFailureHFrEF)
 * supportingInfo[1] = Reference(MedicationEntresto)
 * supportingInfo[2] = Reference(MedicationConcor)
+* supportingInfo[3] = Reference(DocCardiologyAttachment)
 * note.text = "Suspected rupture of the left ACL."
 

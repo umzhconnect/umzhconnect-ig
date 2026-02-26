@@ -5,9 +5,9 @@ Title: "Smoking Status Questionnaire Response"
 Description: "QuestionnaireResponse sent by HospitalP (Placer) to HospitalF (Fulfiller) providing the patient's smoking status."
 * status = #completed
 * questionnaire = Canonical(QuestionnaireSmokingStatus)
-* subject = Reference(PetraMeier)
+* subject = Reference(http://hospitalp.example.org/fhir/Patient/PetraMeier)
 * authored = "2025-12-16"
-* author = Reference(HansMusterRole)
+* author = Reference(http://hospitalp.example.org/fhir/PractitionerRole/HansMusterRole)
 * item[0].linkId = "smoking-status"
 * item[0].text = "What is the patient's smoking status?"
 * item[0].answer[0].valueCoding = $sct#8517006 "Ex-smoker"
