@@ -2,7 +2,7 @@ Instance: ReferralTumorboard
 InstanceOf: ChUmzhConnectServiceRequest
 Usage: #example
 Title: "Referral Sarcoma Tumor Board"
-Description: "Example ServiceRequest for a referral to tumor board for sarcoma."
+Description: "Example ServiceRequest for a referral to tumor board for sarcoma. Hosted on placer."
 //* identifier[placerOrderIdentifier].system = "urn:oid:1.3.4.5.6.7"
 * identifier[placerOrderIdentifier].value = "REF-2025-002"
 * status = #active

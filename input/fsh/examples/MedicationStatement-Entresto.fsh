@@ -2,7 +2,7 @@ Instance: MedicationEntresto
 InstanceOf: CHCoreMedicationStatement
 Usage: #example
 Title: "Medication Entresto"
-Description: "Entresto (Sacubitril/valsartan 97/103 mg) for heart failure treatment."
+Description: "Entresto (Sacubitril/valsartan 97/103 mg) for heart failure treatment. Hosted on placer."
 * contained[0] = MedEntresto
 * status = #active
 * medicationReference = Reference(MedEntresto)

@@ -2,7 +2,7 @@ Instance: SuspectedACLRupture
 InstanceOf: ChEtocPrimaryDiagnosisCondition
 Usage: #example
 Title: "Suspected ACL Rupture"
-Description: "Suspected rupture of left anterior cruciate ligament after an accident."
+Description: "Suspected rupture of left anterior cruciate ligament after an accident. Hosted on placer."
 * category = http://fhir.ch/ig/ch-etoc/CodeSystem/ch-etoc-conditioncategory#primary-diagnosis
 * code.text = "Rupture left ACL"
 * note[0].text = "- Suspected rupture of the left anterior cruciate ligament after an accident.

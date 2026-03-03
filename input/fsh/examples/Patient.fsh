@@ -2,7 +2,7 @@ Instance: PetraMeier
 InstanceOf: CHCorePatient
 Usage: #example
 Title: "Petra Meier"
-Description: "Example for CH Core Patient."
+Description: "Example for CH Core Patient. Hosted on placer."
 // Local PID
 * identifier[LocalPid].type = $v2-0203#MR
 * identifier[LocalPid].system = "urn:oid:2.999.1.2.3.4"
@@ -28,7 +28,7 @@ Instance: CoverageMeier
 InstanceOf: ChOrfCoverage
 Usage: #example
 Title: "Coverage P. Meier"
-Description: "Coverage (Garant) with Mrs. Meier as beneficiary and the health insurance Krankenkasse as issuer of the policy (represented as contained resource)"
+Description: "Coverage (Garant) with Mrs. Meier as beneficiary and the health insurance Krankenkasse as issuer of the policy (represented as contained resource). Hosted on placer."
 * contained = OrganizationKrankenkasse
 // VEKAIdentifier
 * identifier[insuranceCardNumber][0].system = "urn:oid:2.16.756.5.30.1.123.100.1.1.1"

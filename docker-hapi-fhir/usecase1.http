@@ -1,36 +1,36 @@
 ### Usecase 1 
 
 ### Setup Placer
-PUT http://hospitalp.example.org/fhir/Organization/HospitalP
+PUT http://placer.example.org/fhir/Organization/Placer
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
-< ./../fsh-generated/resources/Organization-HospitalP.json
+< ./../fsh-generated/resources/Organization-Placer.json
 
 
 ###
-POST http://hospitalp.example.org/fhir/SearchParameter
+POST http://placer.example.org/fhir/SearchParameter
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-sevicerequest-reasonreference.json
 
 ###
-POST http://hospitalp.example.org/fhir/SearchParameter
+POST http://placer.example.org/fhir/SearchParameter
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-sevicerequest-supportinginfo.json
 
 ###
-PUT http://hospitalp.example.org/fhir/Practitioner/HansMuster
+PUT http://placer.example.org/fhir/Practitioner/HansMuster
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Practitioner-HansMuster.json
 
 ###
-PUT http://hospitalp.example.org/fhir/PractitionerRole/HansMusterRole
+PUT http://placer.example.org/fhir/PractitionerRole/HansMusterRole
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -38,56 +38,56 @@ Accept: application/fhir+json
 
 
 ###
-PUT http://hospitalp.example.org/fhir/Patient/PetraMeier
+PUT http://placer.example.org/fhir/Patient/PetraMeier
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Patient-PetraMeier.json
 
 ###
-PUT http://hospitalp.example.org/fhir/Coverage/CoverageMeier
+PUT http://placer.example.org/fhir/Coverage/CoverageMeier
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Coverage-CoverageMeier.json
 
 ###
-PUT http://hospitalp.example.org/fhir/Condition/SuspectedACLRupture
+PUT http://placer.example.org/fhir/Condition/SuspectedACLRupture
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Condition-SuspectedACLRupture.json
 
 ###
-PUT http://hospitalp.example.org/fhir/Condition/HeartFailureHFrEF
+PUT http://placer.example.org/fhir/Condition/HeartFailureHFrEF
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Condition-HeartFailureHFrEF.json
 
 ###
-PUT http://hospitalp.example.org/fhir/MedicationStatement/MedicationEntresto
+PUT http://placer.example.org/fhir/MedicationStatement/MedicationEntresto
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/MedicationStatement-MedicationEntresto.json
 
 ###
-PUT http://hospitalp.example.org/fhir/MedicationStatement/MedicationConcor
+PUT http://placer.example.org/fhir/MedicationStatement/MedicationConcor
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
 
 ###
-PUT http://hospitalp.example.org/fhir/MedicationStatement/MedicationConcor
+PUT http://placer.example.org/fhir/MedicationStatement/MedicationConcor
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
 
 ###
-PUT http://hospitalp.example.org/fhir/DocumentReference/DocCardiologyAttachment
+PUT http://placer.example.org/fhir/DocumentReference/DocCardiologyAttachment
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -95,7 +95,7 @@ Accept: application/fhir+json
 
 
 ### Create ServiceTask on Placer (use PUT instead of POST to use the same id's)
-PUT http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
+PUT http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -103,37 +103,37 @@ Accept: application/fhir+json
 
 
 ### Setup Fulfiller
-PUT http://hospitalf.example.org/fhir/Organization/HospitalF
+PUT http://fulfiller.example.org/fhir/Organization/Fulfiller
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
-< ./../fsh-generated/resources/Organization-HospitalF.json
+< ./../fsh-generated/resources/Organization-Fulfiller.json
 
 
 ###
-POST http://hospitalf.example.org/fhir/SearchParameter
+POST http://fulfiller.example.org/fhir/SearchParameter
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-inputreference.json
 
 ###
-POST http://hospitalf.example.org/fhir/SearchParameter
+POST http://fulfiller.example.org/fhir/SearchParameter
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-outputreference.json
 
 ###
-POST http://hospitalf.example.org/fhir/SearchParameter
+POST http://fulfiller.example.org/fhir/SearchParameter
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-outputcanonical.json
 
 
-### Create Task on Fulfiller (hospitalf) (use PUT instead of POST to use the same id's)
-PUT http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgery
+### Create Task on Fulfiller (fulfiller) (use PUT instead of POST to use the same id's)
+PUT http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgery
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -141,7 +141,7 @@ Accept: application/fhir+json
 
 
 ### Updated the status (we use PATCH, but would be probably a PUT
-PATCH http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgery
+PATCH http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgery
 Content-Type: application/fhir+json
 
 {
@@ -163,13 +163,13 @@ Content-Type: application/fhir+json
 
 
 ### Receive the ServiceRequest from the Fulfiller
-GET http://hospitalp.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
+GET http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 
 ### Receive the ServiceRequest from the Fulfiller by _id
-GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -178,29 +178,29 @@ Accept: application/fhir+json
 ### _include=PractitionerRole:practitioner -> does not work out of the box (maybe because indirect)
 ### for reasonReference, insurance supportingInfo we need do define search parameters and configure them on the hapi-fhir server, otherwise the resources will not be returned
 
-GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:requester
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:requester
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 ###
-GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:ch-umzhconnectig-sevicerequest-reasonreference
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:ch-umzhconnectig-sevicerequest-reasonreference
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 ###
-GET http://hospitalp.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=*
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=*
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 ###
-PUT http://hospitalf.example.org/fhir/Questionnaire/QuestionnaireSmokingStatus
+PUT http://fulfiller.example.org/fhir/Questionnaire/QuestionnaireSmokingStatus
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 < ./../fsh-generated/resources/Questionnaire-QuestionnaireSmokingStatus.json
 
 ### Create Updated Task on Fulfiller (TODO, should acually maniupulate above Task, just for testing here)
-PUT http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
+PUT http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -208,25 +208,25 @@ Accept: application/fhir+json
 
 
 ### Get Task on Fulfiller
-GET http://hospitalf.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
+GET http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 
 ### Get Task on Fulfiller (including Questionnaire)
-GET http://hospitalf.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:ch-umzhconnectig-task-inputreference&_include=Task:ch-umzhconnectig-task-outputcanonical
+GET http://fulfiller.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:ch-umzhconnectig-task-inputreference&_include=Task:ch-umzhconnectig-task-outputcanonical
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 
 ### Get QuestionnaireSmokingStatus on Fulfiller explicitly by Canonical
-GET http://hospitalf.example.org/fhir/Questionnaire?url=http://hospitalf.example.org/ch-umzh-connect/QuestionnaireSmokingStatus
+GET http://fulfiller.example.org/fhir/Questionnaire?url=http://fulfiller.example.org/ch-umzh-connect/QuestionnaireSmokingStatus
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 ### POST QuestionnaireResponse on Fulfiller
 # Note: usually would POST instead of PUT and NOT specify id (QuestionnaireResponseSmokingStatus) here
-PUT http://hospitalf.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus
+PUT http://fulfiller.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 

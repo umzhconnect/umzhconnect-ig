@@ -12,18 +12,18 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  hapi-hospital-f:
+  hapi-fulfiller:
     image: hapiproject/hapi:latest
     environment:
       - "hapi.fhir.allow_external_references=true"
     labels:
-      - "traefik.http.routers.hospitalf.rule=Host(`hospitalf.example.org`)"
-      - "traefik.http.services.hospitalf.loadbalancer.server.port=8080"
+      - "traefik.http.routers.fulfiller.rule=Host(`fulfiller.example.org`)"
+      - "traefik.http.services.fulfiller.loadbalancer.server.port=8080"
 
-  hapi-hospital-p:
+  hapi-placer:
     image: hapiproject/hapi:latest
     environment:
       - "hapi.fhir.allow_external_references=true"
     labels:
-      - "traefik.http.routers.hospitalp.rule=Host(`hospitalp.example.org`)"
-      - "traefik.http.services.hospitalp.loadbalancer.server.port=8080"
+      - "traefik.http.routers.placer.rule=Host(`placer.example.org`)"
+      - "traefik.http.services.placer.loadbalancer.server.port=8080"

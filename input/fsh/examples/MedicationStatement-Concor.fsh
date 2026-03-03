@@ -2,7 +2,7 @@ Instance: MedicationConcor
 InstanceOf: CHCoreMedicationStatement
 Usage: #example
 Title: "Medication Concor"
-Description: "Concor (Bisoprolol 10 mg) beta-blocker for heart failure treatment."
+Description: "Concor (Bisoprolol 10 mg) beta-blocker for heart failure treatment. Hosted on placer."
 * contained[0] = MedConcor
 * status = #active
 * medicationReference = Reference(MedConcor)

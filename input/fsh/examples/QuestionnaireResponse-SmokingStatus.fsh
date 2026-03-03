@@ -2,12 +2,12 @@ Instance: QuestionnaireResponseSmokingStatus
 InstanceOf: QuestionnaireResponse
 Usage: #example
 Title: "Smoking Status Questionnaire Response"
-Description: "QuestionnaireResponse sent by HospitalP (Placer) to HospitalF (Fulfiller) providing the patient's smoking status."
+Description: "QuestionnaireResponse sent by Placer to Fulfiller providing the patient's smoking status. Hosted on fulfiller."
 * status = #completed
 * questionnaire = Canonical(QuestionnaireSmokingStatus)
-* subject = Reference(http://hospitalp.example.org/fhir/Patient/PetraMeier)
+* subject = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
 * authored = "2025-12-16"
-* author = Reference(http://hospitalp.example.org/fhir/PractitionerRole/HansMusterRole)
+* author = Reference(http://placer.example.org/fhir/PractitionerRole/HansMusterRole)
 * item[0].linkId = "smoking-status"
 * item[0].text = "What is the patient's smoking status?"
 * item[0].answer[0].valueCoding = $sct#8517006 "Ex-smoker"

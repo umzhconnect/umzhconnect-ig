@@ -1,7 +1,7 @@
 ### Referral - Orthopedic Surgery
 
-The patient [PetraMeier](Patient-PetraMeier.html) visits the emergency department of HospitalP(lacer) with knee pain after falling on icy street. The [treating practitioner](PractitionerRole-HansMusterRole.html) suspects a rupture of the left ACL and suggests treatment at HospitalF(ulfiller).
-Comorbidities: The patient is already being treated for heart problems in cardiology at HospitalP.
+The patient [PetraMeier](Patient-PetraMeier.html) visits the emergency department of Placer with knee pain after falling on icy street. The [treating practitioner](PractitionerRole-HansMusterRole.html) suspects a rupture of the left ACL and suggests treatment at Fulfiller.
+Comorbidities: The patient is already being treated for heart problems in cardiology at Placer.
 
 [Example ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html)
 
@@ -19,48 +19,48 @@ Comorbidities: The patient is already being treated for heart problems in cardio
 sequenceDiagram
     title Referral - Orthopedic Surgery
 
-    participant HospitalP as HospitalP(lacer)
-    participant HospitalF as HospitalF(ulfiller)
-    activate HospitalP
-    HospitalP->>HospitalP: POST ServiceRequest-ReferralOrthopedicSurgery
-    HospitalP->>HospitalF: POST Task (basedOn/focus: ServiceRequest-ReferralOrthopedicSurgery)
-    activate HospitalF
-    HospitalF-->>HospitalP: created
-    deactivate HospitalP
-    deactivate HospitalF
-    
-    HospitalF->>HospitalP: GET Resources (Diagnoses, Medications, Reports)
-    activate HospitalF
-    activate HospitalP
-    HospitalP-->>HospitalF: return search results (Bundle)
-    deactivate HospitalF
-    deactivate HospitalP
+    participant Placer as Placer
+    participant Fulfiller as Fulfiller
+    activate Placer
+    Placer->>Placer: POST ServiceRequest-ReferralOrthopedicSurgery
+    Placer->>Fulfiller: POST Task (basedOn/focus: ServiceRequest-ReferralOrthopedicSurgery)
+    activate Fulfiller
+    Fulfiller-->>Placer: created
+    deactivate Placer
+    deactivate Fulfiller
 
-    Note over HospitalF: Request additional information<br/>(smoking status) via Questionnaire
-    HospitalF->>HospitalF: Update Task<br/>(owner: HospitalP, businessStatus: on-hold,<br/>output: QuestionnaireSmokingStatus)
-    activate HospitalF
-    HospitalF-->>HospitalP: Notify Task updated
-    activate HospitalP
-    HospitalP->>HospitalF: GET Task
-    HospitalF-->>HospitalP: Return Task
-    HospitalP->>HospitalF: GET Questionnaire by canonical
-    HospitalF-->>HospitalP: Return QuestionnaireSmokingStatus
-    HospitalP-->>HospitalP: Practitioner fills out Questionnaire
-    HospitalP->>HospitalF: POST QuestionnaireResponse
-    HospitalF-->>HospitalP: created
-    HospitalP->>HospitalF: PATCH Task (owner: HospitalF, input: QuestionnaireResponseSmokingStatus)
-    HospitalF-->>HospitalP: updated
-    deactivate HospitalP
-    deactivate HospitalF
+    Fulfiller->>Placer: GET Resources (Diagnoses, Medications, Reports)
+    activate Fulfiller
+    activate Placer
+    Placer-->>Fulfiller: return search results (Bundle)
+    deactivate Fulfiller
+    deactivate Placer
 
-    HospitalF->>HospitalF: Update Task<br/>(businessStatus: completed, output: Report)
-    activate HospitalF
-    HospitalF-->>HospitalP: Notify Task updated
-    activate HospitalP
-    HospitalP->> HospitalF: GET Task?_id=...&_include=Task:ch-umzhconnectig-task-outputreference
-    HospitalF-->>HospitalP: return result (Bundle)
-    deactivate HospitalP
-    deactivate HospitalF
+    Note over Fulfiller: Request additional information<br/>(smoking status) via Questionnaire
+    Fulfiller->>Fulfiller: Update Task<br/>(owner: Placer, businessStatus: on-hold,<br/>output: QuestionnaireSmokingStatus)
+    activate Fulfiller
+    Fulfiller-->>Placer: Notify Task updated
+    activate Placer
+    Placer->>Fulfiller: GET Task
+    Fulfiller-->>Placer: Return Task
+    Placer->>Fulfiller: GET Questionnaire by canonical
+    Fulfiller-->>Placer: Return QuestionnaireSmokingStatus
+    Placer-->>Placer: Practitioner fills out Questionnaire
+    Placer->>Fulfiller: POST QuestionnaireResponse
+    Fulfiller-->>Placer: created
+    Placer->>Fulfiller: PATCH Task (owner: Fulfiller, input: QuestionnaireResponseSmokingStatus)
+    Fulfiller-->>Placer: updated
+    deactivate Placer
+    deactivate Fulfiller
+
+    Fulfiller->>Fulfiller: Update Task<br/>(businessStatus: completed, output: Report)
+    activate Fulfiller
+    Fulfiller-->>Placer: Notify Task updated
+    activate Placer
+    Placer->> Fulfiller: GET Task?_id=...&_include=Task:ch-umzhconnectig-task-outputreference
+    Fulfiller-->>Placer: return result (Bundle)
+    deactivate Placer
+    deactivate Fulfiller
 
 
 ```
@@ -95,7 +95,7 @@ The following table indicates the source of each field in the Task:
 | `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
 | `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
 | `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
-| `owner` | Dynamic | Initial Task: HospitalF (Fulfiller). When Fulfiller creates Questionnaire: changed to HospitalP (Placer). When QuestionnaireResponse is created: changed back to HospitalF (Fulfiller). The organization responsible for fulfilling the task |
+| `owner` | Dynamic | Initial Task: Fulfiller. When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. The organization responsible for fulfilling the task |
 | `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `on-hold`. When QuestionnaireResponse is created: changed to `in-progress` |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
@@ -104,4 +104,3 @@ The following table indicates the source of each field in the Task:
 | `input[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Questionnaire is created) |
 | `output[0].type` | Hard-coded | `273510007` (only when QuestionnaireResponse is created) |
 | `output[0].valueReference` | Referenced | Reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
-

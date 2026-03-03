@@ -1,7 +1,7 @@
 Instance: DocCardiologyAttachment
 InstanceOf: ChOrfDocumentReference
 Title: "Sprechstundenbericht Kardiologie"
-Description: "Example of Document Reference with attachment (pdf)"
+Description: "Example of Document Reference with attachment (pdf). Hosted on placer."
 * status = #current
 * subject = Reference(PetraMeier)
 * date = "2025-12-19T16:12:05+01:00"

@@ -2,9 +2,9 @@ Instance: QuestionnaireSmokingStatus
 InstanceOf: Questionnaire
 Usage: #example
 Title: "Smoking Status Questionnaire"
-Description: "Questionnaire sent by HospitalF (Fulfiller) to HospitalP (Placer) to inquire about the patient's smoking status."
-// Canonical (we intentionally use NOT the resolvable FHIR URL which would be http://hospitalf.example.org/fhir/Questionnaire/QuestionnaireSmokingStatus)
-* url = "http://hospitalf.example.org/ch-umzh-connect/QuestionnaireSmokingStatus"
+Description: "Questionnaire sent by Fulfiller to Placer to inquire about the patient's smoking status. Hosted on fulfiller."
+// Canonical (we intentionally use NOT the resolvable FHIR URL which would be http://fulfiller.example.org/fhir/Questionnaire/QuestionnaireSmokingStatus)
+* url = "http://fulfiller.example.org/ch-umzh-connect/QuestionnaireSmokingStatus"
 * version = "Qv1.0"
 * status = #active
 * title = "Smoking Status Inquiry"
