@@ -2,7 +2,7 @@ Instance: ReferralTumorboard
 InstanceOf: ChUmzhConnectServiceRequest
 Usage: #example
 Title: "Referral Sarcoma Tumor Board"
-Description: "Example ServiceRequest for a referral to tumor board for sarcoma."
+Description: "Example ServiceRequest for a referral to tumor board for sarcoma. Hosted on placer."
 //* identifier[placerOrderIdentifier].system = "urn:oid:1.3.4.5.6.7"
 * identifier[placerOrderIdentifier].value = "REF-2025-002"
 * status = #active
@@ -21,7 +21,7 @@ Description: "Example ServiceRequest for a referral to tumor board for sarcoma."
 Instance: SarcomaKnee
 InstanceOf: ChEtocPrimaryDiagnosisCondition
 Usage: #example
-Title: "Synovial sarcoma of the right knee"
+Description: "Synovial sarcoma of the right knee. Hosted on placer."
 * category = http://fhir.ch/ig/ch-etoc/CodeSystem/ch-etoc-conditioncategory#primary-diagnosis
 * code.text = "Synovial sarcoma of the right knee"
 * note[0].text = "- Histologically confirmed synovial sarcoma."
@@ -31,6 +31,7 @@ Title: "Synovial sarcoma of the right knee"
 Instance: AllergyGado
 InstanceOf: CHCoreAllergyIntolerance
 Usage: #example
+Description: "Allergy intolerance against gadolinium-based contrast agent. Hosted on placer."
 * clinicalStatus = http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical#active "Active"
 * type = #allergy
 * category = #medication
@@ -41,7 +42,7 @@ Usage: #example
 Instance: ImagingCT
 InstanceOf: ImagingStudy
 Usage: #example
-Title: "CT Scan Right Knee"
+Description: "CT Scan Right Knee. Hosted on placer."
 * identifier[0].use = #official
 * identifier[0].system = "urn:dicom:uid"
 * identifier[0].value = "urn:oid:1.2.4.7.6.1.35921.32671128.2255.7333"
@@ -55,7 +56,7 @@ Title: "CT Scan Right Knee"
 Instance: ImagingPET
 InstanceOf: ImagingStudy
 Usage: #example
-Title: "PET Scan Whole Body (external)"
+Description: "PET Scan Whole Body (external). Hosted on placer."
 * identifier[0].use = #official
 * identifier[0].system = "urn:dicom:uid"
 * identifier[0].value = "urn:oid:1.3.6.1.7.1.34920.32661028.1144.8635"
