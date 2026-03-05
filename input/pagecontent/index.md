@@ -31,7 +31,11 @@ The core concepts and principles are depicted in detail here:
 
 ### Security
 
-This IG specifies OAuth 2.0 and OpenID Connect–based architectures for securing APIs by the use of Security profiles such as SMART on FHIR define standards and OpenID Foundation’s FAPI 2.0, which sharpens security awareness by enforcing measures to mitigate particular risk scenarios.
+This IG specifies OAuth 2.0 and OpenID Connect–based architectures for securing APIs by the use of Security profiles such as SMART on FHIR define standards and OpenID Foundation’s FAPI 2.0, which sharpens security awareness by enforcing measures to mitigate particular risk scenarios in machine-to-machine communication.
+
+A particular focus is set on consent-centric authorization, driven by the fact that authorization should be enforced based on the context of data consumption - in our case providing limited access in the context of a service request.
+
+We show approaches on how to harden eco-system exposed API's and how to enforce fine-grained authoriztion for our use-cases.
 
 The detailed security concept can be found here:
 
@@ -39,8 +43,8 @@ The detailed security concept can be found here:
 
 ### Use cases
 
-[Orthopedic referral](usecase-referral-orthopedic.html)
-[Sarcome tumorboard referral](usecase-referral-sarcoma-tumorboard.html)
+* [Orthopedic referral](usecase-referral-orthopedic.html)
+* [Sarcome tumorboard referral](usecase-referral-sarcoma-tumorboard.html)
 
 <!-- 
 <div markdown="1" class="stu-note">
