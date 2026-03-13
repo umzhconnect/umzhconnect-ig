@@ -8,6 +8,9 @@ Description: "Initial Task created by Placer based on the ServiceRequest and sen
 * priority = #routine
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 * for = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
+* identifier.system = "urn:ietf:rfc:3986"
+* identifier.value = "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
+* code = $sct#183545006 "Referral to orthopedic service (procedure)"
 * requester = Reference(http://placer.example.org/fhir/PractitionerRole/HansMusterRole)
 * owner = Reference(Organization/Fulfiller)
 * authoredOn = "2025-12-15"
