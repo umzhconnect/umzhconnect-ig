@@ -4,6 +4,7 @@ Usage: #example
 Title: "Task for Referral Orthopedic Surgery (Updated with Questionnaire)"
 Description: "Updated Task after Fulfiller has accepted the initial Task and added a reference to the Questionnaire to request smoking status from Placer. Hosted on fulfiller."
 * status = #in-progress
+* businessStatus = http://hl7.org/fhir/uv/cow/CodeSystem/temp#awaiting-information
 * intent = #order
 * priority = #routine
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)

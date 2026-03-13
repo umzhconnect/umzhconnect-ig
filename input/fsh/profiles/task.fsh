@@ -6,3 +6,4 @@ Description: "CH UMZH Connect Coordination Task"
 
 * focus only Reference(ChUmzhConnectServiceRequest)
 * code from ChUmzhConnectServiceRequestCategoryVS (extensible)
+* businessStatus from ChUmzhConnectTaskBusinessStatus (extensible)
