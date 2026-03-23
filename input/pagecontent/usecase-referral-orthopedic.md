@@ -96,7 +96,7 @@ The following table indicates the source of each field in the Task:
 | `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
 | `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
 | `owner` | Dynamic | Initial Task: Fulfiller. When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. The organization responsible for fulfilling the task |
-| `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `input-needed`. When QuestionnaireResponse is created: changed to `in-progress` |
+| `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `awaiting-information`. When QuestionnaireResponse is created: changed to `in-progress` |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
 | `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |
