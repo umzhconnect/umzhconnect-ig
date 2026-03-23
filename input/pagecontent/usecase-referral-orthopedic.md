@@ -37,7 +37,7 @@ sequenceDiagram
     deactivate Placer
 
     Note over Fulfiller: Request additional information<br/>(smoking status) via Questionnaire
-    Fulfiller->>Fulfiller: Update Task<br/>(owner: Placer, businessStatus: on-hold,<br/>output: QuestionnaireSmokingStatus)
+    Fulfiller->>Fulfiller: Update Task<br/>(owner: Placer, businessStatus: awaiting-information<br/>output: QuestionnaireSmokingStatus)
     activate Fulfiller
     Fulfiller-->>Placer: Notify Task updated
     activate Placer
@@ -71,7 +71,7 @@ The following table indicates the source of each field in the ServiceRequest:
 
 | Field | Source | Description |
 |-------|--------|-------------|
-| `identifier[placerOrderIdentifier].system` | Hard-coded | TODO? |
+| `identifier[placerOrderIdentifier].system` | Generated or Hard-coded | TODO? |
 | `identifier[placerOrderIdentifier].value` | Generated | Unique referral order number (e.g., REF-2025-001) |
 | `status` | Hard-coded | Fixed value `active` |
 | `intent` | Hard-coded | Fixed value `order` |
@@ -96,7 +96,7 @@ The following table indicates the source of each field in the Task:
 | `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
 | `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
 | `owner` | Dynamic | Initial Task: Fulfiller. When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. The organization responsible for fulfilling the task |
-| `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `on-hold`. When QuestionnaireResponse is created: changed to `in-progress` |
+| `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `awaiting-information`. When QuestionnaireResponse is created: changed to `in-progress` |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
 | `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |

@@ -8,3 +8,5 @@ Alias: $atc =                           http://www.whocc.no/atc
 Alias: $edqm =                          urn:oid:0.4.0.127.0.16.1.1.2.1
 Alias: $dcm =                           http://dicom.nema.org/resources/ontology/DCM
 Alias: $v2-0203 =                       http://terminology.hl7.org/CodeSystem/v2-0203
+Alias:  ChEmedMedicationStatement = http://fhir.ch/ig/ch-emed/StructureDefinition/ch-emed-medicationstatement
+Alias:  CowCoordinationTask = http://hl7.org/fhir/uv/cow/StructureDefinition/coordination-task

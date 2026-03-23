@@ -6,7 +6,7 @@ The UMZH-connect project aims to improve digital connectivity for referrals and 
 
 The goal is to establish an API framework that allows participants, as API consumers, to digitally create orders and referrals and, depending on the use case, access authorized data from each other. Hospitals — and later medical practices — will provide REST APIs that support read and write operations on authorized data scopes via web services.
 
-Initial Use Cases focus on the following resource types:
+Initial Use Cases focus on the following resource types which are based on the profiles from [CH Core](https://fhir.ch/ig/ch-core/index.html) and [CH eTOC](https://fhir.ch/ig/ch-etoc/index.html):
 * Order, service request and clinical question
 * Administrative data (personal details, insurance, etc.)
 * Diagnoses
@@ -35,7 +35,7 @@ This IG specifies OAuth 2.0 and OpenID Connect–based architectures for securin
 
 A particular focus is set on consent-centric authorization, driven by the fact that authorization should be enforced based on the context of data consumption - in our case providing limited access in the context of a service request.
 
-We show approaches on how to harden eco-system exposed API's and how to enforce fine-grained authoriztion for our use-cases.
+We show approaches on how to harden eco-system exposed API's and how to enforce fine-grained authorization for our use-cases.
 
 The detailed security concept can be found here:
 
