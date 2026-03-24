@@ -11,6 +11,8 @@ The COW (clinical order workflow) focuses on making clinical data available by A
 The COW refers to the requestor, referrer, and prescriber as the **Placer** - the party who initiates the task, and the performer as the **Fulfiller** - the party the performs the requested service.
 As central element and business object (also a FHIR resource) serves the **CoordinationTask** (resourceType Task) which links resources - inputs and outputs - between the participating parties and manages workflow patterns (i.e. states etc.)
 
+The placer and filler provide their FHIR API endpoints to each other. Each placer or filler organizations is itself registered in an external IHE mCSD directory. External URL's for the organizations and resources reference pointing to the other FHIR API must be absolute (see [partially closed, inter-linked systems](https://hl7.org/fhir/managing.html#using)),
+
 The essentials of the **Task at Fulfillers** are illustrated in the following example:
 
 **Example Workflow**
