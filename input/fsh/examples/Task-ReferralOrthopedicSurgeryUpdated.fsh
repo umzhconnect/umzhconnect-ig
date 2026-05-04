@@ -10,7 +10,7 @@ Description: "Updated Task after Fulfiller has accepted the initial Task and add
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 * for = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
 * requester = Reference(http://placer.example.org/fhir/PractitionerRole/HansMusterRole)
-* owner = Reference(http://placer.example.org/fhir/Organization/Placer)
+* owner = Reference(http://registry.example.org/fhir/Organization/Placer)
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
 * code = $sct#183545006 "Referral to orthopedic service (procedure)"
