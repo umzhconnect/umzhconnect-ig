@@ -4,5 +4,5 @@ Usage: #example
 Title: "Hans Muster Role"
 Description: "Example PractitionerRole for Hans Muster as referring physician at Placer. Hosted on placer."
 * practitioner = Reference(HansMuster)
-* organization = Reference(Placer)
+* organization = Reference(http://registry.example.org/fhir/Organization/Placer)
 

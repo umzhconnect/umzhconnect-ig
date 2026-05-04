@@ -23,7 +23,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `identifier[placerOrderIdentifier].value` | Generated | Unique referral order number (e.g., REF-2025-002) |
 | `status` | Hard-coded | Fixed value `active` |
 | `intent` | Hard-coded | Fixed value `order` |
-| `category` | Hard-coded | SNOMED CT code 720006006 "Cancer care review (procedure)" |
+| `category` | [VS CH UMZH Connect ServiceRequest Category](ValueSet-ch-umzh-connect-servicerequest-category.html) | SNOMED CT code 720006006 "Cancer care review (procedure)". This code matches [`HealthcareService.type`](HealthcareService-HealthcareServiceTumorboardFulfiller.html) in the registry. |
 | `subject` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
 | `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
 | `authoredOn` | Current date | Date when the referral was created |
