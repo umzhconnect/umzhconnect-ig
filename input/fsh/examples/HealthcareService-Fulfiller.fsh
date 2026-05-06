@@ -7,7 +7,6 @@ Description: "Example HealthcareService for orthopedic referrals provided by Ful
 * providedBy = Reference(http://registry.example.org/fhir/Organization/Fulfiller)
 * type = $sct#183545006 "Referral to orthopedic service (procedure)"
 * name = "Orthopedic Surgery"
-* endpoint = Reference(http://registry.example.org/fhir/Endpoint/EndpointFulfiller)
 
 Instance: HealthcareServiceTumorboardFulfiller
 InstanceOf: HealthcareService
@@ -18,4 +17,3 @@ Description: "Example HealthcareService for sarcoma tumor board provided by Fulf
 * providedBy = Reference(http://registry.example.org/fhir/Organization/Fulfiller)
 * type = $sct#720006006 "Cancer care review (procedure)"
 * name = "Sarcoma Tumor Board"
-* endpoint = Reference(http://registry.example.org/fhir/Endpoint/EndpointFulfiller)
