@@ -75,7 +75,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `identifier[placerOrderIdentifier].value` | Generated | Unique referral order number (e.g., REF-2025-001) |
 | `status` | Hard-coded | Fixed value `active` |
 | `intent` | Hard-coded | Fixed value `order` |
-| `category` | [VS CH UMZH Connect ServiceRequest Category](ValueSet-ch-umzh-connect-servicerequest-category.html) | SNOMED CT code 183545006 "Referral to orthopedic service (procedure)" |
+| `category` | [VS CH UMZH Connect ServiceRequest Category](ValueSet-ch-umzh-connect-servicerequest-category.html) | SNOMED CT code 183545006 "Referral to orthopedic service (procedure)". This code matches [`HealthcareService.type`](HealthcareService-HealthcareServiceOrthopedicsFulfiller.html) in the registry. |
 | `subject` | Referenced | the patient being referred |
 | `requester` | Referenced | the referring physician with their organizational context |
 | `authoredOn` | Current date | Date when the referral was created |
@@ -95,7 +95,7 @@ The following table indicates the source of each field in the Task:
 | `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
 | `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
 | `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
-| `owner` | Dynamic | Initial Task: Fulfiller. When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. The organization responsible for fulfilling the task |
+| `owner` | Dynamic | Initial Task: Fulfiller (absolute URL to the registry [Organization](Organization-Fulfiller.html), e.g. `http://registry.example.org/fhir/Organization/Fulfiller`). When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. |
 | `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `awaiting-information`. When QuestionnaireResponse is created: changed to `in-progress` |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
