@@ -3,6 +3,7 @@ In this article:
 - [Introduction](#introduction)
 - [Genaral approach - OAuth](#general-approach---oauth)
 - [Health specifics - SMARTonFHIR](#health-specifics---smartonfhir)
+- [Organization identity binding](#organization-identity-binding)
 - [Context-centric authorization](#context-centric-authorization)
 - [Authorization enforcement](#authorization-enforcement)
 - [Security enhancement](#security-enhancement)
@@ -69,6 +70,14 @@ In our particular case we use SMART in the context of our use cases, for example
 - Ask permission to create a task resource at partyX - scope: system/Task.w
 - Ask permission to read service request data from partyY - scope: system/ServiceRequest.rs
 
+### Organization identity binding
+
+Each party in UMZH-Connect is represented by a single Organization resource in the central Registry. The canonical identifier for an organization is its **full Registry URL** — for example, `https://registry.example.org/fhir/Organization/fulfiller-org`. This is the same URL used in cross-party FHIR references throughout the ecosystem.
+
+Every issued JWT access token **MUST** contain a `party_id` claim set to the requesting organization's Registry URL. This is a UMZH-Connect extension claim that serves as the single authoritative organization identifier across the Authorization Server and the Registry, eliminating any translation between an IDP-internal client identifier and the Registry's Organization ID.
+
+**Onboarding:** During client registration, each party provides their organization's Registry URL to the Authorization Server. The AS includes it as the `party_id` claim in all tokens issued for that client.
+
 ### Context-centric authorization
 
 Our use-cases of referrals and external service requests strongly suggest to dynamically authorize the audience (the counter party) to a very limited data set. Think of establishing a context when the service request is created:
@@ -117,6 +126,7 @@ The Authorization Server maps the `authorization_details` context into a `fhirCo
   "aud": "https://fhir.placer.example",
   "exp": 1234567890,
   "scope": "system/ServiceRequest.rs",
+  "party_id": "https://registry.example.org/fhir/Organization/fulfiller-org",
   "fhirContext": [
     {
       "reference": "ServiceRequest/sr-123",
@@ -140,7 +150,7 @@ sequenceDiagram
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
   C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, reference: ServiceRequest/sr-123}]
-  AS-->>C: JWT { scope, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
+  AS-->>C: JWT { scope, party_id, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
   AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
@@ -173,9 +183,9 @@ We can think of a 3 step process to enforce security:
 
 - Authentication - token extraction and validation -> we know the identity
 - Scope Authorization - ensure that scope parameters match the requested parameters
-- Consent enforcement & fine-grained authorization
+- Context enforcement & fine-grained authorization
 
-A common approach would be to handle the first (and optinally the second) step in the API gateway and the second and third step by the policy engine. In our case it would mean to ensure that all requested resources are part of the 'child graph' of the service request, which is scope of the consent.
+A common approach would be to handle the first (and optinally the second) step in the API gateway and the second and third step by the policy engine. In our case it would mean to ensure that all requested resources are part of the 'child graph' of the service request, which is the authorized workflow context (the `fhirContext` reference from the access token).
 
 In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variaty of factors, such es a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in this project:
 [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway)

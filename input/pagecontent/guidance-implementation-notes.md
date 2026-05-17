@@ -23,7 +23,7 @@ When a workflow object is created — a ServiceRequest on the Placer's side, or 
     "period": {"end": "2026-12-31"},
     "actor": [
       {
-        "reference": {"reference": "http://registry.example.org/fhir/Organization/fulfiller-org"}
+        "reference": {"reference": "https://registry.example.org/fhir/Organization/fulfiller-org"}
       }
     ],
     "data": [
@@ -46,7 +46,7 @@ When the Resource Server receives an API request carrying a JWT with a `fhirCont
 GET /Consent?data=ServiceRequest/sr-123&status=active
 ```
 
-If an active Consent is found and the requesting client matches `Consent.provision.actor`, the request is permitted for any resource within the ServiceRequest graph. If no active Consent exists — because it was never created, has expired, or has been revoked — the request is denied.
+If an active Consent is found and `token.party_id` matches `Consent.provision.actor.reference`, the request is permitted for any resource within the ServiceRequest graph. If no active Consent exists — because it was never created, has expired, or has been revoked — the request is denied.
 
 #### Expiration
 
