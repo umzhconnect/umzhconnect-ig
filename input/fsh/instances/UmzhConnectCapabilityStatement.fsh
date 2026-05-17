@@ -28,6 +28,7 @@ Usage: #definition
 * description = "UMZH Connect API requirements"
 * fhirVersion = #4.0.1
 * format = #application/fhir+json
+* patchFormat = #application/json-patch+json
 
 * rest.mode = #server
 
@@ -75,10 +76,11 @@ Usage: #definition
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
 * insert IdSearchParam
 
-// Task: search-type, update, read, create + multiple searchParams
+// Task: search-type, patch, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[+].code = #update
+* rest.resource[=].interaction[+].code = #patch
+* rest.resource[=].interaction[=].documentation = "Only Task.[output, owner, focus, businessStatus] may be patched."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
 * insert ResourceDefaults
