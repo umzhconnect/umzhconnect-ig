@@ -33,7 +33,7 @@ The core concepts and principles are depicted in detail here:
 
 This IG specifies OAuth 2.0 and OpenID Connect–based architectures for securing APIs by the use of Security profiles such as SMART on FHIR define standards and OpenID Foundation’s FAPI 2.0, which sharpens security awareness by enforcing measures to mitigate particular risk scenarios in machine-to-machine communication.
 
-A particular focus is set on consent-centric authorization, driven by the fact that authorization should be enforced based on the context of data consumption - in our case providing limited access in the context of a service request.
+A particular focus is set on context-centric authorization, driven by the fact that authorization should be enforced based on the context of data consumption — in our case providing limited access in the context of a specific workflow object (ServiceRequest or Task).
 
 We show approaches on how to harden eco-system exposed API's and how to enforce fine-grained authorization for our use-cases.
 

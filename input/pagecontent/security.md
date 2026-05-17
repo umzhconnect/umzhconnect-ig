@@ -3,7 +3,7 @@ In this article:
 - [Introduction](#introduction)
 - [Genaral approach - OAuth](#general-approach---oauth)
 - [Health specifics - SMARTonFHIR](#health-specifics---smartonfhir)
-- [Consent-centric authorization](#consent-centric-authorization)
+- [Context-centric authorization](#context-centric-authorization)
 - [Authorization enforcement](#authorization-enforcement)
 - [Security enhancement](#security-enhancement)
 
@@ -69,51 +69,93 @@ In our particular case we use SMART in the context of our use cases, for example
 - Ask permission to create a task resource at partyX - scope: system/Task.w
 - Ask permission to read service request data from partyY - scope: system/ServiceRequest.rs
 
-### Consent-centric authorization
+### Context-centric authorization
 
-Our use-cases of referrals and external service requests strongly suggest to dynamically authorize the audience (the counter party) to a very limited data set. Think of creating a consent when the service request is created:
+Our use-cases of referrals and external service requests strongly suggest to dynamically authorize the audience (the counter party) to a very limited data set. Think of establishing a context when the service request is created:
 
 > *For a given time I authorize partyB (represented by clientX) to read all data referenced by my given service request.*
 
-This consent stands in contrast to commonly used ‘general consent’ by a patient for data usage in research. In our case the consent defines either a rule based or explicit set of resources which the counter party is authorized to access.
+Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access — all resources reachable from the workflow root in the FHIR reference graph:
 
-A consent with appropriate properties is typically stored at the consent issuers location, treated as a resource itself and receiving a unique identification at time of creation. This identification is commonly communicated to the counter party in combination with the given case an optionally made available to the authorization service as well.
+| Direction | Initiator | Context resource |
+|-----------|-----------|-----------------|
+| Fulfiller → Placer | Fulfiller fetches ServiceRequest and referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
+| Placer → Fulfiller | Placer reads Task status and result references | **Task ID** (on Fulfiller’s FHIR server) |
 
-The API consuming party (counter party) uses the consent identification in the authorization flow and ultimately the API provider extracts the consent, matches it to the request and grants access after verifying consistency of the consents rules with the current API request.
+Context as part of the authorization flow may logically not be necessary — the restricting party may check all its workflow objects and verify whether one matches the current API request. However, defining the context identification as part of the authorization flow and access token may significantly simplify the authorization enforcement. The API consumer in essence tells the API provider in which **context** the API request is executed.
 
-Consent as part of the authorization flow may logically not be necessary - the restricting party may query all its consents and check if one is matching the current API request. However defining the consent identification as part of the authorization flow and access token may significantly simplify the authorization enforcement. The API consumer in essence tells the API provider in which **context** the API request is executed.
+#### Communicating context at the token endpoint
 
-The FHIR specification supports a dedicated consent resource. Any FHIR server implementation therefore enables the local storage of consents with associated logic.
+The client communicates the workflow context to the Authorization Server using the `authorization_details` parameter defined in **[RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396)**. This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
 
-Below is an example of the sequence of a request for a referenced resource and the authorization verification, permit and return, or deny workflow.
+The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension:
+
+```http
+POST /token HTTP/1.1
+Host: auth.umzhconnect.ch
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=fulfiller-app
+&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+&client_assertion=<signed-jwt>
+&scope=system/ServiceRequest.rs
+&authorization_details=[{
+  "type": "umzh-connect-context",
+  "reference": "ServiceRequest/sr-123"
+}]
+```
+
+#### Issued access token — `fhirContext` claim
+
+The Authorization Server maps the `authorization_details` context into a `fhirContext` claim in the issued JWT access token. The `fhirContext` structure follows [SMART App Launch v2](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp). Note that SMART defines `fhirContext` as a token-response parameter; its use as a JWT claim here is an explicit UMZH-Connect extension for JWT-based access tokens:
+
+```json
+{
+  "iss": "https://auth.umzhconnect.ch",
+  "sub": "fulfiller-app",
+  "aud": "https://fhir.placer.example",
+  "exp": 1234567890,
+  "scope": "system/ServiceRequest.rs",
+  "fhirContext": [
+    {
+      "reference": "ServiceRequest/sr-123",
+      "type": "ServiceRequest"
+    }
+  ]
+}
+```
+
+Below is an example of the full token-request and resource-access sequence:
 
 ```mermaid
 sequenceDiagram
-  title Referral and External Service Requests Resource Fetching Flow
+  title Context-bound token flow (Fulfiller fetching ServiceRequest)
 
   participant C as Client (Fulfiller)
   participant AS as Authorization Server
   participant AG as API Gateway (Placer)
   participant PE as Policy Engine
-  participant FHIR as FHIR Server / Consent Store (Placer)
+  participant FHIR as FHIR Server (Placer)
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
-  C->>AS: Token request (client auth) + requested scopes<br/>(+ consent_id context if used)
-  AS-->>C: Access token (scopes + claims)<br/>(optional: includes consent_id claim, <br/>optional: sender-constrained)
+  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, reference: ServiceRequest/sr-123}]
+  AS-->>C: JWT { scope, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
-  AG->>AG: Validate token (sig, iss, aud, exp, scopes)<br/>(+ validate sender-constraint if FAPI)
-  AG->>PE: AuthZ decision request:<br/>(client identity, requested <br/>operation/resource,<br/>consent context from token/headers)
-  PE->>FHIR: Fetch/validate Consent (by consent_id)<br/>+ evaluate rules / ownership / audience
-  PE->>FHIR: Evaluate whether requested resource(s)<br/>are in ServiceRequest graph referenced by consent
+  AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
+  AG->>PE: AuthZ request: client, operation, resource, fhirContext
+  PE->>FHIR: Evaluate whether requested resource(s)<br/>are within ServiceRequest/sr-123 graph
   PE-->>AG: Permit / Deny
   alt Permit
     AG->>FHIR: Forward request
-    FHIR->>C: Response: return permitted resources<br/>(+ optional fine-grained enforcement)
+    FHIR-->>C: Response: return permitted resources
   else Deny
     AG-->>C: 403 Forbidden
   end
 ```
+
+How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Implementation Notes](guidance-implementation-notes.html#consent-based-context-enforcement).
 
 ### Authorization enforcement
 
