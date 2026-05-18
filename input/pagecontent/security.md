@@ -3,7 +3,6 @@ In this article:
 - [Introduction](#introduction)
 - [Genaral approach - OAuth](#general-approach---oauth)
 - [Health specifics - SMARTonFHIR](#health-specifics---smartonfhir)
-- [Organization identity binding](#organization-identity-binding)
 - [Context-centric authorization](#context-centric-authorization)
 - [Authorization enforcement](#authorization-enforcement)
 - [Security enhancement](#security-enhancement)
@@ -70,14 +69,6 @@ In our particular case we use SMART in the context of our use cases, for example
 - Ask permission to create a task resource at partyX - scope: system/Task.w
 - Ask permission to read service request data from partyY - scope: system/ServiceRequest.rs
 
-### Organization identity binding
-
-Each party in UMZH-Connect is represented by a single Organization resource in the central Registry. The canonical identifier for an organization is its **full Registry URL** — for example, `https://registry.example.org/fhir/Organization/fulfiller-org`. This is the same URL used in cross-party FHIR references throughout the ecosystem.
-
-Every issued JWT access token **MUST** contain a `party_id` claim set to the requesting organization's Registry URL. This is a UMZH-Connect extension claim that serves as the single authoritative organization identifier across the Authorization Server and the Registry, eliminating any translation between an IDP-internal client identifier and the Registry's Organization ID.
-
-**Onboarding:** During client registration, each party provides their organization's Registry URL to the Authorization Server. The AS includes it as the `party_id` claim in all tokens issued for that client.
-
 ### Context-centric authorization
 
 Our use-cases of referrals and external service requests strongly suggest to dynamically authorize the audience (the counter party) to a very limited data set. Think of establishing a context when the service request is created:
@@ -95,7 +86,9 @@ Context as part of the authorization flow may logically not be necessary — the
 
 #### Communicating context at the token endpoint
 
-The client communicates the workflow context to the Authorization Server using the `authorization_details` parameter defined in **[RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396)**. This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
+The client communicates the workflow context to the Authorization Server using the **`authorization_details`** parameter defined in **[RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396)**. This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
+
+> **Note:** `authorization_details` is the same extension point used by [OpenID for Verifiable Credential Issuance (OID4VCI)](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) to carry credential requests (`type: "openid_credential"`). UMZH-Connect follows the identical pattern with a custom type (`"umzh-connect-context"`), making the approach consistent with emerging identity standards and leveraging the same AS infrastructure — for example Keycloak's RAR support — that OID4VCI relies on.
 
 The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension:
 
@@ -106,9 +99,8 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
 &client_id=fulfiller-app
-&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
-&client_assertion=<signed-jwt>
-&scope=system/ServiceRequest.rs
+&client_secret=<secret>
+&scope=openid
 &authorization_details=[{
   "type": "umzh-connect-context",
   "reference": "ServiceRequest/sr-123"
@@ -125,7 +117,8 @@ The Authorization Server maps the `authorization_details` context into a `fhirCo
   "sub": "fulfiller-app",
   "aud": "https://fhir.placer.example",
   "exp": 1234567890,
-  "scope": "system/ServiceRequest.rs",
+  "scope": "openid",
+  "smart_scopes": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
   "party_id": "https://registry.example.org/fhir/Organization/fulfiller-org",
   "fhirContext": [
     {
@@ -150,7 +143,7 @@ sequenceDiagram
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
   C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, reference: ServiceRequest/sr-123}]
-  AS-->>C: JWT { scope, party_id, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
+  AS-->>C: JWT { smart_scopes, party_id, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
   AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
