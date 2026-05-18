@@ -90,7 +90,7 @@ The client communicates the workflow context to the Authorization Server using t
 
 > **Note:** `authorization_details` is the same extension point used by [OpenID for Verifiable Credential Issuance (OID4VCI)](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) to carry credential requests (`type: "openid_credential"`). UMZH-Connect follows the identical pattern with a custom type (`"umzh-connect-context"`), making the approach consistent with emerging identity standards and leveraging the same AS infrastructure — for example Keycloak's RAR support — that OID4VCI relies on.
 
-The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension:
+The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension; `identifier` follows RFC 9396 semantics — a plain string identifying a specific resource at the API:
 
 ```http
 POST /token HTTP/1.1
@@ -103,7 +103,7 @@ grant_type=client_credentials
 &scope=openid
 &authorization_details=[{
   "type": "umzh-connect-context",
-  "reference": "ServiceRequest/sr-123"
+  "identifier": "ServiceRequest/sr-123"
 }]
 ```
 
@@ -122,8 +122,7 @@ The Authorization Server maps the `authorization_details` context into a `fhirCo
   "party_id": "https://registry.example.org/fhir/Organization/fulfiller-org",
   "fhirContext": [
     {
-      "reference": "ServiceRequest/sr-123",
-      "type": "ServiceRequest"
+      "reference": "ServiceRequest/sr-123"
     }
   ]
 }
@@ -142,7 +141,7 @@ sequenceDiagram
   participant FHIR as FHIR Server (Placer)
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
-  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, reference: ServiceRequest/sr-123}]
+  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, identifier: ServiceRequest/sr-123}]
   AS-->>C: JWT { smart_scopes, party_id, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
