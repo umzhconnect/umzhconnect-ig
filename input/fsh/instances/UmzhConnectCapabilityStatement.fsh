@@ -34,11 +34,14 @@ Usage: #definition
 
 // Read-only resources with _id search
 * insert ReadOnlyResource(AllergyIntolerance)
+* insert ReadOnlyResource(Appointment)
 * insert ReadOnlyResource(Condition)
-* insert ReadOnlyResource(Consent)
 * insert ReadOnlyResource(Coverage)
 * insert ReadOnlyResource(DiagnosticReport)
+* insert ReadOnlyResource(DocumentReference)
+* insert ReadOnlyResource(ImagingStudy)
 * insert ReadOnlyResource(Immunization)
+* insert ReadOnlyResource(Medication)
 * insert ReadOnlyResource(MedicationStatement)
 * insert ReadOnlyResource(Observation)
 * insert ReadOnlyResource(Organization)
