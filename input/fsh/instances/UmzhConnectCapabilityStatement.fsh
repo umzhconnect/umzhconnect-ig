@@ -80,7 +80,7 @@ Usage: #definition
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #patch
-* rest.resource[=].interaction[=].documentation = "Only Task.[output, owner, focus, businessStatus] may be patched."
+* rest.resource[=].interaction[=].documentation = "Only Task.[input, owner, focus, businessStatus] may be patched."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
 * insert ResourceDefaults
