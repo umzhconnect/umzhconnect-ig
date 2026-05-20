@@ -140,26 +140,17 @@ Accept: application/fhir+json
 < ./../fsh-generated/resources/Task-TaskReferralOrthopedicSurgery.json
 
 
-### Updated the status (we use PATCH, but would be probably a PUT
+### Updated the status
 PATCH http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgery
-Content-Type: application/fhir+json
+Content-Type: application/json-patch+json
 
-{
-  "resourceType": "Parameters",
-  "parameter": [ {
-    "name": "operation",
-    "part": [ {
-      "name": "type",
-      "valueCode": "replace"
-    }, {
-      "name": "path",
-      "valueString": "Task.status"
-    }, {
-      "name": "value",
-      "valueCode": "accepted"
-    } ]
-  } ]
-}
+[
+  {
+    "op": "replace",
+    "path": "/status",
+    "value": "accepted"
+  }
+]
 
 
 ### Receive the ServiceRequest from the Fulfiller
@@ -230,4 +221,51 @@ PUT http://fulfiller.example.org/fhir/QuestionnaireResponse/QuestionnaireRespons
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
-< ./../fsh-generated/resources/QuestionnaireResponseSmokingStatus.json
+< ./../fsh-generated/resources/QuestionnaireResponse-QuestionnaireResponseSmokingStatus.json
+
+### Add QuestionnaireResponseSmokingStatus to Task.input and hand ownership back to Fulfiller
+# using json PATCH (rfc6902)
+PATCH http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
+Content-Type: application/json-patch+json
+
+[
+  {
+    "op": "add",
+    "path": "/input",
+    "value": [
+      {
+        "type": {
+          "coding": [
+            {
+              "code": "273510007",
+              "system": "http://snomed.info/sct",
+              "display": "Health assessment questionnaire"
+            }
+          ]
+        },
+        "valueReference": {
+          "reference": "QuestionnaireResponse/QuestionnaireResponseSmokingStatus"
+        }
+      }
+    ]
+  },
+  {
+    "op": "replace",
+    "path": "/owner",
+    "value": {
+      "reference": "http://registry.example.org/fhir/Organization/Fulfiller"
+    }
+  },
+  {
+    "op": "replace",
+    "path": "/businessStatus",
+    "value": {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/task-status",
+          "code": "in-progress"
+        }
+      ]
+    }
+  }
+]
