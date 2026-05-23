@@ -24,6 +24,19 @@ Usage: #definition
 * xpathUsage = #normal
 * multipleAnd = true
 
+Instance: ch-umzhconnectig-servicerequest-insurance
+InstanceOf: SearchParameter
+Usage: #definition
+* name = "ch-umzhconnectig-servicerequest-insurance"
+* description = "Custom search parameter for ServiceRequest.insurance"
+* status = #active
+* code = #ch-umzhconnectig-servicerequest-insurance
+* base = #ServiceRequest
+* type = #reference
+* expression = "ServiceRequest.insurance"
+* xpathUsage = #normal
+* multipleAnd = true
+
 Instance: ch-umzhconnectig-task-inputreference
 InstanceOf: SearchParameter
 Usage: #definition

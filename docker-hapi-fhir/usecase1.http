@@ -23,6 +23,13 @@ Accept: application/fhir+json
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-servicerequest-supportinginfo.json
 
 ###
+POST http://placer.example.org/fhir/SearchParameter
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+< ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-servicerequest-insurance.json
+
+###
 PUT http://placer.example.org/fhir/Practitioner/HansMuster
 Content-Type: application/fhir+json
 Accept: application/fhir+json
@@ -169,7 +176,7 @@ Accept: application/fhir+json
 ### _include=PractitionerRole:practitioner -> does not work out of the box (maybe because indirect)
 ### for reasonReference, insurance supportingInfo we need do define search parameters and configure them on the hapi-fhir server, otherwise the resources will not be returned
 
-GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:requester
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:ch-umzhconnectig-servicerequest-insurance
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 

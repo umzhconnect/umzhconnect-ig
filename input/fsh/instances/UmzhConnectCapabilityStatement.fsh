@@ -6,10 +6,10 @@ RuleSet: ResourceDefaults
 * rest.resource[=].conditionalUpdate = false
 
 RuleSet: IdSearchParam
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+* rest.resource[=].searchParam[+].name = "_id"
+* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam[=].type = #token
+* rest.resource[=].searchParam[=].documentation = "Logical id of this artifact"
 
 RuleSet: ReadOnlyResource(type)
 * rest.resource[+].type = #{type}
@@ -75,8 +75,10 @@ Usage: #definition
 * rest.resource[=].interaction[+].code = #read
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
-* rest.resource[=].searchInclude[+] = "ServiceRequest:requester"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-reasonreference"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-supportinginfo"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-insurance"
 * insert IdSearchParam
 
 // Task: search-type, patch, read, create + multiple searchParams
@@ -87,6 +89,9 @@ Usage: #definition
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
 * insert ResourceDefaults
+* rest.resource[=].searchInclude[0] = "Task:ch-umzhconnectig-task-inputreference"
+* rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputreference"
+* rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputcanonical"
 * rest.resource[=].searchParam[0].name = "owner"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-owner"
 * rest.resource[=].searchParam[=].type = #reference
@@ -95,11 +100,8 @@ Usage: #definition
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-requester"
 * rest.resource[=].searchParam[=].type = #reference
 * rest.resource[=].searchParam[=].documentation = "Search by task requester"
-* rest.resource[=].searchParam[+].name = "_id"
-* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam[=].type = #token
-* rest.resource[=].searchParam[=].documentation = "Logical id of this artifact"
 * rest.resource[=].searchParam[+].name = "status"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-status"
 * rest.resource[=].searchParam[=].type = #token
 * rest.resource[=].searchParam[=].documentation = "Search by task status"
+* insert IdSearchParam
