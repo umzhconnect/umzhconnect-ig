@@ -6,6 +6,7 @@ In this article:
 - [Context-centric authorization](#context-centric-authorization)
 - [Authorization enforcement](#authorization-enforcement)
 - [Security enhancement](#security-enhancement)
+- [Relationship to other security profiles](#relationship-to-other-security-profiles)
 
 
 ### Introduction
@@ -20,7 +21,7 @@ Special attention is given to machine-to-machine interactions, which are central
 
 ### General approach - OAuth
 
-Todays de-facto standard for securing Web-APIs is **OAuth & OpenIDConnect**. In general OAuth is quite loosely defined and allows various ways of implementation. On a very high-level you could think of it like the following:
+Todays de-facto standard for securing Web-APIs is **OAuth & OpenID Connect**. In general OAuth is quite loosely defined and allows various ways of implementation. On a very high-level you could think of it like the following:
 
 > *An application (possibly in combination with a logged in user) would like to access data from an external service. It therefore requests a security token from an authorization authority by providing credentials and uses this token in the request to the data service to provide proof of access rights and hence being allowed to access the data.*
 
@@ -28,15 +29,15 @@ Todays de-facto standard for securing Web-APIs is **OAuth & OpenIDConnect**. In 
 
 **OAuth glossary**
 
-**Authorization Server (AS) -** The system that issues tokens after validating identity, credentials, or policies.
-**Resource Server (RS) -** The API or service that receives and validates tokens before granting access.
-**Client -** The application requesting access on behalf of a user or system.
-**Access Token -** A short‑lived credential the client uses to call APIs.
-**Scopes -** Fine‑grained permissions describing what the client is allowed to access.
-**Claims -** Attributes embedded in a token (e.g., user ID, roles, tenant, expiry).
-**Client Authentication -** How a client proves its identity to the authorization server (e.g., client secret, mTLS, private key JWT).
-**Grant Type -** The method a client uses to obtain tokens (e.g., Authorization Code, Client Credentials).
-**Policy engine** - system that evaluates rules (“policies”) to decide whether a specific action is allowed
+**Authorization Server (AS) -** The system that issues tokens after validating identity, credentials, or policies.<br />
+**Resource Server (RS) -** The API or service that receives and validates tokens before granting access.<br />
+**Client -** The application requesting access on behalf of a user or system.<br />
+**Access Token -** A short‑lived credential the client uses to call APIs.<br />
+**Scopes -** Fine‑grained permissions describing what the client is allowed to access.<br />
+**Claims -** Attributes embedded in a token (e.g., user ID, roles, tenant, expiry).<br />
+**Client Authentication -** How a client proves its identity to the authorization server (e.g., client secret, mTLS, private key JWT).<br />
+**Grant Type -** The method a client uses to obtain tokens (e.g., Authorization Code, Client Credentials).<br />
+**Policy engine** - system that evaluates rules (“policies”) to decide whether a specific action is allowed.<br />
 
 ```mermaid
 flowchart LR
@@ -66,17 +67,18 @@ In practice, it gives app developers a predictable, interoperable method to auth
 
 In our particular case we use SMART in the context of our use cases, for example:
 
-- Ask permission to create a task resource at partyX - scope: system/Task.w
-- Ask permission to read service request data from partyY - scope: system/ServiceRequest.rs
+- Ask permission to create a task resource at party X - scope: system/Task.w
+- Ask permission to read service request data from party Y - scope: system/ServiceRequest.rs
 
 ### Context-centric authorization
 
 Our use-cases of referrals and external service requests strongly suggest to dynamically authorize the audience (the counter party) to a very limited data set. Think of establishing a context when the service request is created:
 
-> *For a given time I authorize partyB (represented by clientX) to read all data referenced by my given service request.*
+> *For a given time I authorize party X (represented by client X) to read all data referenced by my given service request.*
 
 Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access — all resources reachable (forward-referenced) from the workflow root in the FHIR reference graph:
 
+{:class="table table-bordered"}
 | Direction | Initiator | Context resource |
 |-----------|-----------|-----------------|
 | Fulfiller → Placer | Fulfiller fetches ServiceRequest and its forward-referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
@@ -86,7 +88,7 @@ Context as part of the authorization flow may logically not be necessary — the
 
 #### Communicating context at the token endpoint
 
-The client communicates the workflow context to the Authorization Server using the **`authorization_details`** parameter defined in **[RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396)**. This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
+The client communicates the workflow context to the Authorization Server using the **`authorization_details`** parameter defined in [RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396). This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
 
 > **Note:** `authorization_details` is the same extension point used by [OpenID for Verifiable Credential Issuance (OID4VCI)](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) to carry credential requests (`type: "openid_credential"`). UMZH-Connect follows the identical pattern with a custom type (`"umzh-connect-context"`), making the approach consistent with emerging identity standards and leveraging the same AS infrastructure — for example Keycloak's RAR support — that OID4VCI relies on.
 
@@ -99,17 +101,32 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
 &client_id=fulfiller-app
-&client_secret=<secret>
-&scope=openid
+&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+&client_assertion=<signed JWT>
+&scope=system/ServiceRequest.rs system/Patient.r system/Condition.r
 &authorization_details=[{
   "type": "umzh-connect-context",
   "identifier": "ServiceRequest/sr-123"
 }]
 ```
 
+The `<signed JWT>` placeholder above is the **client-authentication assertion** ([RFC 7523](https://datatracker.ietf.org/doc/html/rfc7523), inherited by [SMART Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html#protocol-details)) — the client constructs it itself and signs it with the private key whose public counterpart was registered with the Authorization Server at onboarding (Level 2 JWKS). It is short-lived, single-use, and pins the request to one specific token endpoint:
+
+```json
+{
+  "iss": "fulfiller-app",
+  "sub": "fulfiller-app",
+  "aud": "https://auth.umzhconnect.ch/token",
+  "exp": 1716470500,
+  "jti": "9f4c-unique-nonce"
+}
+```
+
+The Authorization Server validates this assertion (signature against the registered JWKS, `aud` equals its token endpoint, `exp` not expired, `jti` not previously seen) before proceeding to issue the access token described below. Note that this assertion JWT is distinct from the access token: the **client** signs the assertion to prove its identity to the AS; the **AS** signs the access token for the Resource Server to consume.
+
 #### Issued access token — `fhirContext` claim
 
-The Authorization Server maps the `authorization_details` context into a `fhirContext` claim in the issued JWT access token. The `fhirContext` structure follows [SMART App Launch v2](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp). Note that SMART defines `fhirContext` as a token-response parameter; its use as a JWT claim here is an explicit UMZH-Connect extension for JWT-based access tokens:
+The Authorization Server maps the `authorization_details` context into a `fhirContext` claim in the issued JWT access token. The `fhirContext` structure follows [SMART App Launch v2](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp). Note that SMART defines `fhirContext` only as a token-response parameter; UMZH-Connect extends that usage by additionally carrying the same structure as a claim inside the JWT access token, so that resource servers can enforce context without an extra introspection call:
 
 ```json
 {
@@ -117,8 +134,7 @@ The Authorization Server maps the `authorization_details` context into a `fhirCo
   "sub": "fulfiller-app",
   "aud": "https://fhir.placer.example",
   "exp": 1234567890,
-  "scope": "openid",
-  "smart_scopes": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
+  "scope": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
   "party_id": "https://registry.example.org/fhir/Organization/fulfiller-org",
   "fhirContext": [
     {
@@ -175,11 +191,25 @@ We can think of a 3 step process to enforce security:
 
 - Authentication - token extraction and validation -> we know the identity
 - Scope Authorization - ensure that scope parameters match the requested parameters
-- Context enforcement & fine-grained authorization
+- Context enforcement & fine-grained authorization, comprising two distinct checks:
+  - **Counter-party entitlement** — is the calling party allowed to invoke this workflow context at all?
+  - **Graph membership** — is each requested resource reachable from the workflow context root?
 
-A common approach would be to handle the first (and optinally the second) step in the API gateway and the second and third step by the policy engine. In our case it would mean to ensure that all requested resources are part of the 'child graph' of the service request, which is the authorized workflow context (the `fhirContext` reference from the access token).
+A common approach would be to handle the first (and optionally the second) step in the API gateway and the second and third step by the policy engine. In our case it would mean to ensure that all requested resources are part of the 'child graph' of the service request, which is the authorized workflow context (the `fhirContext` reference from the access token).
 
-In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variaty of factors, such es a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in this project:
+#### Counter-party entitlement is a Resource Server obligation
+
+The `authorization_details` parameter is a **client-asserted** statement of context. The Authorization Server validates client authentication and scope syntax, but it does not by itself prove that the calling party is the legitimate counter-party of the workflow object named in the request — that knowledge lives in the Resource Server's workflow state, not at the AS. Requiring the AS to consult cross-organizational workflow data on every token request would force a tight AS↔RS coupling that the staged trust model of this guide deliberately avoids.
+
+UMZH-Connect therefore places the counter-party entitlement check **on the Resource Server's policy engine**, alongside the graph-walk. For every incoming request the RS MUST:
+
+1. Validate the token (signature, issuer, audience, expiry, and sender-constraint where applicable).
+2. Verify that the authenticated `party_id` (and/or `client_id`) is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that this organization is the fulfiller recorded on the `Task` derived from `ServiceRequest/sr-123`, or the placer of the `Task` whose status is being read.
+3. Verify that every requested resource is reachable from `fhirContext` in the FHIR reference graph.
+
+Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Implementation Notes](guidance-implementation-notes.html#consent-based-context-enforcement).
+
+In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such es a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in this project:
 
 [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway)
 
@@ -198,12 +228,16 @@ The **authorization model and APIs remain stable**, while the **client authentic
 - **Main trade-offs:** shared secret distribution and rotation burden; higher impact if secrets leak; weaker non-repudiation.
 - **Best fit:** sandbox environments, limited scopes, early partner testing.
 
+> **Note:** Level 1 is intentionally **not SMART Backend Services conformant** — Backend Services mandates `private_key_jwt`. Shared-secret authentication is offered only as a pilot rung to lower the barrier to first integration; SMART Backend Services conformance is reached at Level 2.
+
 ### Level 2 — `private_key_jwt` (asymmetric proof, no central PKI required)
 
 - **Goal:** remove shared secrets and increase assurance while keeping onboarding practical.
 - **Mechanism:** the client generates its own key pair and registers the **public key / JWKS** with the authorization server during onboarding. The client authenticates to the token endpoint by signing a JWT assertion with the private key.
 - **Key benefits:** no shared secrets; cleaner key rotation; improved proof-of-possession characteristics; compatible with central client registration.
 - **Operational needs:** JWKS registration, rotation procedure, and key rollover support.
+
+At Level 2, UMZH-Connect aligns with **[SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)**: clients authenticate to the token endpoint with `private_key_jwt` against a JWKS registered at onboarding, and SMART system scopes (`system/<Resource>.<perms>`) are carried in the standard `scope` parameter — not in a custom claim. No `openid` scope is requested, since these are pure machine-to-machine exchanges with no user identity. The single deliberate divergence from Backend Services is the per-request **`fhirContext` claim** embedded in the issued JWT access token (see [Context-centric authorization](#context-centric-authorization)), which binds each token to a specific workflow object. SMART defines `fhirContext` only as a token-response parameter; promoting it into the access token is what makes context enforceable at the Resource Server without an extra introspection call.
 
 ### Level 3 — mTLS (mutual TLS)
 
@@ -212,6 +246,7 @@ The **authorization model and APIs remain stable**, while the **client authentic
 - **Key benefits:** strong client authentication; reduced token replay risk; high confidence in client identity.
 - **Operational needs:** certificate lifecycle management (issuance, rotation, revocation), trust anchors (internal CA or managed PKI), and monitoring.
 
+{:class="table table-bordered"}
 | Level | Client authentication                             | When to use                                                  | Security benefits                                            | Operational footprint                                        |
 | :---- | :------------------------------------------------ | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
 | **1** | Basic client credentials (shared secret)          | Sandbox, PoC, low-risk scopes, early pilots                  | Quick start; baseline access control                         | Secret distribution + rotation; higher blast radius if leaked |
@@ -267,3 +302,26 @@ mTLS and other additional security enhancements are included in the definition o
 - how to pass cryptographic information between transport and application layer
 
 FAPI2.0 enforcement adds requirements to classical certification management with PKI-infrastructure. Reference implementations (like Denmark) make use of a central PKI-infrastructure and certificate issuance and signing which reduces client side complexity (trust store etc) however requires central trust and single point of failure risk.
+
+## Relationship to other security profiles
+
+This section positions the UMZH-Connect security concept against three reference profiles that target overlapping problem spaces. The single architectural choice that distinguishes UMZH-Connect from all three is **context-bound tokens**: every access token is issued for one specific workflow object (a `ServiceRequest` or `Task`) carried in the JWT as a `fhirContext` claim, derived from an [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details` request. None of the reference profiles standardize this per-request binding.
+
+**References:**
+
+- [SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)
+- [HL7 FAST UDAP Security for Scalable Registration, Authentication, and Authorization](https://hl7.org/fhir/us/udap-security/)
+- [CH EPR FHIR — Get Access Token [ITI-71]](https://www.fhir.ch/ig/ch-epr-fhir/iti-71.html), the Swiss national profile of the [IHE IUA](https://profiles.ihe.net/ITI/IUA/index.html) Get Access Token transaction.
+
+{:class="table table-bordered"}
+| Aspect | UMZH-Connect | [SMART Backend Services v2](https://hl7.org/fhir/smart-app-launch/backend-services.html) | [HL7 FAST UDAP](https://hl7.org/fhir/us/udap-security/) | [CH EPR ITI-71 (IUA)](https://www.fhir.ch/ig/ch-epr-fhir/iti-71.html) |
+|---|---|---|---|---|
+| Primary scope | M2M, per-workflow context | M2M, pre-authorized scopes | M2M + user via Tiered OAuth | M2M + healthcare professional / assistant |
+| Trust onboarding | Bilateral JWKS (L2); mTLS w/ open CA (L3) | Out-of-band pre-registration | UDAP Dynamic Client Reg + community X.509 CA | Per-CH-EPR policy; registered actors |
+| Client auth | secret (L1, non-conformant) → `private_key_jwt` (L2) → mTLS (L3) | `private_key_jwt` mandatory | `private_key_jwt` w/ UDAP cert; mTLS option | `private_key_jwt` + HTTP Message Signatures ([RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421)) |
+| Scope vocabulary | SMART `system/*` in `scope` | SMART `system/*` in `scope` | SMART-compatible + UDAP extensions | Profile-specific (`launch`, EPR scopes) |
+| Per-request workflow context | **[RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) + `fhirContext` JWT claim** | Not addressed | Not addressed | Not addressed |
+| Caller-organization identity | `party_id` claim (registry URL) | Not standardized | UDAP B2B extension (org, role, PoU) | `home_community_id` + `ch_epr` extensions |
+| User identity in M2M | Not in scope | Out-of-band for `user/`/`patient/` | Tiered OAuth → user's OIDC IdP | Mandatory `subject_name`, `subject_role`, `purpose_of_use` |
+| Token format | JWT | JWT | JWT | JWT only (JWE forbidden) |
+| Hardening reference | [FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) (Level 3) | OAuth 2.0 BCP | UDAP profiles + cert policies | OAuth 2.1 + [RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421) |

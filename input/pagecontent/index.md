@@ -1,6 +1,6 @@
 ### Introduction
 
-**CH UMZH Connect** is a FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral and external service order processes
+**CH UMZH Connect** is a FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral and external service order processes.
 
 The UMZH-connect project aims to improve digital connectivity for referrals and external orders (e.g., lab orders) between healthcare providers in the Zurich area, particularly the university hospitals. The system is designed to be extensible — both in terms of use cases and participating organizations.
 
