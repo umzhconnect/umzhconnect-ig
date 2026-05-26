@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### STU 1 (2025-12-15)
+* [#46](https://github.com/umzhconnect/umzhconnect-ig/issues/46): Task.code — remove clinical service category binding; align examples with COW Task.code using `fulfill` from the standard TaskCode CodeSystem
 * [#37](https://github.com/umzhconnect/umzhconnect-ig/issues/37): Task updates via JSON Patch (PATCH method added to CapabilityStatement)
 * [#40](https://github.com/umzhconnect/umzhconnect-ig/issues/40): mCSD-based registry — profile Task to require requestor/owner as absolute URL, add Registry section to core concepts
 * [#35](https://github.com/umzhconnect/umzhconnect-ig/issues/35): Link to organization as an absolute url to the registry (e.g. mCSD directory)
