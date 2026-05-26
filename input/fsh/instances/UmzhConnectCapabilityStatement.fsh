@@ -6,10 +6,10 @@ RuleSet: ResourceDefaults
 * rest.resource[=].conditionalUpdate = false
 
 RuleSet: IdSearchParam
-* rest.resource[=].searchParam.name = "_id"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam.type = #token
-* rest.resource[=].searchParam.documentation = "Logical id of this artifact"
+* rest.resource[=].searchParam[+].name = "_id"
+* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam[=].type = #token
+* rest.resource[=].searchParam[=].documentation = "Logical id of this artifact"
 
 RuleSet: ReadOnlyResource(type)
 * rest.resource[+].type = #{type}
@@ -25,7 +25,11 @@ Usage: #definition
 * status = #active
 * date = "2026-01-27T16:12:05.435+01:00"
 * kind = #requirements
-* description = "UMZH Connect API requirements"
+* description = """UMZH Connect API requirements. This CapabilityStatement applies to both the [Placer](ActorDefinition-ch-umzh-connect-placer.html) and [Fulfiller](ActorDefinition-ch-umzh-connect-fulfiller.html) server roles. The required interactions overlap significantly; the applicable subset depends on the actor role:
+- **Placer server** — hosts the ServiceRequest and all referenced clinical resources. \
+The Fulfiller queries these via `read` and `search`.
+- **Fulfiller server** — hosts the Coordination Task and related output resources. \
+The Placer creates it via `create`, applies selective updates via `patch`, and queries via `read` and `search`."""
 * fhirVersion = #4.0.1
 * format = #application/fhir+json
 * patchFormat = #application/json-patch+json
@@ -34,11 +38,14 @@ Usage: #definition
 
 // Read-only resources with _id search
 * insert ReadOnlyResource(AllergyIntolerance)
+* insert ReadOnlyResource(Appointment)
 * insert ReadOnlyResource(Condition)
-* insert ReadOnlyResource(Consent)
 * insert ReadOnlyResource(Coverage)
 * insert ReadOnlyResource(DiagnosticReport)
+* insert ReadOnlyResource(DocumentReference)
+* insert ReadOnlyResource(ImagingStudy)
 * insert ReadOnlyResource(Immunization)
+* insert ReadOnlyResource(Medication)
 * insert ReadOnlyResource(MedicationStatement)
 * insert ReadOnlyResource(Observation)
 * insert ReadOnlyResource(Organization)
@@ -72,8 +79,10 @@ Usage: #definition
 * rest.resource[=].interaction[+].code = #read
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
-* rest.resource[=].searchInclude[+] = "ServiceRequest:requester"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-reasonreference"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-supportinginfo"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-insurance"
 * insert IdSearchParam
 
 // Task: search-type, patch, read, create + multiple searchParams
@@ -84,6 +93,9 @@ Usage: #definition
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
 * insert ResourceDefaults
+* rest.resource[=].searchInclude[0] = "Task:ch-umzhconnectig-task-inputreference"
+* rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputreference"
+* rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputcanonical"
 * rest.resource[=].searchParam[0].name = "owner"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-owner"
 * rest.resource[=].searchParam[=].type = #reference
@@ -92,11 +104,8 @@ Usage: #definition
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-requester"
 * rest.resource[=].searchParam[=].type = #reference
 * rest.resource[=].searchParam[=].documentation = "Search by task requester"
-* rest.resource[=].searchParam[+].name = "_id"
-* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
-* rest.resource[=].searchParam[=].type = #token
-* rest.resource[=].searchParam[=].documentation = "Logical id of this artifact"
 * rest.resource[=].searchParam[+].name = "status"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-status"
 * rest.resource[=].searchParam[=].type = #token
 * rest.resource[=].searchParam[=].documentation = "Search by task status"
+* insert IdSearchParam
