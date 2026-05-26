@@ -25,7 +25,11 @@ Usage: #definition
 * status = #active
 * date = "2026-01-27T16:12:05.435+01:00"
 * kind = #requirements
-* description = "UMZH Connect API requirements"
+* description = """UMZH Connect API requirements. This CapabilityStatement applies to both the [Placer](ActorDefinition-ch-umzh-connect-placer.html) and [Fulfiller](ActorDefinition-ch-umzh-connect-fulfiller.html) server roles. The required interactions overlap significantly; the applicable subset depends on the actor role:
+- **Placer server** — hosts the ServiceRequest and all referenced clinical resources. \
+The Fulfiller queries these via `read` and `search`.
+- **Fulfiller server** — hosts the Coordination Task and related output resources. \
+The Placer creates it via `create`, applies selective updates via `patch`, and queries via `read` and `search`."""
 * fhirVersion = #4.0.1
 * format = #application/fhir+json
 * patchFormat = #application/json-patch+json

@@ -8,7 +8,7 @@ This implementation guide is based on the core principles of [Clinical Order Wor
 
 The COW (clinical order workflow) focuses on making clinical data available by API to relevant actors and notifying the partners about task in contrast to sending the bundled data to the partner in commonly used 'fire-and-forget' mode.
 
-The COW refers to the requestor, referrer, and prescriber as the **Placer** - the party who initiates the task, and the performer as the **Fulfiller** - the party the performs the requested service.
+The COW refers to the requestor, referrer, and prescriber as the [**Placer**](ActorDefinition-ch-umzh-connect-placer.html) - the party who initiates the task, and the performer as the [**Fulfiller**](ActorDefinition-ch-umzh-connect-fulfiller.html) - the party that performs the requested service.
 The **CoordinationTask** (resourceType Task) serves as the central element and business object, linking resources - inputs and outputs - between the participating parties and managing workflow patterns (i.e. states etc.).
 
 The placer and filler provide their FHIR API endpoints to each other. Each organization is registered in a shared registry — see [Registry](#registry) below. External URLs for the organizations and resources referencing the other FHIR API must be absolute (see [partially closed, inter-linked systems](https://hl7.org/fhir/managing.html#using)).
