@@ -75,12 +75,12 @@ Our use-cases of referrals and external service requests strongly suggest to dyn
 
 > *For a given time I authorize partyB (represented by clientX) to read all data referenced by my given service request.*
 
-Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access — all resources reachable from the workflow root in the FHIR reference graph:
+Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access — all resources reachable (forward-referenced) from the workflow root in the FHIR reference graph:
 
 | Direction | Initiator | Context resource |
 |-----------|-----------|-----------------|
-| Fulfiller → Placer | Fulfiller fetches ServiceRequest and referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
-| Placer → Fulfiller | Placer reads Task status and result references | **Task ID** (on Fulfiller’s FHIR server) |
+| Fulfiller → Placer | Fulfiller fetches ServiceRequest and its forward-referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
+| Placer → Fulfiller | Placer reads Task status and forward-referenced output resources | **Task ID** (on Fulfiller’s FHIR server) |
 
 Context as part of the authorization flow may logically not be necessary — the restricting party may check all its workflow objects and verify whether one matches the current API request. However, defining the context identification as part of the authorization flow and access token may significantly simplify the authorization enforcement. The API consumer in essence tells the API provider in which **context** the API request is executed.
 
