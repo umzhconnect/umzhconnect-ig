@@ -10,7 +10,7 @@ Description: "Initial Task created by Placer based on the ServiceRequest and sen
 * for = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
-* code = $sct#183545006 "Referral to orthopedic service (procedure)"
+* code = http://hl7.org/fhir/CodeSystem/task-code#fulfill "Fulfill the focal request"
 * requester = Reference(http://placer.example.org/fhir/PractitionerRole/HansMusterRole)
 * owner = Reference(http://registry.example.org/fhir/Organization/Fulfiller)
 * authoredOn = "2025-12-15"

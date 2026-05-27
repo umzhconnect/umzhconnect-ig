@@ -13,7 +13,7 @@ Description: "Updated Task after Fulfiller has accepted the initial Task and add
 * owner = Reference(http://registry.example.org/fhir/Organization/Placer)
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
-* code = $sct#183545006 "Referral to orthopedic service (procedure)"
+* code = http://hl7.org/fhir/CodeSystem/task-code#fulfill "Fulfill the focal request"
 * authoredOn = "2025-12-15"
 * lastModified = "2025-12-16"
 * focus = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
