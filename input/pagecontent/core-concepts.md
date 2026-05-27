@@ -18,7 +18,7 @@ The essentials of the **Task at Fulfillers** are illustrated in the following ex
 **Example Workflow**
 
 - The **referring provider (Placer)** creates a Service Request in their own environment, referencing additional information (patient demographics, medication, medical history, etc.).
-- A minimal **Task** is created at the **receiving provider (Fulfiller)**, referencing the Service Request and including authorization information (Consent).
+- A minimal **Task** is created at the **receiving provider (Fulfiller)**, referencing the Service Request and establishing the workflow context for authorization.
 - The Fulfiller gains access to restricted datasets from the Placer and can process the order further.
 - The **Task** acts as the shared data object, linking datasets on both the Placer and Fulfiller sides and regulating access.
 - The Fulfiller can add **references to results** (appointments, reports, etc.) in the Task, enabling the Placer to access results digitally.

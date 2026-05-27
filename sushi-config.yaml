@@ -40,8 +40,8 @@ pages:
     title: Core Concepts
   guidance-reference-architecture.md:
     title: Guidance - Reference Architecture
-  guidance-security-implementation.md:
-    title: Guidance - Security Implementation
+  guidance-implementation-notes.md:
+    title: Guidance - Implementation Notes
   usecase-referral-orthopedic.md:
     title: Referral - Orthopedic Surgery
   usecase-referral-sarcoma-tumorboard.md:
@@ -64,7 +64,7 @@ menu:
   Security: security.html
   Guidance:
     Reference Architecture: guidance-reference-architecture.html
-    Security Implementation: guidance-security-implementation.html
+    Implementation Notes: guidance-implementation-notes.html
   Use Cases:
     Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
     Referral - Sarcoma Tumor Board: usecase-referral-sarcoma-tumorboard.html
