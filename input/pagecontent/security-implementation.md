@@ -46,7 +46,7 @@ When the Resource Server receives an API request carrying a JWT with a `fhirCont
 GET /Consent?data=ServiceRequest/sr-123&status=active
 ```
 
-If an active Consent is found and `token.party_id` matches `Consent.provision.actor.reference`, the request is permitted for any resource within the ServiceRequest graph. If no active Consent exists — because it was never created, has expired, or has been revoked — the request is denied.
+If an active Consent is found and `token.organization_reference` matches `Consent.provision.actor.reference`, the request is permitted for any resource within the ServiceRequest graph. If no active Consent exists — because it was never created, has expired, or has been revoked — the request is denied.
 
 #### Expiration
 

@@ -124,9 +124,16 @@ The `<signed JWT>` placeholder above is the **client-authentication assertion** 
 
 The Authorization Server validates this assertion (signature against the registered JWKS, `aud` equals its token endpoint, `exp` not expired, `jti` not previously seen) before proceeding to issue the access token described below. Note that this assertion JWT is distinct from the access token: the **client** signs the assertion to prove its identity to the AS; the **AS** signs the access token for the Resource Server to consume.
 
-#### Issued access token — `fhirContext` claim
+#### Issued access token — organization identity and `fhirContext` claim
 
-The Authorization Server maps the `authorization_details` context into a `fhirContext` claim in the issued JWT access token. The `fhirContext` structure follows [SMART App Launch v2](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp). Note that SMART defines `fhirContext` only as a token-response parameter; UMZH-Connect extends that usage by additionally carrying the same structure as a claim inside the JWT access token, so that resource servers can enforce context without an extra introspection call:
+The Authorization Server maps the `authorization_details` context into a `fhirContext` claim in the issued JWT access token. The `fhirContext` structure follows [SMART App Launch v2](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp). Note that SMART defines `fhirContext` only as a token-response parameter; UMZH-Connect extends that usage by additionally carrying the same structure as a claim inside the JWT access token, so that resource servers can enforce context without an extra introspection call.
+
+The issued token carries two complementary organization identity claims, following the pattern established by the [UDAP B2B Authorization Extension](https://hl7.org/fhir/us/udap-security/b2b.html):
+
+- **`organization_id`** — a stable, opaque identity URI constructed from the organization's GLN using the OID namespace: `urn:oid:2.51.1.3#<GLN>`. This is the canonical party identifier: nationally governed via GS1/refdata.ch, independent of any FHIR API URL, and registered with the Authorization Server at onboarding. The GLN is also carried as `Organization.identifier[GLN]` in the registry.
+- **`organization_reference`** — the resolvable registry URL of the corresponding `Organization` resource (e.g. `https://registry.umzhconnect.ch/fhir/Organization/fulfiller-org`). This is the value that matches `Task.owner.reference` and `Task.requester.reference` in workflow resources, enabling direct string comparison at the Resource Server without a live registry lookup.
+
+The Authorization Server derives both claims from the `client_id → GLN → registry URL` mapping recorded at onboarding. One organization may register multiple clients (e.g. different software vendors); all share the same `organization_id` and `organization_reference`. Clients do not assert these values themselves.
 
 ```json
 {
@@ -135,7 +142,8 @@ The Authorization Server maps the `authorization_details` context into a `fhirCo
   "aud": "https://fhir.placer.example",
   "exp": 1234567890,
   "scope": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
-  "party_id": "https://registry.example.org/fhir/Organization/fulfiller-org",
+  "organization_id": "urn:oid:2.51.1.3#7601000618306",
+  "organization_reference": "https://registry.example.org/fhir/Organization/fulfiller-org",
   "fhirContext": [
     {
       "reference": "ServiceRequest/sr-123"
@@ -158,7 +166,7 @@ sequenceDiagram
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
   C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, identifier: ServiceRequest/sr-123}]
-  AS-->>C: JWT { smart_scopes, party_id, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
+  AS-->>C: JWT { smart_scopes, organization_id, organization_reference, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
   AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
@@ -204,7 +212,7 @@ The `authorization_details` parameter is a **client-asserted** statement of cont
 UMZH-Connect therefore places the counter-party entitlement check **on the Resource Server's policy engine**, alongside the graph-walk. For every incoming request the RS MUST:
 
 1. Validate the token (signature, issuer, audience, expiry, and sender-constraint where applicable).
-2. Verify that the authenticated `party_id` (and/or `client_id`) is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that this organization is the fulfiller recorded on the `Task` derived from `ServiceRequest/sr-123`, or the placer of the `Task` whose status is being read.
+2. Verify that `organization_reference` is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that `organization_reference` matches `Task.owner.reference` for a fulfiller fetching a ServiceRequest, or `Task.requester.reference` for a placer reading Task status. This is a direct string comparison: the AS embeds the registry URL at token issuance, so no live registry lookup is required.
 3. Verify that every requested resource is reachable from `fhirContext` in the FHIR reference graph.
 
 Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
@@ -321,7 +329,7 @@ This section positions the UMZH-Connect security concept against three reference
 | Client auth | secret (L1, non-conformant) → `private_key_jwt` (L2) → mTLS (L3) | `private_key_jwt` mandatory | `private_key_jwt` w/ UDAP cert; mTLS option | `private_key_jwt` + HTTP Message Signatures ([RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421)) |
 | Scope vocabulary | SMART `system/*` in `scope` | SMART `system/*` in `scope` | SMART-compatible + UDAP extensions | Profile-specific (`launch`, EPR scopes) |
 | Per-request workflow context | **[RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) + `fhirContext` JWT claim** | Not addressed | Not addressed | Not addressed |
-| Caller-organization identity | `party_id` claim (registry URL) | Not standardized | UDAP B2B extension (org, role, PoU) | `home_community_id` + `ch_epr` extensions |
+| Caller-organization identity | `organization_id` (GLN OID-URN) + `organization_reference` (registry URL) — aligned with [UDAP B2B](https://hl7.org/fhir/us/udap-security/b2b.html) `hl7-b2b` | Not standardized | UDAP B2B `hl7-b2b` extension (`organization_id`, `organization_name`, `purpose_of_use`) | `home_community_id` + `ch_epr` extensions |
 | User identity in M2M | Not in scope | Out-of-band for `user/`/`patient/` | Tiered OAuth → user's OIDC IdP | Mandatory `subject_name`, `subject_role`, `purpose_of_use` |
 | Token format | JWT | JWT | JWT | JWT only (JWE forbidden) |
 | Hardening reference | [FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) (Level 3) | OAuth 2.0 BCP | UDAP profiles + cert policies | OAuth 2.1 + [RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421) |
