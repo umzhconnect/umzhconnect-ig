@@ -6,6 +6,7 @@ div.mermaid iframe {
 }
 </style>
 
+
 ### Task Workflow States
 
 The `CoordinationTask` lifecycle is governed by two complementary fields:
