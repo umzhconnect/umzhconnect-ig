@@ -89,7 +89,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[+].code = #patch
-* rest.resource[=].interaction[=].documentation = "Only Task.[input, owner, focus, businessStatus] may be patched."
+* rest.resource[=].interaction[=].documentation = "Only Task.[input, owner, focus, businessStatus] may be patched, and only when Task.owner references the Placer organization."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[+].code = #create
 * insert ResourceDefaults

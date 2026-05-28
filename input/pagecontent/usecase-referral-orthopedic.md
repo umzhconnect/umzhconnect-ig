@@ -48,12 +48,12 @@ sequenceDiagram
     Placer-->>Placer: Practitioner fills out Questionnaire
     Placer->>Fulfiller: POST QuestionnaireResponse
     Fulfiller-->>Placer: created
-    Placer->>Fulfiller: PATCH Task (owner: Fulfiller, businessStatus: in-progress, input: QuestionnaireResponseSmokingStatus)
+    Placer->>Fulfiller: PATCH Task (owner: Fulfiller, input: QuestionnaireResponseSmokingStatus)
     Fulfiller-->>Placer: updated
     deactivate Placer
     deactivate Fulfiller
 
-    Fulfiller->>Fulfiller: Update Task<br/>(businessStatus: completed, output: Report)
+    Fulfiller->>Fulfiller: Update Task<br/>(status: completed, output: Report)
     activate Fulfiller
     Fulfiller-->>Placer: Notify Task updated
     activate Placer
@@ -89,14 +89,14 @@ The following table indicates the source of each field in the Task:
 
 | Field | Source | Description |
 |-------|--------|-------------|
-| `status` | Dynamic | Initial Task: `ready` (created by Placer). Updated Task: `in-progress` (after Fulfiller accepts and updates) |
+| `status` | Dynamic | Initial Task: `requested` (created by Placer). Updated Task: `in-progress` (after Fulfiller accepts and starts work) |
 | `intent` | Hard-coded | Fixed value `order` |
 | `priority` | Hard-coded | Fixed value `routine` |
 | `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
 | `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
 | `requester` | Referenced | The referring physician with their organizational context: [HansMusterRole](PractitionerRole-HansMusterRole.html) |
 | `owner` | Dynamic | Initial Task: Fulfiller (absolute URL to the registry [Organization](Organization-Fulfiller.html), e.g. `http://registry.example.org/fhir/Organization/Fulfiller`). When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. |
-| `businessStatus` | Dynamic | Initial Task: `ready`. When Fulfiller creates Questionnaire: changed to `awaiting-information`. When QuestionnaireResponse is created: changed to `in-progress` |
+| `businessStatus` | Dynamic | Initial Task: absent. When Fulfiller creates Questionnaire: set to `awaiting-information`. When QuestionnaireResponse is created: cleared (absent) |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
 | `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |

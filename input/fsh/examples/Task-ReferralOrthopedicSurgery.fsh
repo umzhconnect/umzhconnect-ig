@@ -3,7 +3,7 @@ InstanceOf: ChUmzhConnectCoordinationTask
 Usage: #example
 Title: "Task for Referral Orthopedic Surgery (Initial)"
 Description: "Initial Task created by Placer based on the ServiceRequest and sent to Fulfiller. Hosted on fulfiller."
-* status = #ready
+* status = #requested
 * intent = #order
 * priority = #routine
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)

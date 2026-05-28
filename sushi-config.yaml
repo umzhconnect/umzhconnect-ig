@@ -38,6 +38,8 @@ pages:
     title: Background
   core-concepts.md:
     title: Core Concepts
+  workflow-states.md:
+    title: Workflow States
   guidance-reference-architecture.md:
     title: Guidance - Reference Architecture
   guidance-implementation-notes.md:
@@ -61,6 +63,7 @@ menu:
   Home: index.html
   Background: background.html
   Core Concepts: core-concepts.html
+  Workflow States: workflow-states.html
   Security: security.html
   Guidance:
     Reference Architecture: guidance-reference-architecture.html

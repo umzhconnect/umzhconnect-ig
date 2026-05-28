@@ -5,7 +5,7 @@ Title: "CH UMZH Connect Coordination Task"
 Description: "CH UMZH Connect Coordination Task"
 
 * focus only Reference(ChUmzhConnectServiceRequest)
-* businessStatus from ChUmzhConnectTaskBusinessStatus (extensible)
+* businessStatus from http://hl7.org/fhir/uv/cow/ValueSet/business-status (extensible)
 
 * requester 1..1
 * requester only Reference(Organization)
