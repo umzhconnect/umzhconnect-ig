@@ -17,6 +17,15 @@ Initial Use Cases focus on the following resource types which are based on the p
 
 These content areas are intended to be expandable in the future.
 
+<div markdown="1" class="stu-note">
+
+This is the development version of the FHIR Implementation Guide. A first stable version will be published by mid June for the hl7.ch ballot. 
+
+[Changelog](changelog.html) with significant changes, open and closed issues.
+
+</div>
+**Download**: You can download this implementation guide in the [NPM package](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) format from [here](package.tgz).
+
 ### Workflow orientation
 
 This implementation guide is based on the core principles of [Clinical Order Workflow IG](http://hl7.org/fhir/uv/cow/ImplementationGuide/hl7.fhir.uv.cow) with a focus on the [*Task at Fulfiller*](https://build.fhir.org/ig/HL7/fhir-cow-ig/en/fulfiller-determination.html#task-at-fulfiller) principle where the Placer creates a ServiceRequest and POSTs a Task to the Fulfiller's FHIR server, with the ServiceRequest referenced in `Task.basedOn`. The Fulfiller manages the Task lifecycle and updates the Placer about progress and outcomes.
@@ -46,15 +55,7 @@ The detailed security concept can be found here:
 * [Orthopedic referral](usecase-referral-orthopedic.html)
 * [Sarcome tumorboard referral](usecase-referral-sarcoma-tumorboard.html)
 
-<!-- 
-<div markdown="1" class="stu-note">
 
-[Changelog](changelog.html) with significant changes, open and closed issues.
-
-</div>
--->
-
-<!-- **Download**: You can download this implementation guide in the [NPM package](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) format from [here](package.tgz). -->
 
 ### IP Statements
 This document is licensed under Creative Commons "No Rights Reserved" ([CC0](https://creativecommons.org/publicdomain/zero/1.0/)).
