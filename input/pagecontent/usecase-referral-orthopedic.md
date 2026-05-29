@@ -9,6 +9,8 @@ Comorbidities: The patient is already being treated for heart problems in cardio
 
 [Example Task (Updated - with Questionnaire)](Task-TaskReferralOrthopedicSurgeryUpdated.html)
 
+[Example Task (Completed - with Results)](Task-TaskReferralOrthopedicSurgeryCompleted.html)
+
 [Example Questionnaire (Smoking Status)](Questionnaire-QuestionnaireSmokingStatus.html)
 
 [Example QuestionnaireResponse (Smoking Status)](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html)
@@ -89,7 +91,7 @@ The following table indicates the source of each field in the Task:
 
 | Field | Source | Description |
 |-------|--------|-------------|
-| `status` | Dynamic | Initial Task: `requested` (created by Placer). Updated Task: `in-progress` (after Fulfiller accepts and starts work) |
+| `status` | Dynamic | Initial Task: `requested` (created by Placer). Updated Task: `in-progress` (after Fulfiller accepts and starts work). Completed Task: `completed` (after Fulfiller delivers the results) |
 | `intent` | Hard-coded | Fixed value `order` |
 | `priority` | Hard-coded | Fixed value `routine` |
 | `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
@@ -104,3 +106,6 @@ The following table indicates the source of each field in the Task:
 | `output[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Fulfiller creates Questionnaire) |
 | `input[0].type` | Hard-coded | `273510007` (only when QuestionnaireResponse is created) |
 | `input[0].valueReference` | Referenced | Relative reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
+| `output[1]` | Referenced | Completed Task: intermediary result — the pre-surgery [Appointment](Appointment-AppointmentOrthopedicConsultation.html) (orthopedic consultation timed before the surgery) |
+| `output[2]` | Referenced | Completed Task: final result — the [discharge report](DocumentReference-DocDischargeReportOrthopedics.html) (DocumentReference) |
+| `output[3]` | Referenced | Completed Task: final result — the [discharge medication](MedicationStatement-MedicationAspirin.html) (blood thinner after surgery) |
