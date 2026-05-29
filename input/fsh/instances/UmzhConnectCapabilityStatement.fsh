@@ -11,11 +11,18 @@ RuleSet: IdSearchParam
 * rest.resource[=].searchParam[=].type = #token
 * rest.resource[=].searchParam[=].documentation = "Logical id of this artifact"
 
+RuleSet: MandatoryIdSearchParam
+* rest.resource[=].searchParam[+].name = "_id"
+* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
+* rest.resource[=].searchParam[=].type = #token
+* rest.resource[=].searchParam[=].documentation = "Logical id of this artifact. **Mandatory** — searches without `_id` are not supported on this resource."
+
 RuleSet: ReadOnlyResource(type)
 * rest.resource[+].type = #{type}
 * rest.resource[=].interaction.code = #read
+* rest.resource[=].interaction.documentation = "Returns the {type} resource by logical id. The resource is returned only if it is reachable from the workflow root named in the token's `fhirContext` claim. Requests for resources outside the context graph are rejected with `403 Forbidden`."
 * insert ResourceDefaults
-* insert IdSearchParam
+* insert MandatoryIdSearchParam
 
 
 Instance: ChUmzhConnectCapabilityStatement
@@ -57,16 +64,22 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // Questionnaire: read + search-type
 * rest.resource[+].type = #Questionnaire
 * rest.resource[=].interaction[0].code = #search-type
+* rest.resource[=].interaction[=].documentation = "Search for Questionnaire definitions. Questionnaire is a definitional artefact shared across workflows; it carries no patient data and is **not** `fhirContext`-gated."
 * rest.resource[=].interaction[+].code = #read
+* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id. Definitional content — **not** `fhirContext`-gated."
 * insert ResourceDefaults
 * insert IdSearchParam
 
 // QuestionnaireResponse: search-type, update, read, create
 * rest.resource[+].type = #QuestionnaireResponse
 * rest.resource[=].interaction[0].code = #search-type
+* rest.resource[=].interaction[=].documentation = "Search for QuestionnaireResponses. Scoped via the mandatory `based-on` parameter to a Task accessible to the calling identity. Not `fhirContext`-gated."
 * rest.resource[=].interaction[+].code = #update
+* rest.resource[=].interaction[=].documentation = "Versioned update of a QuestionnaireResponse. Clients MUST supply the current version via the `If-Match` header (`versioning = versioned-update`, `conditionalUpdate = false`)."
 * rest.resource[=].interaction[+].code = #read
+* rest.resource[=].interaction[=].documentation = "Read a QuestionnaireResponse by logical id. Allowed if the linked Task (`QuestionnaireResponse.basedOn`) is accessible to the calling identity."
 * rest.resource[=].interaction[+].code = #create
+* rest.resource[=].interaction[=].documentation = "Create a QuestionnaireResponse. The created resource MUST reference an accessible Task via `basedOn`."
 * insert ResourceDefaults
 * rest.resource[=].searchParam.name = "based-on"
 * rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/QuestionnaireResponse-based-on"
@@ -76,22 +89,27 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // ServiceRequest: search-type, read + searchIncludes
 * rest.resource[+].type = #ServiceRequest
 * rest.resource[=].interaction[0].code = #search-type
+* rest.resource[=].interaction[=].documentation = "Search for ServiceRequests. Returns only ServiceRequests reachable from the token's `fhirContext` claim — in practice, the single ServiceRequest named by the token. `_id` is mandatory; `_include` is supported to materialise the workflow graph in one round-trip, and each included resource is itself subject to the `fhirContext` graph check."
 * rest.resource[=].interaction[+].code = #read
+* rest.resource[=].interaction[=].documentation = "Read a ServiceRequest by logical id. Returns the resource only if `{id}` matches the token's `fhirContext` claim."
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-reasonreference"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-supportinginfo"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-insurance"
-* insert IdSearchParam
+* insert MandatoryIdSearchParam
 
 // Task: search-type, patch, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
+* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server MUST enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller."
 * rest.resource[=].interaction[+].code = #patch
-* rest.resource[=].interaction[=].documentation = "Only Task.[input, owner, focus, businessStatus] may be patched, and only when Task.owner references the Placer organization."
+* rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched — other paths MUST be rejected."
 * rest.resource[=].interaction[+].code = #read
+* rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
+* rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller."
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "Task:ch-umzhconnectig-task-inputreference"
 * rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputreference"
