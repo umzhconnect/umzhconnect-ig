@@ -69,6 +69,7 @@ sequenceDiagram
 
 The following table indicates the source of each field in the ServiceRequest:
 
+{:class="table table-bordered"}
 | Field | Source | Description |
 |-------|--------|-------------|
 | `identifier[placerOrderIdentifier].system` | Generated or Hard-coded | TODO? |
@@ -87,6 +88,7 @@ The following table indicates the source of each field in the ServiceRequest:
 
 The following table indicates the source of each field in the Task:
 
+{:class="table table-bordered"}
 | Field | Source | Description |
 |-------|--------|-------------|
 | `status` | Dynamic | Initial Task: `requested` (created by Placer). Updated Task: `in-progress` (after Fulfiller accepts and starts work) |

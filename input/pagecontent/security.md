@@ -173,7 +173,7 @@ sequenceDiagram
   end
 ```
 
-How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Implementation Notes](guidance-implementation-notes.html#consent-based-context-enforcement).
+How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
 
 ### Authorization enforcement
 
@@ -207,7 +207,7 @@ UMZH-Connect therefore places the counter-party entitlement check **on the Resou
 2. Verify that the authenticated `party_id` (and/or `client_id`) is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that this organization is the fulfiller recorded on the `Task` derived from `ServiceRequest/sr-123`, or the placer of the `Task` whose status is being read.
 3. Verify that every requested resource is reachable from `fhirContext` in the FHIR reference graph.
 
-Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Implementation Notes](guidance-implementation-notes.html#consent-based-context-enforcement).
+Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
 
 In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such es a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in this project:
 

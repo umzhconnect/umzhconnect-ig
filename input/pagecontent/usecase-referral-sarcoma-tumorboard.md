@@ -18,6 +18,7 @@ This use case demonstrates a referral to a tumor board for cancer care review. T
 
 The following table indicates the source of each field in the ServiceRequest:
 
+{:class="table table-bordered"}
 | Field | Source | Description |
 |-------|--------|-------------|
 | `identifier[placerOrderIdentifier].value` | Generated | Unique referral order number (e.g., REF-2025-002) |

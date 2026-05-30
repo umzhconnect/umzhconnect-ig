@@ -2,9 +2,9 @@
 
 **CH UMZH Connect** is a FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral and external service order processes.
 
-The UMZH-connect project aims to improve digital connectivity for referrals and external orders (e.g., lab orders) between healthcare providers in the Zurich area, particularly the university hospitals. The system is designed to be extensible — both in terms of use cases and participating organizations.
+UMZH-Connect is a collaborative initiative to improve digital interoperability between healthcare providers in the Zurich ecosystem—initially focusing on university hospitals and close partners. Today, key processes such as referrals, transfers, and external orders (e.g., lab or radiology requests) still require manual re-entry of clinical and administrative information across systems, causing delays, inconsistencies, and avoidable workload. The project targets these friction points by enabling “push-button” and fully automated data exchange across participants, driven by concrete, high-value use cases that can be implemented quickly and measured in terms of business and clinical benefit.
 
-The goal is to establish an API framework that allows participants, as API consumers, to digitally create orders and referrals and, depending on the use case, access authorized data from each other. Hospitals — and later medical practices — will provide REST APIs that support read and write operations on authorized data scopes via web services.
+The intended solution is an API framework and shared implementation approach that allows providers to act as API producers and consumers using standardized, interoperable interfaces (e.g. FHIR and REST). A central element is a clearly defined “data contract” (FHIR implementation guidance) that supports both read and write operations for agreed workflows — starting with core referral/order content such as reason for request, diagnoses, history, medication, procedures, and administrative data, while remaining extensible for additional use cases and participants over time. The “data contract” is based on the international Clinical Order Workflow (COW) and customized for swiss-specifics in this UMZH-Connect FHIR IG.
 
 Initial Use Cases focus on the following resource types which are based on the profiles from [CH Core](https://fhir.ch/ig/ch-core/index.html) and [CH eTOC](https://fhir.ch/ig/ch-etoc/index.html):
 * Order, service request and clinical question
@@ -32,7 +32,7 @@ This implementation guide is based on the core principles of [Clinical Order Wor
 
 The core concepts and principles are depicted in detail here:
 
-[Core concepts](core-concepts.html)
+[Workflow oriented API design](core-concept-workflow-api.html)
 
 
 * **Resource Querying**: The Placer SHALL support the `_include` parameter for querying the ServiceRequest along with all referenced resources.

@@ -1,7 +1,3 @@
-### Core concepts
-
-The UMZH-connect project aims to improve digital connectivity for referrals and external orders (e.g. lab orders) between healthcare providers in the Zurich area, particularly the university hospitals. The system is designed to be extensible — both in terms of use cases and participating organizations.
-
 ### Workflow oriented API design
 
 This implementation guide is based on the core principles of [Clinical Order Workflow IG](https://hl7.org/fhir/uv/cow/2025May/core-concepts.html) with a focus on the [Task at Fulfiller](https://hl7.org/fhir/uv/cow/2025May/fulfiller-determination.html#task-at-fulfiller).
@@ -11,7 +7,7 @@ The COW (clinical order workflow) focuses on making clinical data available by A
 The COW refers to the requestor, referrer, and prescriber as the [**Placer**](ActorDefinition-ch-umzh-connect-placer.html) - the party who initiates the task, and the performer as the [**Fulfiller**](ActorDefinition-ch-umzh-connect-fulfiller.html) - the party that performs the requested service.
 The **CoordinationTask** (resourceType Task) serves as the central element and business object, linking resources - inputs and outputs - between the participating parties and managing workflow patterns (i.e. states etc.).
 
-The placer and filler provide their FHIR API endpoints to each other. Each organization is registered in a shared registry — see [Registry](#registry) below. External URLs for the organizations and resources referencing the other FHIR API must be absolute (see [partially closed, inter-linked systems](https://hl7.org/fhir/managing.html#using)).
+The placer and filler provide their FHIR API endpoints to each other. Each organization is registered in a shared registry — see [Registry](core-concept-registry.html). External URLs for the organizations and resources referencing the other FHIR API must be absolute (see [partially closed, inter-linked systems](https://hl7.org/fhir/managing.html#using)).
 
 The essentials of the **Task at Fulfillers** are illustrated in the following example:
 
@@ -60,22 +56,3 @@ sequenceDiagram
 
 
 The Task can be mutated by the Placer only via PATCH (RFC 6902, `application/json-patch+json`), and only when `Task.owner` references the Placer organization. The Placer may patch only the fields `owner`, `businessStatus`, `input`, and `focus`. See [Workflow States](workflow-states.html) for the state transitions in which this applies.
-
-### Registry
-
-All participating organizations — both Placers and Fulfillers — are registered in a shared **UMZH-Connect Registry**, inspired by [IHE mCSD (Mobile Care Services Discovery)](https://profiles.ihe.net/ITI/mCSD/volume-1.html#14641-concepts). The registry serves as a directory for discovering participating organizations, the services they offer, and their FHIR API endpoints.
-
-The registry comprises three interrelated resource types:
-
-- **Organization** — a participating healthcare provider (Placer or Fulfiller)
-- **Endpoint** — the FHIR REST API endpoint of an organization, linked via `Organization.endpoint`
-- **HealthcareService** — a specific service offered by an organization, linked to the organization via `HealthcareService.providedBy`
-
-```mermaid
-classDiagram
-    direction LR
-    Organization "0..*" --> "0..*" Endpoint : endpoint
-    HealthcareService "0..*" --> "0..1" Organization : providedBy
-```
-
-Because the registry is a shared, cross-organizational system, all references to registry-hosted resources must use absolute URLs (e.g. `http://registry.example.org/fhir/Organization/Fulfiller`). Consequently, any reference to a registry-hosted Organization must use an absolute URL — for example `Task.owner`, `Task.requester`, and `PractitionerRole.organization` (e.g. as used in `ServiceRequest.requester`) — rather than pointing to the local FHIR server of the Placer or Fulfiller.

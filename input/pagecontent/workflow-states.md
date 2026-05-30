@@ -17,7 +17,7 @@ This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/20
 
 **Rules:**
 
-- Only the Fulfiller may change `Task.status` — it is not patchable by the Placer (see [Core Concepts](core-concepts.html))
+- Only the Fulfiller may change `Task.status` — it is not patchable by the Placer (see [Workflow oriented API design](core-concept-workflow-api.html))
 - The Placer may only PATCH the Task when `Task.owner` references the Placer organization
 - The Placer may only PATCH the fields: `owner`, `businessStatus`, `input`, and `focus`
 - `Task.businessStatus` must only contain domain-specific workflow codes; `Task.status` codes must never be used as `businessStatus` values

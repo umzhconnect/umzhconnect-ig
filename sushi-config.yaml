@@ -34,46 +34,38 @@ dependencies:
 pages:
   index.md:
     title: Home
-  background.md:
-    title: Background
-  core-concepts.md:
-    title: Core Concepts
+  core-concept-workflow-api.md:
+    title: Workflow oriented API design
+  core-concept-registry.md:
+    title: Registry
   workflow-states.md:
     title: Workflow States
-  guidance-reference-architecture.md:
-    title: Guidance - Reference Architecture
-  guidance-implementation-notes.md:
-    title: Guidance - Implementation Notes
   usecase-referral-orthopedic.md:
     title: Referral - Orthopedic Surgery
   usecase-referral-sarcoma-tumorboard.md:
     title: Referral - Sarcoma Tumor Board
   security.md:
     title: Security
-  profiles.md:
-    title: Profiles
-  extensions.md:
-    title: Extensions
-  terminology.md:
-    title: Terminology
+  guidance-reference-architecture.md:
+    title: Reference Architecture
+  security-implementation.md:
+    title: Security Implementation
   changelog.md:
     title: Changelog
 
 menu:
   Home: index.html
-  Background: background.html
-  Core Concepts: core-concepts.html
-  Workflow States: workflow-states.html
-  Security: security.html
-  Guidance:
-    Reference Architecture: guidance-reference-architecture.html
-    Implementation Notes: guidance-implementation-notes.html
+  Core Concept:
+    Workflow oriented API design: core-concept-workflow-api.html
+    Registry: core-concept-registry.html
+    Workflow States: workflow-states.html
   Use Cases:
     Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
     Referral - Sarcoma Tumor Board: usecase-referral-sarcoma-tumorboard.html
-  Profiles: profiles.html
-  Extensions: extensions.html
-  Terminology: terminology.html
+  Security: security.html
+  Implementation Notes:
+    Reference Architecture: guidance-reference-architecture.html
+    Security Implementation: security-implementation.html
   Artifacts: artifacts.html
 
 # Parameters
