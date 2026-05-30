@@ -1,11 +1,19 @@
+<style>
+div.mermaid iframe {
+  width: 100% !important;
+  height: 250px !important;
+  border: 0 !important;
+}
+</style>
+
 ### Task Workflow States
 
 The `CoordinationTask` lifecycle is governed by two complementary fields:
 
 - **`Task.status`** — the FHIR base state machine ([Task state machine](https://hl7.org/fhir/task.html#statemachine)); reflects the overall lifecycle of the task
-- **`Task.businessStatus`** — a domain-specific qualifier that sits *alongside* `Task.status` to convey sub-states meaningful to the workflow; codes are drawn from [COW business status codes](https://build.fhir.org/ig/HL7/fhir-cow-ig/ValueSet-business-status.html)
+- **`Task.businessStatus`** — a domain-specific qualifier that sits *alongside* `Task.status` to convey sub-states meaningful to the workflow; codes are drawn from [COW business status codes](https://hl7.org/fhir/uv/cow/2025May/ValueSet-business-status.html)
 
-This IG follows the [COW Workflow State Overview](https://build.fhir.org/ig/HL7/fhir-cow-ig/workflow-state-overview.html) with the constraints documented below. Note that COW's `received` state is intentionally omitted in this version of the IG: a Task transitions directly from `requested` to `accepted` or `in-progress`.
+This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/2025May/workflow-state-overview.html) with the constraints documented below. Note that COW's `received` state is intentionally omitted in this version of the IG: a Task transitions directly from `requested` to `accepted` or `in-progress`.
 
 **Rules:**
 
@@ -43,6 +51,7 @@ stateDiagram-v2
 
 ### State Transition Table
 
+{:class="table table-bordered"}
 | State label | `Task.status` | `Task.businessStatus` | `Task.owner` | Who sets this | Notes |
 |---|---|---|---|---|---|
 | Requested | `requested` | — | Fulfiller org | Placer | Initial state when Task is POSTed to Fulfiller |

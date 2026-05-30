@@ -28,7 +28,7 @@ This is the development version of the FHIR Implementation Guide. A first stable
 
 ### Workflow orientation
 
-This implementation guide is based on the core principles of [Clinical Order Workflow IG](https://build.fhir.org/ig/HL7/fhir-cow-ig/) with a focus on the [*Task at Fulfiller*](https://build.fhir.org/ig/HL7/fhir-cow-ig/fulfiller-determination.html#task-at-fulfiller) principle where the Placer creates a ServiceRequest and POSTs a Task to the Fulfiller's FHIR server, with the ServiceRequest referenced in `Task.basedOn`. The Fulfiller manages the Task lifecycle and updates the Placer about progress and outcomes.
+This implementation guide is based on the core principles of [Clinical Order Workflow IG](https://hl7.org/fhir/uv/cow/2025May/) with a focus on the [*Task at Fulfiller*](https://hl7.org/fhir/uv/cow/2025May/fulfiller-determination.html#task-at-fulfiller) principle where the Placer creates a ServiceRequest and POSTs a Task to the Fulfiller's FHIR server, with the ServiceRequest referenced in `Task.basedOn`. The Fulfiller manages the Task lifecycle and updates the Placer about progress and outcomes.
 
 The core concepts and principles are depicted in detail here:
 

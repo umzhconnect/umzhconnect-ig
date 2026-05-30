@@ -4,7 +4,7 @@ The UMZH-connect project aims to improve digital connectivity for referrals and 
 
 ### Workflow oriented API design
 
-This implementation guide is based on the core principles of [Clinical Order Workflow IG](https://build.fhir.org/ig/HL7/fhir-cow-ig/core-concepts.html) with a focus on the [Task at Fulfiller](https://build.fhir.org/ig/HL7/fhir-cow-ig/fulfiller-determination.html#task-at-fulfiller).
+This implementation guide is based on the core principles of [Clinical Order Workflow IG](https://hl7.org/fhir/uv/cow/2025May/core-concepts.html) with a focus on the [Task at Fulfiller](https://hl7.org/fhir/uv/cow/2025May/fulfiller-determination.html#task-at-fulfiller).
 
 The COW (clinical order workflow) focuses on making clinical data available by API to relevant actors and notifying the partners about task in contrast to sending the bundled data to the partner in commonly used 'fire-and-forget' mode.
 
