@@ -4,7 +4,7 @@ The UMZH-connect project aims to improve digital connectivity for referrals and 
 
 ### Workflow oriented API design
 
-This implementation guide is based on the core principles of [Clinical Order Workflow IG](http://hl7.org/fhir/uv/cow/ImplementationGuide/hl7.fhir.uv.cow) with a focus on the [Task at Fulfiller](https://build.fhir.org/ig/HL7/fhir-cow-ig/en/fulfiller-determination.html#task-at-fulfiller).
+This implementation guide is based on the core principles of [Clinical Order Workflow IG](https://hl7.org/fhir/uv/cow/2025May/core-concepts.html) with a focus on the [Task at Fulfiller](https://hl7.org/fhir/uv/cow/2025May/fulfiller-determination.html#task-at-fulfiller).
 
 The COW (clinical order workflow) focuses on making clinical data available by API to relevant actors and notifying the partners about task in contrast to sending the bundled data to the partner in commonly used 'fire-and-forget' mode.
 
@@ -59,7 +59,7 @@ sequenceDiagram
 ```
 
 
-The Task can be mutated by the Placer only via PATCH (RFC 6902, `application/json-patch+json`) and only for the fields `owner`, `businessStatus`, `input`, and `focus`.
+The Task can be mutated by the Placer only via PATCH (RFC 6902, `application/json-patch+json`), and only when `Task.owner` references the Placer organization. The Placer may patch only the fields `owner`, `businessStatus`, `input`, and `focus`. See [Workflow States](workflow-states.html) for the state transitions in which this applies.
 
 ### Registry
 
