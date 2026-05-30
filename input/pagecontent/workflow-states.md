@@ -22,6 +22,7 @@ This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/20
 - The Placer may only PATCH the fields: `owner`, `businessStatus`, `input`, and `focus`
 - `Task.businessStatus` must only contain domain-specific workflow codes; `Task.status` codes must never be used as `businessStatus` values
 - Cancellation by the Placer is not foreseen in this version of the IG
+- Negative terminal states use base-FHIR `rejected` (Fulfiller declines before starting) and `failed` (accepted but not completed) rather than COW's `cancelled + statusReason`; COW's `cancelled` ("not selected") pattern assumes a multi-Fulfiller selection flow that is out of scope here
 
 ### State Diagram
 
