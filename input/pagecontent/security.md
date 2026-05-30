@@ -1,3 +1,17 @@
+<style>
+div.mermaid iframe {
+  width: 100% !important;
+  height: 150px !important;
+  border: 0 !important;
+}
+.mermaid-tall div.mermaid iframe {
+  height: 480px !important;
+}
+.mermaid-middle div.mermaid iframe {
+  height: 350px !important;
+}
+</style>
+
 In this article:
 
 - [Introduction](#introduction)
@@ -156,6 +170,8 @@ The issued token also carries an organization identity claim inside the `extensi
 
 Below is an example of the full token-request and resource-access sequence:
 
+<div class="mermaid-tall" markdown="1">
+
 ```mermaid
 sequenceDiagram
   title Context-bound token flow (Fulfiller fetching ServiceRequest)
@@ -183,11 +199,15 @@ sequenceDiagram
   end
 ```
 
-How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
+</div>
+
+How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Implementation Notes](guidance-implementation-notes.html#consent-based-context-enforcement).
 
 ### Authorization enforcement
 
-An enterprise grade web-service architecture, involves a number of steps for processing an HTTP request - DMZ / Firewall, TLS (HTTPS) termination, authentication, request routing, request processing and fine-grained authorization on resource server, etc.
+An enterprise grade web-service architecture, involves a number of steps for processing an HTTP request - DMZ / Firewall, TLS (HTTPS) termination, authentication, request routing, request processing and fine-grained authorization on resource server,
+
+<div class="mermaid-middle" markdown="1">
 
 ```mermaid
 flowchart TB
@@ -196,6 +216,8 @@ flowchart TB
     PE -->|Yes/No| API
     API[API gateway] --->|Route request| RS[Resource Server]
 ```
+
+</div>
 
 We can think of a 3 step process to enforce security:
 
