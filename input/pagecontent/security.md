@@ -45,7 +45,7 @@ Todays de-facto standard for securing Web-APIs is **OAuth & OpenID Connect**. In
 flowchart LR
     Client <-->|Client Authentication & Token Issue| AS[Authorization Server]
     Client <-->|Presents Token<br>Grants or Denies Access| RS[Resource Server]
-    RS -->|Validates Token (not strictly tied to AS)| AS
+    RS -->|Validates Token — not strictly tied to AS| AS
 ```
 
 **Machine-To-Machine communication**
