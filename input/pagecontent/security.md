@@ -1,11 +1,13 @@
 In this article:
 
 - [Introduction](#introduction)
-- [Genaral approach - OAuth](#general-approach---oauth)
+- [General approach - OAuth](#general-approach---oauth)
 - [Health specifics - SMARTonFHIR](#health-specifics---smartonfhir)
 - [Context-centric authorization](#context-centric-authorization)
 - [Authorization enforcement](#authorization-enforcement)
 - [Security enhancement](#security-enhancement)
+- [Policy triggers - governance rules for up-leveling](#policy-triggers---governance-rules-for-up-leveling)
+- [High risk, level 3 and the applicability of the FAPI2.0 profile](#high-risk-level-3-and-the-applicability-of-the-fapi20-profile)
 - [Relationship to other security profiles](#relationship-to-other-security-profiles)
 
 
@@ -48,7 +50,7 @@ flowchart LR
 
 **Machine-To-Machine communication**
 
-Our principal focus will be on machine-to-machine communication: an organization allowing access to a set of data records to another organization without knowing which person is actually sending the request. It is likely that in later scenarios this option should also be considered an can be achieved by using alternative OAuth flows.
+Our principal focus will be on machine-to-machine communication: an organization allowing access to a set of data records to another organization without knowing which person is actually sending the request. It is likely that in later scenarios this option should also be considered and can be achieved by using alternative OAuth flows.
 
 The **client-credentials OAuth flow** is the common way to approach this, where the client presents credentials and information about the action is it about to execute (scopes) to the resource server and in exchange receives an **access token.**
 
@@ -67,7 +69,7 @@ In practice, it gives app developers and systems a predictable, interoperable me
 
 In our particular case we use SMART in the context of our use cases, for example:
 
-- Ask permission to create a task resource at party X - scope: system/Task.w
+- Ask permission to create a task resource at party X - scope: system/Task.c
 - Ask permission to read service request data from party Y - scope: system/ServiceRequest.rs
 
 ### Context-centric authorization
@@ -92,7 +94,7 @@ The client communicates the workflow context to the Authorization Server using t
 
 > **Note:** `authorization_details` is the same extension point used by [OpenID for Verifiable Credential Issuance (OID4VCI)](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) to carry credential requests (`type: "openid_credential"`). UMZH-Connect follows the identical pattern with a custom type (`"umzh-connect-context"`), making the approach consistent with emerging identity standards and leveraging the same AS infrastructure — for example Keycloak's RAR support — that OID4VCI relies on.
 
-The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension; `identifier` follows RFC 9396 semantics — a plain string identifying a specific resource at the API:
+The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension; `id` is a type-specific field (RFC 9396 permits authorization-details types to define their own fields) carrying a plain string that references the workflow resource — named `id` rather than `identifier` to avoid confusion with FHIR's business `Identifier`:
 
 ```http
 POST /token HTTP/1.1
@@ -133,7 +135,7 @@ The Authorization Server maps the `authorization_details` context into a `fhirCo
   "iss": "https://auth.umzhconnect.ch",
   "sub": "fulfiller-app",
   "aud": "https://fhir.placer.example",
-  "exp": 1234567890,
+  "exp": 1716470800,
   "scope": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
   "party_id": "https://registry.example.org/fhir/Organization/fulfiller-org",
   "fhirContext": [
@@ -157,13 +159,12 @@ sequenceDiagram
   participant FHIR as FHIR Server (Placer)
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
-  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, identifier: ServiceRequest/sr-123}]
+  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, id: ServiceRequest/sr-123}]
   AS-->>C: JWT { smart_scopes, party_id, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
   AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
-  note right of AG
-    The following interactions are logical and can be split between services or embedded within the FHIR Server (Placer)
+  Note right of AG: The following interactions are logical <br> and can be split between services or embedded within the FHIR Server (Placer)
   AG->>PE: AuthZ request: client, operation, resource, fhirContext
   PE->>FHIR: Evaluate whether requested resource(s)<br/>are within ServiceRequest/sr-123 graph
   PE-->>AG: Permit / Deny
@@ -211,11 +212,11 @@ UMZH-Connect therefore places the counter-party entitlement check **on the Resou
 
 Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
 
-In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such es a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in this project:
+In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such as a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in this project:
 
 [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway)
 
-Our general approach is to whitelist only the neccessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
+Our general approach is to whitelist only the necessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
 
 ### Security enhancement
 
@@ -255,7 +256,7 @@ At Level 2, UMZH-Connect aligns with **[SMART App Launch v2 — Backend Services
 | **2** | `private_key_jwt` (JWKS registered at onboarding) | Production default; medium/high-risk scopes; external partners | No shared secrets; stronger client proof; easier key rotation | Manage JWKS + key rollover; validate signed assertions       |
 | **3** | mTLS (optionally sender-constrained tokens)       | Highest-risk scopes; regulated workflows; large-scale ecosystem | Strong client identity binding; replay resistance            | Certificate lifecycle + trust model; revocation/rotation processes |
 
-## Policy triggers - governance rules for up-leveling
+### Policy triggers - governance rules for up-leveling
 
 Use policy triggers to make the ladder actionable and predictable. The goal is to avoid “security by negotiation” and keep onboarding consistent.
 
@@ -287,7 +288,7 @@ A possible scope mapping may look like:
 - **Write / workflow-triggering scopes** → Level 2 minimum.
 - **Bulk/export/high-risk scopes** → Level 3.
 
-## High risk, level 3 and the applicability of the FAPI2.0 profile
+### High risk, level 3 and the applicability of the FAPI2.0 profile
 
 The generic client credentials flow has potential security weaknesses. The main risks are:
 
