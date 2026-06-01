@@ -11,7 +11,7 @@ Description: "Initial Task created by Placer based on the ServiceRequest and sen
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
 * code = http://hl7.org/fhir/CodeSystem/task-code#fulfill "Fulfill the focal request"
-* requester = Reference(http://placer.example.org/fhir/PractitionerRole/HansMusterRole)
+* requester = Reference(http://registry.example.org/fhir/Organization/Placer)
 * owner = Reference(http://registry.example.org/fhir/Organization/Fulfiller)
 * authoredOn = "2025-12-15"
 * focus = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
