@@ -24,6 +24,12 @@ RuleSet: ReadOnlyResource(type)
 * insert ResourceDefaults
 * insert MandatoryIdSearchParam
 
+RuleSet: UrlSearchParam
+* rest.resource[=].searchParam[+].name = "url"
+* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Questionnaire-url"
+* rest.resource[=].searchParam[=].type = #uri
+* rest.resource[=].searchParam[=].documentation = "Canonical URL of the Questionnaire. Used to resolve a Questionnaire referenced by canonical."
+
 
 Instance: ChUmzhConnectCapabilityStatement
 InstanceOf: CapabilityStatement
@@ -66,20 +72,21 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for Questionnaire definitions. Questionnaire is a definitional artefact shared across workflows; it carries no patient data and is **not** `fhirContext`-gated."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id. Definitional content — **not** `fhirContext`-gated."
+* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id or by canonical URL (url). Definitional content — **not** `fhirContext`-gated."
 * insert ResourceDefaults
 * insert IdSearchParam
+* insert UrlSearchParam
 
 // QuestionnaireResponse: search-type, update, read, create
 * rest.resource[+].type = #QuestionnaireResponse
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for QuestionnaireResponses. Scoped via the mandatory `based-on` parameter to a Task accessible to the calling identity. Not `fhirContext`-gated."
 * rest.resource[=].interaction[+].code = #update
-* rest.resource[=].interaction[=].documentation = "Versioned update of a QuestionnaireResponse. Clients MUST supply the current version via the `If-Match` header (`versioning = versioned-update`, `conditionalUpdate = false`)."
+* rest.resource[=].interaction[=].documentation = "Versioned update of a QuestionnaireResponse. Clients SHALL supply the current version via the `If-Match` header (`versioning = versioned-update`, `conditionalUpdate = false`)."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a QuestionnaireResponse by logical id. Allowed if the linked Task (`QuestionnaireResponse.basedOn`) is accessible to the calling identity."
 * rest.resource[=].interaction[+].code = #create
-* rest.resource[=].interaction[=].documentation = "Create a QuestionnaireResponse. The created resource MUST reference an accessible Task via `basedOn`."
+* rest.resource[=].interaction[=].documentation = "Create a QuestionnaireResponse. The created resource SHALL reference an accessible Task via `basedOn`."
 * insert ResourceDefaults
 * rest.resource[=].searchParam.name = "based-on"
 * rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/QuestionnaireResponse-based-on"
@@ -103,9 +110,9 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // Task: search-type, patch, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server MUST enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller."
+* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller."
 * rest.resource[=].interaction[+].code = #patch
-* rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched — other paths MUST be rejected."
+* rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched — other paths SHALL be rejected."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
