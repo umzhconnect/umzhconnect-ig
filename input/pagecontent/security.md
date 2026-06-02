@@ -20,7 +20,6 @@ In this article:
 - [Context-centric authorization](#context-centric-authorization)
 - [Authorization enforcement](#authorization-enforcement)
 - [Client authentication](#client-authentication)
-- [Relationship to other security profiles](#relationship-to-other-security-profiles)
 
 
 ### Introduction
@@ -66,7 +65,7 @@ Our principal focus will be on machine-to-machine communication: an organization
 
 The **client-credentials OAuth flow** is the common way to approach this: the client presents its credentials and the scopes describing the action it is about to perform to the **authorization server**, and in exchange receives an **access token.**
 
-The access token again the client injects in the request to the **resource server** (the organization holding the sensitive patient data) and the latter can validate the token and grant or deny access.
+The client then injects this access token into its request to the **resource server** (the organization holding the sensitive patient data), which validates it and grants or denies access.
 
 ### Health specifics - SMARTonFHIR
 
@@ -75,14 +74,14 @@ SMART on FHIR defines a **standard way for apps to securely connect to healthcar
 - **OAuth 2.0–based authorization**
 - **FHIR as the data API**
 - **A consistent launch protocol** for apps inside or outside an EHR
-- **A unified way to request permissions** using SMART scopes (i.e. **system/Patient.r** - read patient data etc..)
+- **A unified way to authorize access** using SMART scopes (e.g. **system/Patient.r** - read patient data etc..)
 
 In practice, it gives app developers a predictable, interoperable method to authenticate, obtain tokens, and read/write clinical data across different EHR systems without custom integrations.
 
 In our particular case we use SMART in the context of our use cases, for example:
 
-- Ask permission to create a task resource at party X - scope: system/Task.w
-- Ask permission to read service request data from party Y - scope: system/ServiceRequest.rs
+- Permission to create a task resource at party X - scope: system/Task.c
+- Permission to read service request data from party Y - scope: system/ServiceRequest.rs
 
 ### Context-centric authorization
 
@@ -236,14 +235,10 @@ The `authorization_details` parameter is a **client-asserted** statement of cont
 UMZH-Connect therefore places the counter-party entitlement check **on the Resource Server's policy engine**, alongside the graph-walk. For every incoming request the RS MUST:
 
 1. Validate the token (signature, issuer, audience, expiry, and sender-constraint where applicable).
-2. Verify that `extensions.umzhconnect.organization_reference` is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that `extensions.umzhconnect.organization_reference` matches `Task.owner.reference` for a fulfiller fetching a ServiceRequest, or `Task.requester.reference` for a placer reading Task status. This is a direct string comparison: the AS embeds the registry URL at token issuance from the onboarding record, so no live registry lookup is required.
+2. Verify that `extensions.umzhconnect.organization_reference` is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that `extensions.umzhconnect.organization_reference` matches `Task.requester.reference` for a placer reading Task status. This is a direct string comparison: the AS embeds the registry URL at token issuance from the onboarding record, so no live registry lookup is required.
 3. Verify that every requested resource is reachable from `fhirContext` in the FHIR reference graph.
 
 Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
-
-In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such as a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in the [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway) project.
-
-Our general approach is to whitelist only the neccessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
 
 ### Client authentication
 
@@ -251,27 +246,4 @@ UMZH-Connect authenticates clients to the token endpoint with **`private_key_jwt
 
 This aligns UMZH-Connect with **[SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)**: clients authenticate to the token endpoint with `private_key_jwt` against a JWKS registered at onboarding, and SMART system scopes (`system/<Resource>.<perms>`) are carried in the standard `scope` parameter — not in a custom claim. No `openid` scope is requested, since these are pure machine-to-machine exchanges with no user identity. The single deliberate divergence from Backend Services is the per-request **`fhirContext` claim** embedded in the issued JWT access token (see [Context-centric authorization](#context-centric-authorization)), which binds each token to a specific workflow object. SMART defines `fhirContext` only as a token-response parameter; promoting it into the access token is what makes context enforceable at the Resource Server without an extra introspection call.
 
-> The client-authentication *method* is the one part of this profile expected to vary by deployment risk — pilots may begin with a simpler shared-secret rung, and high-assurance deployments may add mutual TLS (mTLS) with [FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) hardening — while the **authorization model and APIs stay identical**. The full staged ladder, the governance triggers for moving between rungs, and the FAPI 2.0 discussion are described in [Implementation Notes — Staged client-authentication model](security-implementation.html#staged-client-authentication-model).
-
-### Relationship to other security profiles
-
-This section positions the UMZH-Connect security concept against three reference profiles that target overlapping problem spaces. The single architectural choice that distinguishes UMZH-Connect from all three is **context-bound tokens**: every access token is issued for one specific workflow object (a `ServiceRequest` or `Task`) carried in the JWT as a `fhirContext` claim, derived from an [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details` request. None of the reference profiles standardize this per-request binding.
-
-**References:**
-
-- [SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)
-- [HL7 FAST UDAP Security for Scalable Registration, Authentication, and Authorization](https://hl7.org/fhir/us/udap-security/)
-- [CH EPR FHIR — Get Access Token [ITI-71]](https://www.fhir.ch/ig/ch-epr-fhir/iti-71.html), the Swiss national profile of the [IHE IUA](https://profiles.ihe.net/ITI/IUA/index.html) Get Access Token transaction.
-
-{:class="table table-bordered"}
-| Aspect | UMZH-Connect | [SMART Backend Services v2](https://hl7.org/fhir/smart-app-launch/backend-services.html) | [HL7 FAST UDAP](https://hl7.org/fhir/us/udap-security/) | [CH EPR ITI-71 (IUA)](https://www.fhir.ch/ig/ch-epr-fhir/iti-71.html) |
-|---|---|---|---|---|
-| Primary scope | M2M, per-workflow context | M2M, pre-authorized scopes | M2M + user via Tiered OAuth | M2M + healthcare professional / assistant |
-| Trust onboarding | Bilateral JWKS at onboarding; mTLS w/ open CA for high assurance | Out-of-band pre-registration | UDAP Dynamic Client Reg + community X.509 CA | Per-CH-EPR policy; registered actors |
-| Client auth | `private_key_jwt` (JWKS at onboarding); mTLS option for high assurance | `private_key_jwt` mandatory | `private_key_jwt` w/ UDAP cert; mTLS option | `private_key_jwt` + HTTP Message Signatures ([RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421)) |
-| Scope vocabulary | SMART `system/*` in `scope` | SMART `system/*` in `scope` | SMART-compatible + UDAP extensions | Profile-specific (`launch`, EPR scopes) |
-| Per-request workflow context | **[RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) + `fhirContext` JWT claim** | Not addressed | Not addressed | Not addressed |
-| Caller-organization identity | `extensions.umzhconnect.organization_reference` (registry URL) — follows [IHE IUA](https://profiles.ihe.net/ITI/IUA/index.html) `extensions` container pattern | Not standardized | UDAP B2B `hl7-b2b` extension (`organization_id`, `organization_name`, `purpose_of_use`) | `extensions.ihe_iua` + `extensions.ch_epr` |
-| User identity in M2M | Not in scope | Out-of-band for `user/`/`patient/` | Tiered OAuth → user's OIDC IdP | Mandatory `subject_name`, `subject_role`, `purpose_of_use` |
-| Token format | JWT | JWT | JWT | JWT only (JWE forbidden) |
-| Hardening reference | [FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) (high-assurance option) | OAuth 2.0 BCP | UDAP profiles + cert policies | OAuth 2.1 + [RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421) |
+For a comparison of the UMZH-Connect security model against related profiles (SMART Backend Services, UDAP, CH EPR ITI-71), see [Security Implementation — Relationship to other security profiles](security-implementation.html#relationship-to-other-security-profiles).
