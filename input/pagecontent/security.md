@@ -31,7 +31,7 @@ The reference use case: a placer creates a Task at the fulfiller that references
 
 OAuth 2.0 and OpenID Connect are today’s de-facto standard for securing APIs; SMART on FHIR profiles them for health-specific use cases, and the OpenID Foundation’s FAPI 2.0 adds hardening for higher-risk scenarios. UMZH-Connect builds directly on these standards and adds only the measures its workflow-bound use cases require.
 
-The focus is machine-to-machine interaction, central to referral and order workflows. Client authentication uses `private_key_jwt` as the baseline (see [Client authentication](#client-authentication)), with a staged path from shared secrets (pilots) to mTLS (high assurance) described in the [Implementation Notes](guidance-implementation-notes.html#staged-client-authentication-model). The model is intended to extend in future to user- and human-centric authentication — in particular the Swiss E-ID initiative for identifying registered users — which is out of scope for this page.
+The focus is machine-to-machine interaction, central to referral and order workflows. Client authentication uses `private_key_jwt` as the baseline (see [Client authentication](#client-authentication)), aligning with [SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html). The model is intended to extend in future to user- and human-centric authentication — in particular the Swiss E-ID initiative for identifying registered users — which is out of scope for this page.
 
 ### General approach - OAuth
 
@@ -201,7 +201,7 @@ sequenceDiagram
 
 </div>
 
-How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Implementation Notes](guidance-implementation-notes.html#consent-based-context-enforcement).
+How a party enforces this context internally — for example by maintaining a local FHIR Consent resource keyed to the workflow object — is a local implementation concern, described in [Implementation Notes](security-implementation.html#consent-based-context-enforcement).
 
 ### Authorization enforcement
 
@@ -251,7 +251,7 @@ UMZH-Connect authenticates clients to the token endpoint with **`private_key_jwt
 
 This aligns UMZH-Connect with **[SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)**: clients authenticate to the token endpoint with `private_key_jwt` against a JWKS registered at onboarding, and SMART system scopes (`system/<Resource>.<perms>`) are carried in the standard `scope` parameter — not in a custom claim. No `openid` scope is requested, since these are pure machine-to-machine exchanges with no user identity. The single deliberate divergence from Backend Services is the per-request **`fhirContext` claim** embedded in the issued JWT access token (see [Context-centric authorization](#context-centric-authorization)), which binds each token to a specific workflow object. SMART defines `fhirContext` only as a token-response parameter; promoting it into the access token is what makes context enforceable at the Resource Server without an extra introspection call.
 
-> The client-authentication *method* is the one part of this profile expected to vary by deployment risk — pilots may begin with a simpler shared-secret rung, and high-assurance deployments may add mutual TLS (mTLS) with [FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) hardening — while the **authorization model and APIs stay identical**. The full staged ladder, the governance triggers for moving between rungs, and the FAPI 2.0 discussion are described in [Implementation Notes — Staged client-authentication model](guidance-implementation-notes.html#staged-client-authentication-model).
+> The client-authentication *method* is the one part of this profile expected to vary by deployment risk — pilots may begin with a simpler shared-secret rung, and high-assurance deployments may add mutual TLS (mTLS) with [FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) hardening — while the **authorization model and APIs stay identical**. The full staged ladder, the governance triggers for moving between rungs, and the FAPI 2.0 discussion are described in [Implementation Notes — Staged client-authentication model](security-implementation.html#staged-client-authentication-model).
 
 ### Relationship to other security profiles
 
