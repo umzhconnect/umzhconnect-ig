@@ -35,7 +35,7 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 ### Read-only resources
 
-Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `DiagnosticReport`, `DocumentReference`, `ImagingStudy`, `Immunization`, `MedicationStatement`, `Observation`, `Organization`, `Patient`, `Practitioner`, `PractitionerRole`, `Procedure`.
+Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `DiagnosticReport`, `DocumentReference`, `ImagingStudy`, `Immunization`, `Medication`, `MedicationStatement`, `Observation`, `Organization`, `Patient`, `Practitioner`, `PractitionerRole`, `Procedure`.
 
 | Interaction | Path | Notes |
 |---|---|---|
@@ -114,7 +114,6 @@ Search parameters:
 | `search-type` | `GET /QuestionnaireResponse?based-on=Task/{id}` | Scoped via `basedOn` to a Task accessible to the calling identity. |
 | `read` | `GET /QuestionnaireResponse/{id}` | Allowed if the linked Task is accessible to the calling identity. |
 | `create` | `POST /QuestionnaireResponse` | The created resource SHALL reference an accessible Task via `basedOn`. |
-| `update` | `PUT /QuestionnaireResponse/{id}` | Versioned update (`versioning = versioned-update`); supply the current `ETag` via `If-Match`. |
 {: .table .table-bordered }
 
 Search parameters:

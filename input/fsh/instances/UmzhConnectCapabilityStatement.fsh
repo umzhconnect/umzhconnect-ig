@@ -81,8 +81,6 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[+].type = #QuestionnaireResponse
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for QuestionnaireResponses. Scoped via the mandatory `based-on` parameter to a Task accessible to the calling identity. Not `fhirContext`-gated."
-* rest.resource[=].interaction[+].code = #update
-* rest.resource[=].interaction[=].documentation = "Versioned update of a QuestionnaireResponse. Clients SHALL supply the current version via the `If-Match` header (`versioning = versioned-update`, `conditionalUpdate = false`)."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a QuestionnaireResponse by logical id. Allowed if the linked Task (`QuestionnaireResponse.basedOn`) is accessible to the calling identity."
 * rest.resource[=].interaction[+].code = #create
