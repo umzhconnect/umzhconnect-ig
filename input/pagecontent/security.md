@@ -56,7 +56,7 @@ Today's de-facto standard for securing Web-APIs is **OAuth & OpenID Connect**. I
 flowchart LR
     Client <-->|Client Authentication & Token Issue| AS[Authorization Server]
     Client <-->|Presents Token<br>Grants or Denies Access| RS[Resource Server]
-    RS -->|Validates Token| AS
+    RS -->|Validates Token — not strictly tied to AS| AS
 ```
 
 **Machine-To-Machine communication**
@@ -76,7 +76,7 @@ SMART on FHIR defines a **standard way for apps to securely connect to healthcar
 - **A consistent launch protocol** for apps inside or outside an EHR
 - **A unified way to authorize access** using SMART scopes (e.g. **system/Patient.r** - read patient data etc..)
 
-In practice, it gives app developers a predictable, interoperable method to authenticate, obtain tokens, and read/write clinical data across different EHR systems without custom integrations.
+In practice, it gives app developers and systems a predictable, interoperable method to authenticate, obtain tokens, and read/write clinical data across different EHR systems without custom integrations.
 
 In our particular case we use SMART in the context of our use cases, for example:
 
@@ -95,7 +95,7 @@ Rather than minting a separate consent record and communicating its identifier t
 | Direction | Initiator | Context resource |
 |-----------|-----------|-----------------|
 | Fulfiller → Placer | Fulfiller fetches ServiceRequest and its forward-referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
-| Placer → Fulfiller | Placer reads Task status and forward-referenced output resources | **Task ID** (on Fulfiller’s FHIR server) |
+| Placer → Fulfiller | Placer creates Tasks and reads Task status and forward-referenced output resources | **Task ID** (on Fulfiller’s FHIR server) |
 
 Context as part of the authorization flow may logically not be necessary — the restricting party may check all its workflow objects and verify whether one matches the current API request. However, defining the context identification as part of the authorization flow and access token may significantly simplify the authorization enforcement. The API consumer in essence tells the API provider in which **context** the API request is executed.
 
@@ -152,7 +152,7 @@ The issued token also carries an organization identity claim inside the `extensi
   "iss": "https://auth.umzhconnect.ch",
   "sub": "fulfiller-app",
   "aud": "https://fhir.placer.example",
-  "exp": 1234567890,
+  "exp": 1716470800,
   "scope": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
   "extensions": {
     "umzhconnect": {
@@ -187,6 +187,7 @@ sequenceDiagram
 
   C->>AG: API request + Authorization: Bearer <token>
   AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
+  Note right of AG: The following interactions are logical <br> and can be split between services or embedded within the FHIR Server (Placer)
   AG->>PE: AuthZ request: client, operation, resource, fhirContext
   PE->>FHIR: Evaluate whether requested resource(s)<br/>are within ServiceRequest/sr-123 graph
   PE-->>AG: Permit / Deny
