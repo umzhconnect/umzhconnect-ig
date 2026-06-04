@@ -119,7 +119,7 @@ grant_type=client_credentials
 &scope=system/ServiceRequest.rs system/Patient.r system/Condition.r
 &authorization_details=[{
   "type": "umzh-connect-context",
-  "id": "ServiceRequest/sr-123"
+  "identifier": "ServiceRequest/sr-123"
 }]
 ```
 
@@ -182,7 +182,7 @@ sequenceDiagram
   participant FHIR as FHIR Server (Placer)
 
   Note over C,AS: Machine-to-machine: Client Credentials flow
-  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, id: ServiceRequest/sr-123}]
+  C->>AS: Token request (client auth) + scope<br/>+ authorization_details [{type, identifier: ServiceRequest/sr-123}]
   AS-->>C: JWT { scope, extensions.umzhconnect.organization_reference, fhirContext: [{reference: "ServiceRequest/sr-123"}] }<br/>(optional: sender-constrained)
 
   C->>AG: API request + Authorization: Bearer <token>
