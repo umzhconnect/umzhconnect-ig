@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### STU 1 (2025-12-15)
+* [#69](https://github.com/umzhconnect/umzhconnect-ig/issues/69): Relax the ServiceRequest `supportingInfo[medicationstatement]` slice from CH EMED to CH Core MedicationStatement (CH EMED mandates a contained Medication; CH Core also allows a non-contained one). Also adjust the orthopedic discharge-medication example to reference a standalone (non-contained) `Medication` resource as a demonstration
 * [#71](https://github.com/umzhconnect/umzhconnect-ig/issues/71): Relax `ServiceRequest.reasonReference` cardinality from 1..1 to 0..1
 * [#52](https://github.com/umzhconnect/umzhconnect-ig/issues/52): Add a completed Task example for the orthopedic referral with results in `Task.output` — an intermediary pre-surgery consultation Appointment plus a discharge report (DocumentReference) and discharge medication
 * [#42](https://github.com/umzhconnect/umzhconnect-ig/issues/42): Align Task.status and Task.businessStatus with COW — drop local `ChUmzhConnectTaskBusinessStatus` value set, bind `Task.businessStatus` to the COW `business-status` value set, switch the initial Task.status from `ready` to `requested`, add a Workflow States page, and require that Placer PATCHes are only valid when `Task.owner` is the Placer

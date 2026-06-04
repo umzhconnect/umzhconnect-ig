@@ -83,7 +83,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `requester` | Referenced | the referring physician with their organizational context |
 | `authoredOn` | Current date | Date when the referral was created |
 | `reasonReference` | Referenced | Primary diagnosis: [Suspected ACL Rupture](Condition-SuspectedACLRupture.html). If the primary diagnosis is unknown, all diagnoses go to supportingInfo as Condition. The title of the diagnosis is captured in `Condition.code.text` whereas any additional description in `Condition.note.text`. |
-| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html) |
+| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html). Note: these MedicationStatements carry a *contained* Medication (the drug detail is embedded inline in the resource). |
 | `note.text` | Manual entry | Free-text clinical note entered ad-hoc for the referral |
 
 #### Task Field Sources
@@ -110,4 +110,4 @@ The following table indicates the source of each field in the Task:
 | `input[0].valueReference` | Referenced | Relative reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
 | `output[1]` | Referenced | Completed Task: intermediary result — the pre-surgery [Appointment](Appointment-AppointmentOrthopedicConsultation.html) (orthopedic consultation timed before the surgery) |
 | `output[2]` | Referenced | Completed Task: final result — the [discharge report](DocumentReference-DocDischargeReportOrthopedics.html) (DocumentReference) |
-| `output[3]` | Referenced | Completed Task: final result — the [discharge medication](MedicationStatement-MedicationAspirin.html) (blood thinner after surgery) |
+| `output[3]` | Referenced | Completed Task: final result — the [discharge medication](MedicationStatement-MedicationAspirin.html) (blood thinner after surgery). Note: in contrast to the contained medications above, this MedicationStatement references a *standalone (non-contained)* [Medication](Medication-MedAspirin.html) resource. |

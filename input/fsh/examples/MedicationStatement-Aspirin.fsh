@@ -3,7 +3,6 @@ InstanceOf: CHCoreMedicationStatement
 Usage: #example
 Title: "Discharge Medication Aspirin"
 Description: "Aspirin (Acetylsalicylic acid 100 mg) blood thinner for thromboprophylaxis after knee surgery. Discharge medication referenced in the completed Coordination Task output. Hosted on fulfiller."
-* contained[0] = MedAspirin
 * status = #active
 * medicationReference = Reference(MedAspirin)
 * subject = Reference(PetraMeier)
@@ -14,7 +13,9 @@ Description: "Aspirin (Acetylsalicylic acid 100 mg) blood thinner for thrombopro
 
 Instance: MedAspirin
 InstanceOf: CHCoreMedication
-Usage: #inline
+Usage: #example
+Title: "Medication Aspirin"
+Description: "Aspirin (Acetylsalicylic acid 100 mg) film tablet. Standalone (non-contained) Medication resource referenced by the discharge MedicationStatement."
 * code.coding[0] = $atc#B01AC06 "Acetylsalicylic acid"
 * code.text = "Aspirin (Filmtabl 100 mg)"
 * form.coding[0] = $edqm#10221000 "Filmtablette"

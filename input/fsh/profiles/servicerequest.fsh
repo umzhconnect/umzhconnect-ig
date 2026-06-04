@@ -22,7 +22,7 @@ Description: "CH UMZH Connect ServiceRequest is derived from CH eTOC"
 * supportingInfo[devices] only Reference(ChEtocDevice)
 * supportingInfo[socialHistory] only Reference(ChEtocSocialHistoryCondition)
 * supportingInfo[functionalStatus] only Reference(ChEtocFunctionalStatusCondition)
-* supportingInfo[medicationstatement] only Reference(ChEmedMedicationStatement)
+* supportingInfo[medicationstatement] only Reference(CHCoreMedicationStatement)
 * supportingInfo[allergiesIntolerances] only Reference(ChEtocAllergyIntolerance)
 * supportingInfo[immunizations] only Reference(ChEtocImmunization)
 // * supportingInfo[observation] only Reference(Observation) are the below four sufficient?
