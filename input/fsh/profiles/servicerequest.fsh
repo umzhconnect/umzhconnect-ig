@@ -5,7 +5,7 @@ Title: "CH UMZH Connect ServiceRequest"
 Description: "CH UMZH Connect ServiceRequest is derived from CH eTOC"
 * . ^short = "CH UMZH Connect ServiceRequest"
 * category from ChUmzhConnectServiceRequestCategoryVS (extensible)
-* reasonReference 1..1
+* reasonReference 0..1
 * reasonReference only Reference(ChEtocPrimaryDiagnosisCondition)
 * supportingInfo[secondarydiagnosis] only Reference(ChEtocSecondaryDiagnosisCondition) 
 
