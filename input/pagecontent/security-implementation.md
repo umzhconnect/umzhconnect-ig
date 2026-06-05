@@ -89,7 +89,7 @@ The [Security](security.html#client-authentication) page defines `private_key_jw
 
 #### Why a staged model
 
-As the basic client credentials flow is subject to a number of security weaknesses, we define a stepwise security up-leveling approach for client authentication. Initial integrations may start with basic client credentials to enable rapid onboarding and piloting. As participants move to production and access higher-risk scopes, authentication is upgraded to `private_key_jwt`, replacing shared secrets with asymmetric keys registered during onboarding — without requiring a central PKI. For the highest-assurance scenarios, the ecosystem supports mutual TLS (mTLS), strengthening client identity binding and reducing token replay risks. This staged model preserves a consistent authorization flow while providing a clear, operationally manageable path to stronger security: partners can join quickly with minimal operational overhead, and then adopt stronger mechanisms when justified by risk, regulatory requirements, or production needs.
+As the basic client credentials flow is subject to a number of security weaknesses, we define a stepwise security up-leveling approach for client authentication. Initial integrations may start with basic client credentials to enable rapid onboarding and piloting. As participants move to production and access higher-risk scopes, authentication is upgraded to `private_key_jwt`, replacing shared secrets with asymmetric keys registered during onboarding — without requiring a central PKI. For the highest-assurance scenarios, the ecosystem supports sender-constrained tokens via mTLS or DPoP, strengthening client identity binding and reducing token replay risks. This staged model preserves a consistent authorization flow while providing a clear, operationally manageable path to stronger security: partners can join quickly with minimal operational overhead, and then adopt stronger mechanisms when justified by risk, regulatory requirements, or production needs.
 
 #### Level 1 — Basic client credentials (shared secret)
 
@@ -104,12 +104,14 @@ As the basic client credentials flow is subject to a number of security weakness
 
 The production baseline, defined normatively on the [Security](security.html#client-authentication) page: the client registers its public key / JWKS with the Authorization Server at onboarding and authenticates to the token endpoint by signing a JWT assertion with the private key. No shared secrets; cleaner key rotation; improved proof-of-possession; SMART Backend Services conformant. Operationally it requires JWKS registration, a rotation procedure, and key rollover support.
 
-#### Level 3 — mTLS (mutual TLS)
+#### Level 3 — Sender-constrained tokens (mTLS or DPoP)
 
 - **Goal:** highest assurance for client identity binding and stronger replay resistance.
-- **Mechanism:** client presents an X.509 certificate at the TLS layer; the authorization server (and optionally the resource server) validates it. Optionally, tokens can be sender-constrained to the client certificate.
+- **Mechanism:** the access token is cryptographically bound to the client, so a stolen token cannot be replayed by a party that does not possess the matching key. Two interchangeable mechanisms qualify:
+  - **mTLS** ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705)) — the client presents an X.509 certificate at the TLS layer; the authorization server (and optionally the resource server) validates it and injects the client context from the transport into the application layer. Tokens are sender-constrained to the client certificate.
+  - **DPoP** ([RFC 9449](https://www.rfc-editor.org/rfc/rfc9449)) — the client proves possession of a key on each request via a signed `DPoP` HTTP header, binding the token to that key without requiring TLS client certificates.
 - **Key benefits:** strong client authentication; reduced token replay risk; high confidence in client identity.
-- **Operational needs:** certificate lifecycle management (issuance, rotation, revocation), trust anchors (internal CA or managed PKI), and monitoring.
+- **Operational needs:** for mTLS, certificate lifecycle management (issuance, rotation, revocation), trust anchors (internal CA or managed PKI), and monitoring; for DPoP, client-side key management and server-side proof validation (nonce handling, replay caching).
 
 #### Level comparison
 
@@ -117,8 +119,8 @@ The production baseline, defined normatively on the [Security](security.html#cli
 | Level | Client authentication                             | When to use                                                  | Security benefits                                            | Operational footprint                                        |
 | :---- | :------------------------------------------------ | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
 | **1** | Basic client credentials (shared secret)          | Sandbox, PoC, low-risk scopes, early pilots                  | Quick start; baseline access control                         | Secret distribution + rotation; higher blast radius if leaked |
-| **2** | `private_key_jwt` (JWKS registered at onboarding) | Production default; medium/high-risk scopes; external partners | No shared secrets; stronger client proof; easier key rotation | Manage JWKS + key rollover; validate signed assertions       |
-| **3** | mTLS (optionally sender-constrained tokens)       | Highest-risk scopes; regulated workflows; large-scale ecosystem | Strong client identity binding; replay resistance            | Certificate lifecycle + trust model; revocation/rotation processes |
+| **2** | `private_key_jwt` (JWKS registered at onboarding) | Production default; medium/high-risk scopes; external partners | No shared secrets; easier key rotation | Manage JWKS + key rollover; validate signed assertions       |
+| **3** | Sender-constrained tokens (mTLS or DPoP)          | Highest-risk scopes; regulated workflows; large-scale ecosystem | Strong client identity binding; replay resistance            | mTLS: certificate lifecycle + trust model; DPoP: key + proof validation |
 
 #### Governance triggers for up-leveling
 
@@ -132,7 +134,7 @@ Use policy triggers to make the ladder actionable and predictable. The goal is t
 - Integration handles **sensitive clinical content** beyond minimal administrative data.
 - **Audit requirements** demand stronger attribution than shared secrets can provide.
 
-**Mandate Level 3 (mTLS)** when **any** of the following applies:
+**Mandate Level 3 (sender-constrained tokens — mTLS or DPoP)** when **any** of the following applies:
 
 - Access to **high-impact scopes** (e.g., broad patient search, bulk data export, or highly sensitive categories).
 - **High-volume / high-automation** clients (service-to-service) where replay risk and credential theft impact is elevated.
@@ -146,7 +148,7 @@ Use policy triggers to make the ladder actionable and predictable. The goal is t
 - **Write / workflow-triggering scopes** → Level 2 minimum.
 - **Bulk/export/high-risk scopes** → Level 3.
 
-#### High assurance: mTLS and FAPI 2.0
+#### High assurance: sender-constrained tokens and FAPI 2.0
 
 The generic client credentials flow has potential security weaknesses. The main risks are:
 
@@ -156,13 +158,15 @@ The generic client credentials flow has potential security weaknesses. The main 
 
 At Level 3 (high-risk), employing mTLS cryptographically binds the token (or at least the session) to the client's TLS certificate, so the token is only usable when presented over a TLS connection that proves possession of the matching private key.
 
-mTLS and other additional security enhancements are included in the definition of [OpenID FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) in order to mitigate these risks by adding standardized measures defined by RFCs (RFC 5280, RFC 8705, RFC 6749, RFC 7519). In essence it defines how to
+Alternatively, DPoP ([RFC 9449](https://www.rfc-editor.org/rfc/rfc9449)) achieves an equivalent sender-constraint at the application layer: the client signs a proof carried in the `DPoP` HTTP header on each request, binding the token to a client-held key without TLS client certificates — a lighter-weight path to client-bound tokens where managing an X.509 trust store is impractical.
 
-- add mTLS transport security to all connections
-- populate tokens with cryptographic information
-- pass cryptographic information between transport and application layer
+Sender-constrained tokens (via mTLS or DPoP) and other security enhancements are included in the definition of [OpenID FAPI 2.0](https://openid.net/specs/fapi-security-profile-2_0-final.html) in order to mitigate these risks by adding standardized measures defined by RFCs (RFC 5280, RFC 8705, RFC 9449, RFC 6749, RFC 7519). In essence it defines how to
 
-FAPI 2.0 enforcement adds requirements to classical certificate management with PKI infrastructure. Reference implementations (like Denmark) make use of a central PKI infrastructure and certificate issuance and signing, which reduces client-side complexity (trust store etc.) but requires central trust and carries single-point-of-failure risk.
+- require TLS on all connections and sender-constrain tokens to the client via mTLS or DPoP
+- populate tokens with cryptographic key-binding information
+- pass that cryptographic information between transport and application layer
+
+When mTLS is used, FAPI 2.0 enforcement adds requirements to classical certificate management with PKI infrastructure. Reference implementations (like Denmark) make use of a central PKI infrastructure and certificate issuance and signing, which reduces client-side complexity (trust store etc.) but requires central trust and carries single-point-of-failure risk. DPoP avoids this PKI burden by binding tokens to a client-held key at the application layer instead.
 
 ### Relationship to other security profiles
 
@@ -179,7 +183,7 @@ This section positions the UMZH-Connect security concept against three reference
 |---|---|---|---|---|
 | Primary scope | M2M, per-workflow context | M2M, pre-authorized scopes | M2M + user via Tiered OAuth | M2M + healthcare professional / assistant |
 | Trust onboarding | Bilateral JWKS at onboarding; mTLS w/ open CA for high assurance | Out-of-band pre-registration | UDAP Dynamic Client Reg + community X.509 CA | Per-CH-EPR policy; registered actors |
-| Client auth | `private_key_jwt` (JWKS at onboarding); mTLS option for high assurance | `private_key_jwt` mandatory | `private_key_jwt` w/ UDAP cert; mTLS option | `private_key_jwt` + HTTP Message Signatures ([RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421)) |
+| Client auth | `private_key_jwt` (JWKS at onboarding); sender-constrained tokens (mTLS or DPoP) for high assurance | `private_key_jwt` mandatory | `private_key_jwt` w/ UDAP cert; mTLS option | `private_key_jwt` + HTTP Message Signatures ([RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421)) |
 | Scope vocabulary | SMART `system/*` in `scope` | SMART `system/*` in `scope` | SMART-compatible + UDAP extensions | Profile-specific (`launch`, EPR scopes) |
 | Per-request workflow context | **[RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) + `fhirContext` JWT claim** | Not addressed | Not addressed | Not addressed |
 | Caller-organization identity | `extensions.umzhconnect.organization_reference` (registry URL) — follows [IHE IUA](https://profiles.ihe.net/ITI/IUA/index.html) `extensions` container pattern | Not standardized | UDAP B2B `hl7-b2b` extension (`organization_id`, `organization_name`, `purpose_of_use`) | `extensions.ihe_iua` + `extensions.ch_epr` |
