@@ -60,4 +60,20 @@
         background-color: #0000ff;
     }
 
+    /* Informative Implementation Note callout — calm, non-warning */
+    .impl-note {
+        margin: 1em 0;
+        padding: 12px 16px;
+        background-color: #f5f7fa;          /* light neutral */
+        border-left: 4px solid #0000ff;     /* UMZH blue accent */
+        border-radius: 3px;
+    }
+    .impl-note::before {
+        content: "Implementation Note";
+        display: block;
+        font-weight: bold;
+        color: #0000ff;
+        margin-bottom: 4px;
+    }
+
     </style>

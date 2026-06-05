@@ -1,10 +1,16 @@
+<div markdown="1" class="impl-note">
+
+This page is **informative** — optional guidance that adds no conformance requirements. It illustrates possible ways to satisfy the authorization and client-authentication models defined normatively on the [Security](security.html) page; conforming systems may adopt other mechanisms that meet the same requirements.
+
+</div>
+
 ### Consent-based context enforcement
 
 The [Security](security.html) page defines the UMZH-Connect authorization model: workflow context is communicated via `authorization_details` at the token endpoint and reflected as a `fhirContext` claim in the issued JWT. The actual enforcement of that context — verifying that requested resources fall within the authorized graph — is left to each party's implementation.
 
 In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such as a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in the [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway) project. Our general approach is to whitelist only the necessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
 
-This page describes one recommended implementation pattern using a FHIR **Consent** resource as a local access-control record.
+This section describes one recommended implementation pattern using a FHIR **Consent** resource as a local access-control record.
 
 #### Consent-based enforcement
 
