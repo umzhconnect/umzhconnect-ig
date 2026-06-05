@@ -54,7 +54,7 @@ When the Resource Server receives an API request carrying a JWT with a `fhirCont
 GET /Consent?data=ServiceRequest/sr-123&status=active
 ```
 
-If an active Consent is found and `token.extensions.umzhconnect.organization_reference` matches `Consent.provision.actor.reference`, and the Consent hasn't expired, the request is permitted for any resource within the ServiceRequest graph. If no active Consent exists — because it was never created, has expired, or has been revoked — the request is denied.
+If an active Consent is found and `extensions.umzhconnect.organization_reference` matches `Consent.provision.actor.reference`, and the Consent hasn't expired, the request is permitted for any resource within the ServiceRequest graph. If no active Consent exists — because it was never created, has expired, or has been revoked — the request is denied.
 
 `FHIRpath` equivalent:
 
@@ -62,12 +62,12 @@ If an active Consent is found and `token.extensions.umzhconnect.organization_ref
 Consent.where(
   status = 'active'
   and provision.data.reference.reference.where(matches('(^|/)' + %context + '$')).exists()
-  and provision.actor.reference.reference.where(matches('(^|/)' + %party_id + '$')).exists()
+  and provision.actor.reference.reference.where(matches('(^|/)' + %organization_reference + '$')).exists()
   and (provision.period.end.empty() or provision.period.end >= now())
 ).exists()
 ```
 
-where `%context` is the `fhirContext` reference from the access token and `%party_id` is the `party_id` claim. The `matches('(^|/)…$')` form tolerates references stored as either relative (`ServiceRequest/sr-123`) or absolute (`https://placer.example/fhir/ServiceRequest/sr-123`) URLs. It assumes literal, non-versioned references; versioned (`/_history/…`), `urn:uuid:`, logical (`identifier`-based), or contained (`#…`) references require normalizing the stored reference on write, after which a plain `=` comparison suffices.
+where `%context` is the `fhirContext` reference from the access token and `%organization_reference` is the `extensions.umzhconnect.organization_reference` claim. The `matches('(^|/)…$')` form tolerates references stored as either relative (`ServiceRequest/sr-123`) or absolute (`https://placer.example/fhir/ServiceRequest/sr-123`) URLs. It assumes literal, non-versioned references; versioned (`/_history/…`), `urn:uuid:`, logical (`identifier`-based), or contained (`#…`) references require normalizing the stored reference on write, after which a plain `=` comparison suffices.
 
 #### Expiration
 
