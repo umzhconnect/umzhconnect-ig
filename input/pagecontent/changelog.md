@@ -1,5 +1,8 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
+### Unreleased
+* [#60](https://github.com/umzhconnect/umzhconnect-ig/issues/60): Add Guidance - Interactions page documenting all CapabilityStatement interactions, SMART scopes, `fhirContext` gating, and Task search scoping; mark `_id` as mandatory in the CapabilityStatement search params for clinical resources and ServiceRequest
+
 ### STU 1 (2025-12-15)
 * [#69](https://github.com/umzhconnect/umzhconnect-ig/issues/69): Relax the ServiceRequest `supportingInfo[medicationstatement]` slice from CH EMED to CH Core MedicationStatement (CH EMED mandates a contained Medication; CH Core also allows a non-contained one). Also adjust the orthopedic discharge-medication example to reference a standalone (non-contained) `Medication` resource as a demonstration
 * [#71](https://github.com/umzhconnect/umzhconnect-ig/issues/71): Relax `ServiceRequest.reasonReference` cardinality from 1..1 to 0..1
