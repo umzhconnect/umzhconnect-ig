@@ -18,12 +18,12 @@ fhirVersion: 4.0.1
 copyrightYear: 2024+
 releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
 publisher:
-  name: UMZH
+  name: UMZH Connect Team
 contact:
-  - name: UMZH
+  - name: UMZH Connect
     telecom:
       - system: url
-        value: https://umzh.uzh.ch/
+        value: https://umzhconnect.ch/
 
 dependencies:
   ch.fhir.ig.ch-core: 6.0.0 # https://fhir.ch/ig/ch-core/index.html
@@ -61,6 +61,7 @@ menu:
     Workflow oriented API design: core-concept-workflow-api.html
     Registry: core-concept-registry.html
     Workflow States: workflow-states.html
+    Interactions: guidance-interactions.html
   Use Cases:
     Referral - Orthopedic Surgery: usecase-referral-orthopedic.html
     Referral - Sarcoma Tumor Board: usecase-referral-sarcoma-tumorboard.html
@@ -68,7 +69,6 @@ menu:
   Implementation Notes:
     Reference Architecture: guidance-reference-architecture.html
     Security Implementation: security-implementation.html
-    Interactions: guidance-interactions.html
   Artifacts: artifacts.html
 
 # Parameters

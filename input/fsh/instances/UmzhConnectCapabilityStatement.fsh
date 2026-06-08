@@ -77,19 +77,15 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * insert IdSearchParam
 * insert UrlSearchParam
 
-// QuestionnaireResponse: search-type, update, read, create
+// QuestionnaireResponse: create, read
 * rest.resource[+].type = #QuestionnaireResponse
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for QuestionnaireResponses. Scoped via the mandatory `based-on` parameter to a Task accessible to the calling identity. Not `fhirContext`-gated."
+* rest.resource[=].interaction[=].documentation = "Search for QuestionnaireResponses. Implicitly scoped to QuestionnaireResponses accessible to the calling identity."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a QuestionnaireResponse by logical id. Allowed if the linked Task (`QuestionnaireResponse.basedOn`) is accessible to the calling identity."
+* rest.resource[=].interaction[=].documentation = "Read a QuestionnaireResponse by logical id. Allowed if the linked parent ServiceRequest is accessible to the calling identity."
 * rest.resource[=].interaction[+].code = #create
-* rest.resource[=].interaction[=].documentation = "Create a QuestionnaireResponse. The created resource SHALL reference an accessible Task via `basedOn`."
+* rest.resource[=].interaction[=].documentation = "Create a QuestionnaireResponse. The created resource SHALL reference an accessible ServiceRequest via `basedOn`."
 * insert ResourceDefaults
-* rest.resource[=].searchParam.name = "based-on"
-* rest.resource[=].searchParam.definition = "http://hl7.org/fhir/SearchParameter/QuestionnaireResponse-based-on"
-* rest.resource[=].searchParam.type = #reference
-* rest.resource[=].searchParam.documentation = "Plan/proposal/order fulfilled by this questionnaire response"
 
 // ServiceRequest: search-type, read + searchIncludes
 * rest.resource[+].type = #ServiceRequest

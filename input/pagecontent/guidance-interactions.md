@@ -111,9 +111,9 @@ Search parameters:
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /QuestionnaireResponse?based-on=Task/{id}` | Scoped via `basedOn` to a Task accessible to the calling identity. |
+| `search-type` | `GET /QuestionnaireResponse` | Implicitly scoped to QuestionnaireResponses accessible to the calling identity. |
 | `read` | `GET /QuestionnaireResponse/{id}` | Allowed if the linked Task is accessible to the calling identity. |
-| `create` | `POST /QuestionnaireResponse` | The created resource SHALL reference an accessible Task via `basedOn`. |
+| `create` | `POST /QuestionnaireResponse` | The created resource SHALL reference an accessible ServiceRequest via `basedOn`. |
 {: .table .table-bordered }
 
 Search parameters:
