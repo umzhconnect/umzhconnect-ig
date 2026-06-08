@@ -3,6 +3,7 @@ InstanceOf: QuestionnaireResponse
 Usage: #example
 Title: "Smoking Status Questionnaire Response"
 Description: "QuestionnaireResponse sent by Placer to Fulfiller providing the patient's smoking status. Hosted on fulfiller."
+# basedOn = Reference(http://placer.example.org/fhir/ReferralOrthopedicSurgery)
 * status = #completed
 * questionnaire = Canonical(QuestionnaireSmokingStatus)
 * subject = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
