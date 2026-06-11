@@ -1,6 +1,6 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
-### Unreleased
+### 1.0.0-ballot (2026-06-10)
 * [#60](https://github.com/umzhconnect/umzhconnect-ig/issues/60): Add Guidance - Interactions page documenting all CapabilityStatement interactions, SMART scopes, `fhirContext` gating, and Task search scoping; mark `_id` as mandatory in the CapabilityStatement search params for clinical resources and ServiceRequest
 
 ### STU 1 (2025-12-15)

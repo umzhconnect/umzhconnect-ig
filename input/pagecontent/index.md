@@ -19,7 +19,8 @@ These content areas are intended to be expandable in the future.
 
 <div markdown="1" class="stu-note">
 
-This is the development version of the FHIR Implementation Guide. A first stable version will be published by mid June for the hl7.ch ballot. 
+This implementation guide is under informative ballot by [HL7 Switzerland](https://www.hl7.ch/) from August 4th, 2026 until September 30th, 2026.
+Please add your feedback via the 'Propose a change'-link in the footer.
 
 [Changelog](changelog.html) with significant changes, open and closed issues.
 
