@@ -1,5 +1,9 @@
 {
   "package-id": "ch.fhir.ig.ch-umzh-connect",
+  "title": "CH UMZH Connect",
+  "introduction": "FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes",
+  "category": "National Base",
+  "ci-build": "http://fhir.ch/ig/ch-umzh-connect",
   "version": "1.0.0-ballot",
   "path": "http://fhir.ch/ig/ch-umzh-connect/1.0.0-ballot",
   "mode": "milestone",
@@ -7,5 +11,8 @@
   "sequence": "DSTU 1",
   "desc": "CH UMZH Connect Informative Ballot",
   "changes": "changelog.html",
-  "first": true
+  "first": true,
+  "registry-description": "FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes",
+  "registry-country": "ch",
+  "registry-authority": "UMZH"
 }
