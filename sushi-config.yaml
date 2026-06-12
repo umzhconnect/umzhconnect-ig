@@ -8,7 +8,7 @@ canonical: http://fhir.ch/ig/ch-umzh-connect
 name: CHUMZHConnect
 title: 'CH UMZH Connect IG (R4)'
 description: FHIR Implementation Guide for the University Medicine Zurich (UMZH) focusing on referral processes
-status: draft # draft | active | retired | unknown
+status: active # draft | active | retired | unknown
 license: CC0-1.0
 copyright: CC0-1.0
 jurisdiction: urn:iso:std:iso:3166#CHE
