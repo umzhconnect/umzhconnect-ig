@@ -4,7 +4,7 @@
   "path": "http://fhir.ch/ig/ch-umzh-connect/1.0.0-ballot",
   "mode": "milestone",
   "status": "ballot",
-  "sequence": "STU 1",
+  "sequence": "DSTU 1",
   "desc": "CH UMZH Connect Informative Ballot",
   "changes": "changelog.html",
   "first": true
