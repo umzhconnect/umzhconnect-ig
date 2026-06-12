@@ -12,7 +12,7 @@ status: active # draft | active | retired | unknown
 license: CC0-1.0
 copyright: CC0-1.0
 jurisdiction: urn:iso:std:iso:3166#CHE
-date: 2026-06-10
+date: 2026-06-12
 version: 1.0.0-ballot
 fhirVersion: 4.0.1
 copyrightYear: 2024+
