@@ -3,7 +3,7 @@
   "title": "CH UMZH Connect",
   "introduction": "FHIR Implementation Guide for the UMZH-connect project extending Swiss standards (CH Core, CH eTOC) with an API framework based on the international Clinical Order Workflow (COW) for common b2b transactions between healthcare providers",
   "category": "National Base",
-  "ci-build": "http://fhir.ch/ig/ch-umzh-connect",
+  "ci-build": "https://build.fhir.org/ig/umzhconnect/umzhconnect-ig",
   "version": "1.0.0-ballot",
   "path": "http://fhir.ch/ig/ch-umzh-connect/1.0.0-ballot",
   "mode": "milestone",
