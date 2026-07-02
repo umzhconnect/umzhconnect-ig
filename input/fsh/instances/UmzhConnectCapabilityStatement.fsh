@@ -96,9 +96,9 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
-* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-reasonreference"
-* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-supportinginfo"
-* rest.resource[=].searchInclude[+] = "ServiceRequest:ch-umzhconnectig-servicerequest-insurance"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:reason-reference"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:supporting-info"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:insurance"
 * insert MandatoryIdSearchParam
 
 // Task: search-type, patch, read, create + multiple searchParams
@@ -112,9 +112,9 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].interaction[+].code = #create
 * rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller."
 * insert ResourceDefaults
-* rest.resource[=].searchInclude[0] = "Task:ch-umzhconnectig-task-inputreference"
-* rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputreference"
-* rest.resource[=].searchInclude[+] = "Task:ch-umzhconnectig-task-outputcanonical"
+* rest.resource[=].searchInclude[0] = "Task:input-value-reference"
+* rest.resource[=].searchInclude[+] = "Task:output-value-reference"
+* rest.resource[=].searchInclude[+] = "Task:output-value-canonical"
 * rest.resource[=].searchParam[0].name = "owner"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-owner"
 * rest.resource[=].searchParam[=].type = #reference

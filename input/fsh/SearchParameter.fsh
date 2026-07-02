@@ -4,7 +4,7 @@ Usage: #definition
 * name = "ch-umzhconnectig-servicerequest-reasonreference"
 * description = "Custom search parameter for ServiceRequest.reasonReference"
 * status = #active
-* code = #ch-umzhconnectig-servicerequest-reasonreference
+* code = #reason-reference
 * base = #ServiceRequest
 * type = #reference
 * expression = "ServiceRequest.reasonReference"
@@ -17,7 +17,7 @@ Usage: #definition
 * name = "ch-umzhconnectig-servicerequest-supportinginfo"
 * description = "Custom search parameter for ServiceRequest.supportingInfo"
 * status = #active
-* code = #ch-umzhconnectig-servicerequest-supportinginfo
+* code = #supporting-info
 * base = #ServiceRequest
 * type = #reference
 * expression = "ServiceRequest.supportingInfo"
@@ -30,7 +30,7 @@ Usage: #definition
 * name = "ch-umzhconnectig-servicerequest-insurance"
 * description = "Custom search parameter for ServiceRequest.insurance"
 * status = #active
-* code = #ch-umzhconnectig-servicerequest-insurance
+* code = #insurance
 * base = #ServiceRequest
 * type = #reference
 * expression = "ServiceRequest.insurance"
@@ -43,7 +43,7 @@ Usage: #definition
 * name = "ch-umzhconnectig-task-inputreference"
 * description = "Custom search parameter for Task.input.valueReference"
 * status = #active
-* code = #ch-umzhconnectig-task-inputreference
+* code = #input-value-reference
 * base = #Task
 * type = #reference
 * expression = "Task.input.value as Reference"
@@ -56,7 +56,7 @@ Usage: #definition
 * name = "ch-umzhconnectig-task-outputreference"
 * description = "Custom search parameter for Task.output.valueReference"
 * status = #active
-* code = #ch-umzhconnectig-task-outputreference
+* code = #output-value-reference
 * base = #Task
 * type = #reference
 * expression = "Task.output.value as Reference"
@@ -69,7 +69,7 @@ Usage: #definition
 * name = "ch-umzhconnectig-task-outputcanonical"
 * description = "Custom search parameter for Task.output.valueCanonical"
 * status = #active
-* code = #ch-umzhconnectig-task-outputcanonical
+* code = #output-value-canonical
 * base = #Task
 * type = #reference
 * expression = "Task.output.value as Canonical"

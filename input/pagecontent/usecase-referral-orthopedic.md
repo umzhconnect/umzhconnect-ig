@@ -59,7 +59,7 @@ sequenceDiagram
     activate Fulfiller
     Fulfiller-->>Placer: Notify Task updated
     activate Placer
-    Placer->> Fulfiller: GET Task?_id=...&_include=Task:ch-umzhconnectig-task-outputreference
+    Placer->> Fulfiller: GET Task?_id=...&_include=Task:output-value-reference
     Fulfiller-->>Placer: return result (Bundle)
     deactivate Placer
     deactivate Fulfiller

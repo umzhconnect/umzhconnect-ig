@@ -64,7 +64,7 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | **mandatory** | Logical id. Searches without `_id` are not supported. |
-| `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:ch-umzhconnectig-servicerequest-reasonreference`, `ServiceRequest:ch-umzhconnectig-servicerequest-supportinginfo`, `ServiceRequest:ch-umzhconnectig-servicerequest-insurance`. Each included resource is itself subject to the `fhirContext` graph check. |
+| `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the `fhirContext` graph check. |
 {: .table .table-bordered }
 
 The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` (or the equivalent `read` with `_include`) to materialise the workflow graph in one round-trip.
@@ -87,7 +87,7 @@ Search parameters:
 | `owner` | reference | optional | Filter by `Task.owner`. |
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
-| `_include` | — | optional | Supported targets: `Task:ch-umzhconnectig-task-inputreference`, `Task:ch-umzhconnectig-task-outputreference`, `Task:ch-umzhconnectig-task-outputcanonical`. |
+| `_include` | — | optional | Supported targets: `Task:input-value-reference`, `Task:output-value-reference`, `Task:output-value-canonical`. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
