@@ -96,6 +96,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
+* rest.resource[=].searchInclude[+] = "ServiceRequest:requester"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:reason-reference"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:supporting-info"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:insurance"
