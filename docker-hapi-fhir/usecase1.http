@@ -176,12 +176,12 @@ Accept: application/fhir+json
 ### _include=PractitionerRole:practitioner -> does not work out of the box (maybe because indirect)
 ### for reasonReference, insurance supportingInfo we need do define search parameters and configure them on the hapi-fhir server, otherwise the resources will not be returned
 
-GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:ch-umzhconnectig-servicerequest-insurance
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:insurance
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
 ###
-GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:ch-umzhconnectig-servicerequest-reasonreference
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:reason-reference
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -212,7 +212,7 @@ Accept: application/fhir+json
 
 
 ### Get Task on Fulfiller (including Questionnaire)
-GET http://fulfiller.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:ch-umzhconnectig-task-inputreference&_include=Task:ch-umzhconnectig-task-outputcanonical
+GET http://fulfiller.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:input-value-reference&_include=Task:output-value-canonical
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 

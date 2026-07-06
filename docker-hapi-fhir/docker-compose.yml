@@ -1,7 +1,7 @@
 # docker-compose.yml
 services:
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.7.6
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
