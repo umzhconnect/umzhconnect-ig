@@ -48,10 +48,12 @@ sequenceDiagram
     Placer->>Fulfiller: GET Questionnaire by canonical
     Fulfiller-->>Placer: Return QuestionnaireSmokingStatus
     Placer-->>Placer: Practitioner fills out Questionnaire
-    Placer->>Fulfiller: POST QuestionnaireResponse
-    Fulfiller-->>Placer: created
-    Placer->>Fulfiller: PATCH Task (owner: Fulfiller, input: QuestionnaireResponseSmokingStatus)
+    Placer->>Placer: POST QuestionnaireResponse<br/>(basedOn: ServiceRequest-ReferralOrthopedicSurgery)
+    Placer->>Placer: Update ServiceRequest<br/>(supportingInfo: +QuestionnaireResponseSmokingStatus)
+    Placer->>Fulfiller: PATCH Task (owner: Fulfiller,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
     Fulfiller-->>Placer: updated
+    Fulfiller->>Placer: GET QuestionnaireResponse (absolute URL from Task.input)
+    Placer-->>Fulfiller: Return QuestionnaireResponseSmokingStatus
     deactivate Placer
     deactivate Fulfiller
 
@@ -83,7 +85,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `requester` | Referenced | the referring physician with their organizational context |
 | `authoredOn` | Current date | Date when the referral was created |
 | `reasonReference` | Referenced | Primary diagnosis: [Suspected ACL Rupture](Condition-SuspectedACLRupture.html). If the primary diagnosis is unknown, all diagnoses go to supportingInfo as Condition. The title of the diagnosis is captured in `Condition.code.text` whereas any additional description in `Condition.note.text`. |
-| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html). Note: these MedicationStatements carry a *contained* Medication (the drug detail is embedded inline in the resource). |
+| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html). Note: these MedicationStatements carry a *contained* Medication (the drug detail is embedded inline in the resource). Later in the workflow the Placer additionally adds the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) here to make it reachable in the workflow graph for authorization. |
 | `note.text` | Manual entry | Free-text clinical note entered ad-hoc for the referral |
 
 #### Task Field Sources
@@ -107,7 +109,7 @@ The following table indicates the source of each field in the Task:
 | `output[0].type` | Hard-coded | `273510007` (only when Fulfiller creates Questionnaire) |
 | `output[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Fulfiller creates Questionnaire) |
 | `input[0].type` | Hard-coded | `273510007` (only when QuestionnaireResponse is created) |
-| `input[0].valueReference` | Referenced | Relative reference to the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) (only when QuestionnaireResponse is created) |
+| `input[0].valueReference` | Referenced | Absolute URL of the Placer-hosted [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html), e.g. `http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus` (only when QuestionnaireResponse is created) |
 | `output[1]` | Referenced | Completed Task: intermediary result — the pre-surgery [Appointment](Appointment-AppointmentOrthopedicConsultation.html) (orthopedic consultation timed before the surgery) |
 | `output[2]` | Referenced | Completed Task: final result — the [discharge report](DocumentReference-DocDischargeReportOrthopedics.html) (DocumentReference) |
 | `output[3]` | Referenced | Completed Task: final result — the [discharge medication](MedicationStatement-MedicationAspirin.html) (blood thinner after surgery). Note: in contrast to the contained medications above, this MedicationStatement references a *standalone (non-contained)* [Medication](Medication-MedAspirin.html) resource. |

@@ -30,3 +30,7 @@ Description: "CH UMZH Connect ServiceRequest is derived from CH eTOC"
 * supportingInfo[pathologyresults] only Reference(ChEtocPathologyObservation)
 * supportingInfo[imagingresults] only Reference(ChEtocRadiologyObservation)
 * supportingInfo[cardiologyresults] only Reference(ChEtocCardiologyObservation)
+
+* supportingInfo contains questionnaireResponse 0..*
+* supportingInfo[questionnaireResponse] only Reference(QuestionnaireResponse)
+* supportingInfo[questionnaireResponse] ^short = "QuestionnaireResponse provided by the Placer during the workflow; makes it reachable in the workflow graph for authorization"

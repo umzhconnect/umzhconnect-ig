@@ -2,13 +2,13 @@ Instance: QuestionnaireResponseSmokingStatus
 InstanceOf: QuestionnaireResponse
 Usage: #example
 Title: "Smoking Status Questionnaire Response"
-Description: "QuestionnaireResponse sent by Placer to Fulfiller providing the patient's smoking status. Hosted on fulfiller."
-* basedOn = Reference(http://placer.example.org/fhir/ReferralOrthopedicSurgery)
+Description: "QuestionnaireResponse created by the Placer providing the patient's smoking status. Referenced from Task.input by absolute URL. Hosted on placer."
+* basedOn = Reference(ReferralOrthopedicSurgery)
 * status = #completed
 * questionnaire = Canonical(QuestionnaireSmokingStatus)
-* subject = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
+* subject = Reference(PetraMeier)
 * authored = "2025-12-16"
-* author = Reference(http://placer.example.org/fhir/PractitionerRole/HansMusterRole)
+* author = Reference(HansMusterRole)
 * item[0].linkId = "smoking-status"
 * item[0].text = "What is the patient's smoking status?"
 * item[0].answer[0].valueCoding = $sct#8517006 "Ex-smoker"

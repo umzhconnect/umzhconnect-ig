@@ -77,15 +77,8 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * insert IdSearchParam
 * insert UrlSearchParam
 
-// QuestionnaireResponse: create, read
-* rest.resource[+].type = #QuestionnaireResponse
-* rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for QuestionnaireResponses. Implicitly scoped to QuestionnaireResponses accessible to the calling identity."
-* rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a QuestionnaireResponse by logical id. Allowed if the linked parent ServiceRequest is accessible to the calling identity."
-* rest.resource[=].interaction[+].code = #create
-* rest.resource[=].interaction[=].documentation = "Create a QuestionnaireResponse. The created resource SHALL reference an accessible ServiceRequest via `basedOn`."
-* insert ResourceDefaults
+// QuestionnaireResponse: hosted on the Placer, part of the workflow graph via ServiceRequest.supportingInfo
+* insert ReadOnlyResource(QuestionnaireResponse)
 
 // ServiceRequest: search-type, read + searchIncludes
 * rest.resource[+].type = #ServiceRequest

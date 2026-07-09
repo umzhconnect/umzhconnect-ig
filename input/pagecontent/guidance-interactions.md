@@ -20,9 +20,9 @@ Both server roles — [Placer](ActorDefinition-ch-umzh-connect-placer.html) and 
 
 Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply on every interaction:
 
-1. **SMART scope check** — the token's `scope` claim SHALL contain a SMART system scope sufficient for the requested operation (e.g. `system/ServiceRequest.rs` for ServiceRequest `read` + `search-type`, `system/Task.crus` for the full Task interaction set, `system/QuestionnaireResponse.crus` for QuestionnaireResponse interactions). See [Security — Health specifics](security.html#health-specifics---smartonfhir).
+1. **SMART scope check** — the token's `scope` claim SHALL contain a SMART system scope sufficient for the requested operation (e.g. `system/ServiceRequest.rs` for ServiceRequest `read` + `search-type`, `system/Task.crus` for the full Task interaction set). See [Security — Health specifics](security.html#health-specifics---smartonfhir).
 
-2. **`fhirContext` graph check** — for every resource type **other than `Task`, and `Questionnaire`, the requested resource SHALL be reachable from the workflow root named in the token's `fhirContext` claim (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
+2. **`fhirContext` graph check** — for every resource type **other than `Task` and `Questionnaire`**, the requested resource SHALL be reachable from the workflow root named in the token's `fhirContext` claim (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
 
 `Task`   and `Questionnaire` are **not** `fhirContext`-gated:
 
@@ -35,7 +35,7 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 ### Read-only resources
 
-Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `DiagnosticReport`, `DocumentReference`, `ImagingStudy`, `Immunization`, `Medication`, `MedicationStatement`, `Observation`, `Organization`, `Patient`, `Practitioner`, `PractitionerRole`, `Procedure`.
+Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `DiagnosticReport`, `DocumentReference`, `ImagingStudy`, `Immunization`, `Medication`, `MedicationStatement`, `Observation`, `Organization`, `Patient`, `Practitioner`, `PractitionerRole`, `Procedure`, `QuestionnaireResponse` (see [QuestionnaireResponse](#questionnaireresponse)).
 
 | Interaction | Path | Notes |
 |---|---|---|
@@ -109,19 +109,9 @@ Search parameters:
 
 ### QuestionnaireResponse
 
-| Interaction | Path | Notes |
-|---|---|---|
-| `search-type` | `GET /QuestionnaireResponse` | Implicitly scoped to QuestionnaireResponses accessible to the calling identity. |
-| `read` | `GET /QuestionnaireResponse/{id}` | Allowed if the linked Task is accessible to the calling identity. |
-| `create` | `POST /QuestionnaireResponse` | The created resource SHALL reference an accessible ServiceRequest via `basedOn`. |
-{: .table .table-bordered }
+The QuestionnaireResponse is created and hosted by the **Placer** — following the principle of not posting sensitive data, it is not POSTed to the Fulfiller. The Placer references it from `Task.input` by **absolute URL**; the Fulfiller resolves that URL with a direct `read` against the Placer under the [Read-only resources](#read-only-resources) rules.
 
-Search parameters:
-
-| Name | Type | Cardinality | Notes |
-|---|---|---|---|
-| `based-on` | reference | **mandatory** | The Task this response fulfils. Required so that access remains anchored to a Task visible to the calling identity. |
-{: .table .table-bordered }
+To make the QuestionnaireResponse reachable under the standard `fhirContext` graph check, the Placer SHALL also reference it from `ServiceRequest.supportingInfo` **before** updating `Task.input`. This `supportingInfo` amendment serves authorization only — the Fulfiller is not expected to monitor the ServiceRequest for changes; the relevant update signal remains `Task.input`.
 
 ### Versioning and conditional operations
 

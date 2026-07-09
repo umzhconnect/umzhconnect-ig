@@ -87,13 +87,6 @@ Accept: application/fhir+json
 < ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
 
 ###
-PUT http://placer.example.org/fhir/MedicationStatement/MedicationConcor
-Content-Type: application/fhir+json
-Accept: application/fhir+json
-
-< ./../fsh-generated/resources/MedicationStatement-MedicationConcor.json
-
-###
 PUT http://placer.example.org/fhir/DocumentReference/DocCardiologyAttachment
 Content-Type: application/fhir+json
 Accept: application/fhir+json
@@ -222,9 +215,9 @@ GET http://fulfiller.example.org/fhir/Questionnaire?url=http://fulfiller.example
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
-### POST QuestionnaireResponse on Fulfiller
+### Create QuestionnaireResponse on Placer
 # Note: usually would POST instead of PUT and NOT specify id (QuestionnaireResponseSmokingStatus) here
-PUT http://fulfiller.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus
+PUT http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
@@ -251,7 +244,7 @@ Content-Type: application/json-patch+json
           ]
         },
         "valueReference": {
-          "reference": "QuestionnaireResponse/QuestionnaireResponseSmokingStatus"
+          "reference": "http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus"
         }
       }
     ]
@@ -264,15 +257,13 @@ Content-Type: application/json-patch+json
     }
   },
   {
-    "op": "replace",
-    "path": "/businessStatus",
-    "value": {
-      "coding": [
-        {
-          "system": "http://hl7.org/fhir/task-status",
-          "code": "in-progress"
-        }
-      ]
-    }
+    "op": "remove",
+    "path": "/businessStatus"
   }
 ]
+
+
+### Fulfiller resolves the QuestionnaireResponse from the Placer (absolute URL from Task.input)
+GET http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus
+Content-Type: application/fhir+json
+Accept: application/fhir+json
