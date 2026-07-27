@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#89](https://github.com/umzhconnect/umzhconnect-ig/issues/89): Remove the optional `Task.for` (patient reference) from the Task examples
 * [#82](https://github.com/umzhconnect/umzhconnect-ig/issues/82): Add `ServiceRequest:requester` as a supported `_include` target on the CapabilityStatement, so the Fulfiller can materialise the requesting PractitionerRole in one round-trip
 * [#84](https://github.com/umzhconnect/umzhconnect-ig/issues/84): Shorten custom SearchParameter codes by stripping the `ch-umzhconnectig-<resource>-` prefix and converting to kebab-case
 

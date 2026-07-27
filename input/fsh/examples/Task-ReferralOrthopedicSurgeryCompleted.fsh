@@ -7,7 +7,6 @@ Description: "Completed Task after Fulfiller has performed the knee surgery. Car
 * intent = #order
 * priority = #routine
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
-* for = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
 * requester = Reference(http://registry.example.org/fhir/Organization/Placer)
 * owner = Reference(http://registry.example.org/fhir/Organization/Fulfiller)
 * identifier.system = "urn:ietf:rfc:3986"

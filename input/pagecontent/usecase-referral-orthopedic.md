@@ -97,7 +97,7 @@ The following table indicates the source of each field in the Task:
 | `intent` | Hard-coded | Fixed value `order` |
 | `priority` | Hard-coded | Fixed value `routine` |
 | `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
-| `for` | Referenced | The patient being referred: [PetraMeier](Patient-PetraMeier.html) |
+| `code` | Hard-coded | Fixed value `fulfill` |
 | `requester` | Referenced | The requesting organization (Placer) as an absolute URL to the registry [Organization](Organization-Placer.html), e.g. `http://registry.example.org/fhir/Organization/Placer` |
 | `owner` | Dynamic | Initial Task: Fulfiller (absolute URL to the registry [Organization](Organization-Fulfiller.html), e.g. `http://registry.example.org/fhir/Organization/Fulfiller`). When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. |
 | `businessStatus` | Dynamic | Initial Task: absent. When Fulfiller creates Questionnaire: set to `awaiting-information`. When QuestionnaireResponse is created: cleared (absent) |
