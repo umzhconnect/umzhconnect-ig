@@ -8,7 +8,6 @@ Description: "Updated Task after Fulfiller has accepted the initial Task and add
 * intent = #order
 * priority = #routine
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
-* for = Reference(http://placer.example.org/fhir/Patient/PetraMeier)
 * requester = Reference(http://registry.example.org/fhir/Organization/Placer)
 * owner = Reference(http://registry.example.org/fhir/Organization/Placer)
 * identifier.system = "urn:ietf:rfc:3986"
