@@ -1,7 +1,7 @@
 Instance: Fulfiller
 InstanceOf: CHCoreOrganization
 Usage: #example
-Title: "Fulfiller"
+Title: "Fulfiller Organization"
 Description: "Example Organization for Fulfiller. Hosted on registry."
 * identifier[GLN].system = "urn:oid:2.51.1.3"
 * identifier[GLN].value = "7601000618306"
