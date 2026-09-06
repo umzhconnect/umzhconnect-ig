@@ -49,7 +49,6 @@ sequenceDiagram
     Fulfiller-->>Placer: Return QuestionnaireSmokingStatus
     Placer-->>Placer: Practitioner fills out Questionnaire
     Placer->>Placer: POST QuestionnaireResponse<br/>(basedOn: ServiceRequest-ReferralOrthopedicSurgery)
-    Placer->>Placer: Update ServiceRequest<br/>(supportingInfo: +QuestionnaireResponseSmokingStatus)
     Placer->>Fulfiller: PATCH Task (owner: Fulfiller,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
     Fulfiller-->>Placer: updated
     Fulfiller->>Placer: GET QuestionnaireResponse (absolute URL from Task.input)
@@ -85,7 +84,7 @@ The following table indicates the source of each field in the ServiceRequest:
 | `requester` | Referenced | the referring physician with their organizational context |
 | `authoredOn` | Current date | Date when the referral was created |
 | `reasonReference` | Referenced | Primary diagnosis: [Suspected ACL Rupture](Condition-SuspectedACLRupture.html). If the primary diagnosis is unknown, all diagnoses go to supportingInfo as Condition. The title of the diagnosis is captured in `Condition.code.text` whereas any additional description in `Condition.note.text`. |
-| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html). Note: these MedicationStatements carry a *contained* Medication (the drug detail is embedded inline in the resource). Later in the workflow the Placer additionally adds the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) here to make it reachable in the workflow graph for authorization. |
+| `supportingInfo` | Referenced | Secondary diagnosis: [Heart Failure HFrEF](Condition-HeartFailureHFrEF.html); Medications: [Entresto](MedicationStatement-MedicationEntresto.html), [Concor](MedicationStatement-MedicationConcor.html); Documents: [Report Cardiology](DocumentReference-DocCardiologyAttachment.html). Note: these MedicationStatements carry a *contained* Medication (the drug detail is embedded inline in the resource). Later in the workflow the Placer MAY additionally add the [QuestionnaireResponse](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html) here for forward-only authorization; the authoritative link is `QuestionnaireResponse.basedOn`. |
 | `note.text` | Manual entry | Free-text clinical note entered ad-hoc for the referral |
 
 #### Task Field Sources

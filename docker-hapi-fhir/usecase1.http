@@ -115,13 +115,6 @@ POST http://fulfiller.example.org/fhir/SearchParameter
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
-< ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-inputreference.json
-
-###
-POST http://fulfiller.example.org/fhir/SearchParameter
-Content-Type: application/fhir+json
-Accept: application/fhir+json
-
 < ./../fsh-generated/resources/SearchParameter-ch-umzhconnectig-task-outputreference.json
 
 ###
@@ -205,7 +198,7 @@ Accept: application/fhir+json
 
 
 ### Get Task on Fulfiller (including Questionnaire)
-GET http://fulfiller.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:input-value-reference&_include=Task:output-value-canonical
+GET http://fulfiller.example.org/fhir/Task?_id=TaskReferralOrthopedicSurgeryUpdated&_include=Task:output-value-canonical
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 

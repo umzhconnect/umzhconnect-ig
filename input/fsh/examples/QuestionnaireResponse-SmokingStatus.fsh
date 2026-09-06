@@ -1,5 +1,5 @@
 Instance: QuestionnaireResponseSmokingStatus
-InstanceOf: QuestionnaireResponse
+InstanceOf: ChUmzhConnectQuestionnaireResponse
 Usage: #example
 Title: "Smoking Status Questionnaire Response"
 Description: "QuestionnaireResponse created by the Placer providing the patient's smoking status. Referenced from Task.input by absolute URL. Hosted on placer."

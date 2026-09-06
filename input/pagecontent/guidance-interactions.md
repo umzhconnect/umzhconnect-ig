@@ -87,7 +87,7 @@ Search parameters:
 | `owner` | reference | optional | Filter by `Task.owner`. |
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
-| `_include` | — | optional | Supported targets: `Task:input-value-reference`, `Task:output-value-reference`, `Task:output-value-canonical`. |
+| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
@@ -111,7 +111,9 @@ Search parameters:
 
 The QuestionnaireResponse is created and hosted by the **Placer** — following the principle of not posting sensitive data, it is not POSTed to the Fulfiller. The Placer references it from `Task.input` by **absolute URL**; the Fulfiller resolves that URL with a direct `read` against the Placer under the [Read-only resources](#read-only-resources) rules.
 
-To make the QuestionnaireResponse reachable under the standard `fhirContext` graph check, the Placer SHALL also reference it from `ServiceRequest.supportingInfo` **before** updating `Task.input`. This `supportingInfo` amendment serves authorization only — the Fulfiller is not expected to monitor the ServiceRequest for changes; the relevant update signal remains `Task.input`.
+The QuestionnaireResponse's `basedOn` (1..1, [ChUmzhConnectQuestionnaireResponse](StructureDefinition-ch-umzh-connect-questionnaireresponse.html)) SHALL reference the workflow-root ServiceRequest. That back-reference is a specifically listed exception to the forward-only graph rule (see [Security — Context-centric authorization](security.html#context-centric-authorization)); a policy engine SHALL admit the QuestionnaireResponse on that basis alone. A Placer MAY additionally list it in `ServiceRequest.supportingInfo` for forward-only enforcement — optional, and not an order amendment.
+
+The back-reference is safe only because the QuestionnaireResponse is authored **exclusively by the Placer** — the CapabilityStatement declares no `create`/`update`/`patch` for it. A Placer creates its own QuestionnaireResponses internally, not through this API, and **SHALL NOT** add a writable QuestionnaireResponse interaction to its cross-organizational surface — that would let a counter-party plant one with `basedOn` pointing at an arbitrary ServiceRequest and inject it into that order's context graph.
 
 ### Versioning and conditional operations
 

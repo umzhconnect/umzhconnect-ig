@@ -20,7 +20,7 @@ RuleSet: MandatoryIdSearchParam
 RuleSet: ReadOnlyResource(type)
 * rest.resource[+].type = #{type}
 * rest.resource[=].interaction.code = #read
-* rest.resource[=].interaction.documentation = "Returns the {type} resource by logical id. The resource is returned only if it is reachable from the workflow root named in the token's `fhirContext` claim. Requests for resources outside the context graph are rejected with `403 Forbidden`."
+* rest.resource[=].interaction.documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the authorized context graph of the token's `fhirContext` claim. Requests for resources outside the context graph are rejected with `403 Forbidden`."
 * insert ResourceDefaults
 * insert MandatoryIdSearchParam
 
@@ -77,7 +77,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * insert IdSearchParam
 * insert UrlSearchParam
 
-// QuestionnaireResponse: hosted on the Placer, part of the workflow graph via ServiceRequest.supportingInfo
+// QuestionnaireResponse: hosted on the Placer; in the workflow graph via its basedOn back-reference to the ServiceRequest (see Security — Context-centric authorization)
 * insert ReadOnlyResource(QuestionnaireResponse)
 
 // ServiceRequest: search-type, read + searchIncludes
@@ -106,8 +106,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].interaction[+].code = #create
 * rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller."
 * insert ResourceDefaults
-* rest.resource[=].searchInclude[0] = "Task:input-value-reference"
-* rest.resource[=].searchInclude[+] = "Task:output-value-reference"
+* rest.resource[=].searchInclude[0] = "Task:output-value-reference"
 * rest.resource[=].searchInclude[+] = "Task:output-value-canonical"
 * rest.resource[=].searchParam[0].name = "owner"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-owner"
