@@ -25,7 +25,7 @@ Please add your feedback via the 'Propose a change'-link in the footer.
 [Changelog](changelog.html) with significant changes, open and closed issues.
 
 </div>
-**Download**: You can download this implementation guide in the [NPM package](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) format from [here](package.tgz).
+**Download**: You can download this implementation guide in the [NPM package](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) format from [here](../package.tgz).
 
 ### Workflow orientation
 
