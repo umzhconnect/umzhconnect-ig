@@ -22,7 +22,6 @@ RuleSet: ReadOnlyResource(type)
 * rest.resource[=].interaction.code = #read
 * rest.resource[=].interaction.documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the authorized context graph of the token's `fhirContext` claim. Requests for resources outside the context graph are rejected with `403 Forbidden`."
 * insert ResourceDefaults
-* insert MandatoryIdSearchParam
 
 RuleSet: UrlSearchParam
 * rest.resource[=].searchParam[+].name = "url"
@@ -49,7 +48,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 
 * rest.mode = #server
 
-// Read-only resources with _id search
+// Read-only resources: read by logical id only (reached via direct read or ServiceRequest _include)
 * insert ReadOnlyResource(AllergyIntolerance)
 * insert ReadOnlyResource(Appointment)
 * insert ReadOnlyResource(Condition)
