@@ -86,7 +86,7 @@ Search parameters:
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
 
-`Task.meta.lastUpdated` moves on any write, not only on workflow-relevant transitions. The Placer should record the time it starts each poll and, on the next poll, filter `_lastUpdated=gt{that start time}` shifted back by a small margin — rather than cursoring on the highest `lastUpdated` it saw. Every result must be treated as an idempotent re-read and deduplicated by Task id and version. Polling is the baseline monitoring mechanism regardless of whether Subscription-based notification is also offered.
+`Task.meta.lastUpdated` moves on any write, not only on workflow-relevant transitions. The Placer should record the time it starts each poll and, on the next poll, filter `_lastUpdated=gt{that start time}` shifted back by a small margin — rather than cursoring on the highest `lastUpdated` it saw. Every result must be treated as an idempotent re-read and deduplicated by Task id and version. `_sort=_lastUpdated` orders a multi-page delta by modification time, but since that key itself changes on every write, a Task updated mid-pagination can shift to a later page and be missed until the next poll's overlap window catches it. Polling is the baseline monitoring mechanism regardless of whether Subscription-based notification is also offered.
 
 ### Questionnaire
 

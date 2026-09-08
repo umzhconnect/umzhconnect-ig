@@ -97,7 +97,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // Task: search-type, patch, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller."
+* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller. Results can be ordered with `_sort=_lastUpdated` to page a delta poll in modification order."
 * rest.resource[=].interaction[+].code = #patch
 * rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched — other paths SHALL be rejected."
 * rest.resource[=].interaction[+].code = #read
@@ -122,5 +122,5 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].searchParam[+].name = "_lastUpdated"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-lastUpdated"
 * rest.resource[=].searchParam[=].type = #date
-* rest.resource[=].searchParam[=].documentation = "Filter by last modification time. Used by the Placer to poll for Task changes since the previous poll."
+* rest.resource[=].searchParam[=].documentation = "Search by last modification time; the Placer polls this for Task deltas"
 * insert IdSearchParam
