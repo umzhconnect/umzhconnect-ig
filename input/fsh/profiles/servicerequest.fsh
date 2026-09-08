@@ -30,3 +30,7 @@ Description: "CH UMZH Connect ServiceRequest is derived from CH eTOC"
 * supportingInfo[pathologyresults] only Reference(ChEtocPathologyObservation)
 * supportingInfo[imagingresults] only Reference(ChEtocRadiologyObservation)
 * supportingInfo[cardiologyresults] only Reference(ChEtocCardiologyObservation)
+
+* supportingInfo contains questionnaireResponse 0..*
+* supportingInfo[questionnaireResponse] only Reference(ChUmzhConnectQuestionnaireResponse)
+* supportingInfo[questionnaireResponse] ^short = "Optional forward pointer to a Placer-authored QuestionnaireResponse; authorization convenience only, not an order amendment. Authoritative link is QuestionnaireResponse.basedOn."
