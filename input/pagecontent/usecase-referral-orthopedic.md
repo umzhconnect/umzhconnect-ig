@@ -74,7 +74,7 @@ The following table indicates the source of each field in the ServiceRequest:
 {:class="table table-bordered"}
 | Field | Source | Description |
 |-------|--------|-------------|
-| `identifier[placerOrderIdentifier].system` | Generated or Hard-coded | TODO? |
+| `identifier[placerOrderIdentifier].system` | Configured | A stable URI for the Placer's own order-number namespace — e.g. a registered OID (Swiss OID registry) or a URL under its domain. Set once per Placer; with a `value` unique in that namespace it forms a globally unique identifier. |
 | `identifier[placerOrderIdentifier].value` | Generated | Unique referral order number (e.g., REF-2025-001) |
 | `status` | Hard-coded | Fixed value `active` |
 | `intent` | Hard-coded | Fixed value `order` |
