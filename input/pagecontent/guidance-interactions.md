@@ -80,10 +80,13 @@ Search parameters:
 | `owner` | reference | optional | Filter by `Task.owner`. |
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
+| `_lastUpdated` | date | optional | Filter by last modification time — the Placer polls for Task changes since the previous poll. See the polling note below. |
 | `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
+
+`Task.meta.lastUpdated` moves on any write, not only on workflow-relevant transitions. The Placer should record the time it starts each poll and, on the next poll, filter `_lastUpdated=gt{that start time}` shifted back by a small margin — rather than cursoring on the highest `lastUpdated` it saw. Every result must be treated as an idempotent re-read and deduplicated by Task id and version. Polling is the baseline monitoring mechanism regardless of whether Subscription-based notification is also offered.
 
 ### Questionnaire
 

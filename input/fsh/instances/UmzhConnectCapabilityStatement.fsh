@@ -119,4 +119,8 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-status"
 * rest.resource[=].searchParam[=].type = #token
 * rest.resource[=].searchParam[=].documentation = "Search by task status"
+* rest.resource[=].searchParam[+].name = "_lastUpdated"
+* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-lastUpdated"
+* rest.resource[=].searchParam[=].type = #date
+* rest.resource[=].searchParam[=].documentation = "Filter by last modification time. Used by the Placer to poll for Task changes since the previous poll."
 * insert IdSearchParam
