@@ -9,36 +9,38 @@ Arbeitsdokument zur Beantwortung der Fragen aus `q_a_UMZH Connect-v20.pdf` (v20,
 
 ## Übersicht
 
-| ID | Thema | Status |
-|------|-------|--------|
-| [ON-1](#on-1-initiales-onboarding-eines-le-placers) | Initiales Onboarding eines LE Placers | Entwurf |
-| [SEC-1](#sec-1-security-sicht-anbindung-erster-externer-partner) | Security-Sicht: Anbindung erster externer Partner | Entwurf |
-| [SEC-2](#sec-2-authentifikation-eines-placers-einmalig-oder-pro-task) | Authentifikation eines Placers: einmalig oder pro Task | Entwurf |
-| [SEC-3](#sec-3-zugriffslifecycle-auf-den-klinischen-graphen) | Zugriffslifecycle auf den klinischen Graphen | Entwurf |
-| [SEC-4](#sec-4-dynamischer-resource-graph-supportinginfo) | Dynamischer Resource-Graph (`supportingInfo`) | Entwurf |
-| [SEC-5](#sec-5-mtls-oder-dpop) | mTLS oder DPoP | Entwurf |
-| [WF-1](#wf-1-technisch-zugestellt-vs-fachlich-angenommen) | Technisch zugestellt vs. fachlich angenommen | Entwurf |
-| [WF-2](#wf-2-synchronisation-servicerequeststatus-mit-task) | Synchronisation `ServiceRequest.status` mit Task | Entwurf |
-| [WF-3](#wf-3-source-of-truth-bei-änderungen-am-laufenden-servicerequest) | Source of Truth bei Änderungen am laufenden ServiceRequest | offen |
-| [WF-4](#wf-4-rückfragen-questionnaire--questionnaireresponse-normativ) | Rückfragen: Questionnaire → QuestionnaireResponse normativ? | Entwurf |
-| [WF-5](#wf-5-rückfragen-vom-placer-nach-abschluss) | Rückfragen vom Placer nach Abschluss | Entwurf |
-| [WF-6](#wf-6-warum-task-at-fulfiller) | Warum Task-at-Fulfiller? | Entwurf |
-| [WF-7](#wf-7-zentraler-orchestrator-vs-task-at-fulfiller) | Zentraler Orchestrator vs. Task-at-Fulfiller | Entwurf |
-| [WF-8](#wf-8-rejected--anderer-fulfiller) | `rejected` → anderer Fulfiller | Entwurf |
-| [WF-9](#wf-9-failed--erneute-zuweisung) | `failed` → erneute Zuweisung | offen |
-| [WF-10](#wf-10-termin--terminänderung--no-show) | Termin / Terminänderung / No-show | Entwurf |
-| [WF-11](#wf-11-bedeutung-von-taskowner) | Bedeutung von `Task.owner` | Entwurf |
-| [WF-12](#wf-12-task-identifier--korrelation) | Task-Identifier / Korrelation | offen |
-| [WF-13](#wf-13-storno--cancellation-durch-den-placer) | Storno / Cancellation durch den Placer | Entwurf |
-| [WF-14](#wf-14-sla--keine-reaktion-timeouts) | SLA / keine Reaktion (Timeouts) | offen |
-| [WF-15](#wf-15-prozessgrafik-fälle-ah-vollständig-abbildbar) | Prozessgrafik-Fälle A–H vollständig abbildbar? | offen |
-| [TK-1](#tk-1-concurrent-updates--etag--if-match) | Concurrent Updates / ETag / If-Match | offen |
-| [TK-2](#tk-2-subscription-vs-polling) | Subscription vs. Polling | Entwurf |
-| [TK-3](#tk-3-lost-notifications--reconciliation) | Lost Notifications / Reconciliation | Entwurf |
-| [TK-4](#tk-4-technischer-fehler-vs-fachliches-failed) | Technischer Fehler vs. fachliches `failed` | offen |
-| [GEN-1](#gen-1-naming-warum-umzh-connect) | Naming: warum «UMZH Connect»? | Entwurf |
-| [GEN-2](#gen-2-owner-sichtbarkeitsregel-fulfiller-verliert-zugriff-auf-eigenen-task) | `owner`-Sichtbarkeitsregel: Fulfiller verliert Zugriff auf eigenen Task | Entwurf |
-| [GEN-3](#gen-3-businessstatus-binding-über-ein-example-codesystem) | `businessStatus`-Binding über ein Example-CodeSystem | offen |
+Spalte **Issue / PR**: `#NN` = bestehendes Issue/PR · `TODO` = Issue zu eröffnen (Massnahme entschieden) · `TBD` = beantwortet, Issue-Bedarf noch zu entscheiden · `deferred` = bekannte Lücke, wird bei Bedarf (Use Case) gelöst · `–` = keine IG-Änderung · leeres Feld = noch nicht bewertet.
+
+| ID | Thema | Status | Issue / PR |
+|------|-------|--------|------------|
+| [ON-1](#on-1-initiales-onboarding-eines-le-placers) | Initiales Onboarding eines LE Placers | Entwurf | – |
+| [SEC-1](#sec-1-security-sicht-anbindung-erster-externer-partner) | Security-Sicht: Anbindung erster externer Partner | Entwurf | – |
+| [SEC-2](#sec-2-authentifikation-eines-placers-einmalig-oder-pro-task) | Authentifikation eines Placers: einmalig oder pro Task | Entwurf | – |
+| [SEC-3](#sec-3-zugriffslifecycle-auf-den-klinischen-graphen) | Zugriffslifecycle auf den klinischen Graphen | Entwurf | TBD (CR) |
+| [SEC-4](#sec-4-dynamischer-resource-graph-supportinginfo) | Dynamischer Resource-Graph (`supportingInfo`) | Entwurf | – |
+| [SEC-5](#sec-5-mtls-oder-dpop) | mTLS oder DPoP | Entwurf | – |
+| [WF-1](#wf-1-technisch-zugestellt-vs-fachlich-angenommen) | Technisch zugestellt vs. fachlich angenommen | Entwurf | – |
+| [WF-2](#wf-2-synchronisation-servicerequeststatus-mit-task) | Synchronisation `ServiceRequest.status` mit Task | Entwurf | TBD |
+| [WF-3](#wf-3-source-of-truth-bei-änderungen-am-laufenden-servicerequest) | Source of Truth bei Änderungen am laufenden ServiceRequest | offen |  |
+| [WF-4](#wf-4-rückfragen-questionnaire--questionnaireresponse-normativ) | Rückfragen: Questionnaire → QuestionnaireResponse normativ? | Entwurf | [#87](https://github.com/umzhconnect/umzhconnect-ig/pull/87), TBD |
+| [WF-5](#wf-5-rückfragen-vom-placer-nach-abschluss) | Rückfragen vom Placer nach Abschluss | Entwurf | – |
+| [WF-6](#wf-6-warum-task-at-fulfiller) | Warum Task-at-Fulfiller? | Entwurf | – |
+| [WF-7](#wf-7-zentraler-orchestrator-vs-task-at-fulfiller) | Zentraler Orchestrator vs. Task-at-Fulfiller | Entwurf | – |
+| [WF-8](#wf-8-rejected--anderer-fulfiller) | `rejected` → anderer Fulfiller | Entwurf | TBD (mit WF-9) |
+| [WF-9](#wf-9-failed--erneute-zuweisung) | `failed` → erneute Zuweisung | Entwurf | TBD (mit WF-8) |
+| [WF-10](#wf-10-termin--terminänderung--no-show) | Termin / Terminänderung / No-show | Entwurf | TBD |
+| [WF-11](#wf-11-bedeutung-von-taskowner) | Bedeutung von `Task.owner` | Entwurf | – |
+| [WF-12](#wf-12-task-identifier--korrelation) | Task-Identifier / Korrelation | Entwurf | TODO |
+| [WF-13](#wf-13-storno--cancellation-durch-den-placer) | Storno / Cancellation durch den Placer | Entwurf | deferred |
+| [WF-14](#wf-14-sla--keine-reaktion-timeouts) | SLA / keine Reaktion (Timeouts) | offen |  |
+| [WF-15](#wf-15-prozessgrafik-fälle-ah-vollständig-abbildbar) | Prozessgrafik-Fälle A–H vollständig abbildbar? | offen |  |
+| [TK-1](#tk-1-concurrent-updates--etag--if-match) | Concurrent Updates / ETag / If-Match | offen |  |
+| [TK-2](#tk-2-subscription-vs-polling) | Subscription vs. Polling | Entwurf | [#92](https://github.com/umzhconnect/umzhconnect-ig/issues/92), [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99) |
+| [TK-3](#tk-3-lost-notifications--reconciliation) | Lost Notifications / Reconciliation | Entwurf | [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99) |
+| [TK-4](#tk-4-technischer-fehler-vs-fachliches-failed) | Technischer Fehler vs. fachliches `failed` | offen |  |
+| [GEN-1](#gen-1-naming-warum-umzh-connect) | Naming: warum «UMZH Connect»? | Entwurf | – |
+| [GEN-2](#gen-2-owner-sichtbarkeitsregel-fulfiller-verliert-zugriff-auf-eigenen-task) | `owner`-Sichtbarkeitsregel: Fulfiller verliert Zugriff auf eigenen Task | Entwurf | [#87](https://github.com/umzhconnect/umzhconnect-ig/pull/87) |
+| [GEN-3](#gen-3-businessstatus-binding-über-ein-example-codesystem) | `businessStatus`-Binding über ein Example-CodeSystem | Entwurf | TBD |
 
 ---
 
@@ -265,9 +267,11 @@ No alternative mechanism is defined — `Questionnaire` / `QuestionnaireResponse
 
 **Kenntnisstand:** `failed` bedeutet Scheitern nach Annahme, im Gegensatz zu `rejected` vor Arbeitsbeginn. Was danach mit dem ursprünglichen `ServiceRequest` und einer möglichen Neuzuweisung geschieht, ist im heutigen UMZH-Vertrag nicht vollständig orchestriert.
 
-**Antwort:** _(zu formulieren)_
+**Antwort (Entwurf):** Both `rejected` and `failed` are **terminal** (`workflow-states.md`), differing only in timing: `rejected` before accepting (cannot / will not deliver), `failed` after accepting but unable to complete (e.g. patient no longer wants to attend). Neither reopens.
 
-**IG-Auswirkung:** _(verwandt mit WF-8)_
+What happens next is **at the Placer's discretion** and identical in both cases — the IG prescribes no flow. The `ServiceRequest` stays with the Placer, so it may: re-route (new `Task` on the same `ServiceRequest` to another Fulfiller, `status` stays `active` — see [WF-8](#wf-8-rejected--anderer-fulfiller)); abandon (`ServiceRequest.status = revoked` — see [WF-2](#wf-2-synchronisation-servicerequeststatus-mit-task)); or handle it out of band. Attempt correlation is undefined (shared with WF-8; COW has no post-acceptance reassignment pattern).
+
+**IG-Auswirkung:** none. Minor: the transition table's "Placer may approach another Fulfiller" note sits only on `rejected` — it applies equally to `failed`.
 
 ---
 
@@ -308,9 +312,9 @@ No alternative mechanism is defined — `Questionnaire` / `QuestionnaireResponse
 
 **Kenntnisstand:** Der Task besitzt einen eigenen `identifier`; `focus` und `basedOn` zeigen auf den `ServiceRequest`. Das Placer-System muss zusätzlich die beim Fulfiller entstandene Task-ID/URL dauerhaft kennen. **Offen:** welche Identifier über Organisationsgrenzen hinweg als verbindliche Business-Korrelation gelten sollen.
 
-**Antwort:** _(zu formulieren)_
+**Antwort (Entwurf):** The premise (a "binding business identifier" across orgs) is not needed — correlation is a search, not an identifier problem. The anchor already exists: the **ServiceRequest's absolute URL**, carried by every Task in `basedOn` and `focus` (`task.fsh`: `focus only Reference(ChUmzhConnectServiceRequest)`). Since the Placer is always `Task.requester`, Task search scoping does not get in the way — `GET {fulfiller}/Task?based-on={sr-absolute-url}` returns exactly the Placer's Task(s) for that ServiceRequest (all attempts, if re-routed per [WF-8](#wf-8-rejected--anderer-fulfiller); distinguish by `status` / `authoredOn`). The Task URL from the `201 Location` is a convenient handle for direct read/patch but can always be re-derived by search, so it need not be stored as a durable key; `Task.identifier` stays optional.
 
-**IG-Auswirkung:** _(`guidance-interactions.md` — Identifier-/Korrelationsregeln)_
+**IG-Auswirkung:** real, small gap. The CapabilityStatement declares Task search params `_id` / `owner` / `requester` / `status` only — **no `based-on` / `focus`**, so `Task?based-on=` is not conformant today. Fix = add `based-on` (and/or `focus`) to the Task search params + the `guidance-interactions.md` table. **TODO: open issue.**
 
 ---
 
@@ -374,7 +378,7 @@ No alternative mechanism is defined — `Questionnaire` / `QuestionnaireResponse
 
 **Antwort (Entwurf):** Current IG: **polling is the baseline**; Subscription is **not yet** part of the IG. The CapabilityStatement declares no `Subscription` / `SubscriptionTopic`, and `core-concept-workflow-api.md` frames notification as an optional contract extension. The Placer polls `GET /Task?requester={placer}&status=...`; delta polling needs `_lastUpdated`, being added via issue [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99). Adding Subscription-based monitoring (rest-hook, topic filtered on `requester`, Placer-managed `Subscription` lifecycle) is proposed and open — issue [#92](https://github.com/umzhconnect/umzhconnect-ig/issues/92). Position to carry into those issues: polling stays the mandatory-to-support baseline regardless of #92; Subscription, once added, is an optimisation on top.
 
-**IG-Auswirkung:** `guidance-interactions.md` + CapabilityStatement — state polling as the baseline and add `_lastUpdated` (#99); Subscription support pending #92.
+**IG-Auswirkung:** `guidance-interactions.md` + CapabilityStatement — state polling as the baseline and add `_lastUpdated` ([#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99)); Subscription support pending [#92](https://github.com/umzhconnect/umzhconnect-ig/issues/92).
 
 ---
 
@@ -386,7 +390,7 @@ No alternative mechanism is defined — `Questionnaire` / `QuestionnaireResponse
 
 **Antwort (Entwurf):** Confirmed — the Kenntnisstand matches the IG design. Notification is an optional hint (`core-concept-workflow-api.md`); the `Task` is the source of truth. Recovery = re-poll / search the Task (and its `output`) against the Fulfiller; with `_lastUpdated` (issue [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99)) the Placer reconciles everything changed since its last successful poll, so a lost notification only delays, never corrupts, the Placer's view. Holds whether or not Subscription is later added (issue [#92](https://github.com/umzhconnect/umzhconnect-ig/issues/92)).
 
-**IG-Auswirkung:** `guidance-interactions.md` — short reconciliation note (Task is source of truth; re-poll with `_lastUpdated`); depends on #99.
+**IG-Auswirkung:** `guidance-interactions.md` — short reconciliation note (Task is source of truth; re-poll with `_lastUpdated`); depends on [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99).
 
 ---
 
@@ -468,6 +472,6 @@ No alternative mechanism is defined — `Questionnaire` / `QuestionnaireResponse
 
 **Vorschlag aus Q&A:** Bei HL7 OO klären, ob `…/CodeSystem/temp` ein stabiler Canonical ist. Falls nein: eigenes CH-CodeSystem für `awaiting-information` definieren (oder die Bindungsstärke bei `example` belassen) und die Abhängigkeit vom COW-Provisorium auflösen.
 
-**Antwort:** _(zu formulieren)_
+**Antwort (Entwurf):** In clarification with HL7.
 
 **IG-Auswirkung:** `input/fsh/valuesets/business-status.fsh`, `ch-umzh-connect-coordinationtask` Profil, ggf. neues CH-CodeSystem.
