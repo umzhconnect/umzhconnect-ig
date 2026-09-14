@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99): Add `_lastUpdated` to the Task search parameters in the CapabilityStatement (plus a `_sort=_lastUpdated` note on the Task search interaction), and give delta-polling guidance on the Guidance - Interactions page, so a polling Placer can fetch only Tasks changed since its last poll
 * [#97](https://github.com/umzhconnect/umzhconnect-ig/issues/97): Drop the mandatory `_id` search parameter from the read-only resource types in the CapabilityStatement — these types expose no `search-type` interaction, so the parameter described a search that is not offered (`ServiceRequest` keeps its mandatory `_id`). Also correct the Guidance - Interactions page, which implied `_include` works on the `read` interaction. Revisits [#60](https://github.com/umzhconnect/umzhconnect-ig/issues/60); no behavioural change
 * [#93](https://github.com/umzhconnect/umzhconnect-ig/issues/93): Replace the `TODO?` placeholder for `identifier[placerOrderIdentifier].system` with a description on both referral use-case pages, and populate `system` in the two ServiceRequest examples
 * [#89](https://github.com/umzhconnect/umzhconnect-ig/issues/89): Remove the optional `Task.for` (patient reference) from the Task examples
