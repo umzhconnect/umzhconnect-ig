@@ -42,14 +42,7 @@ Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `Diagn
 | `read` | `GET /{Type}/{id}` | Returns the resource only if `{Type}/{id}` is reachable from the token's `fhirContext` graph. |
 {: .table .table-bordered }
 
-Search parameters:
-
-| Name | Type | Cardinality | Notes |
-|---|---|---|---|
-| `_id` | token | **mandatory** | Logical id of the resource. Searches without `_id` are not supported. |
-{: .table .table-bordered }
-
-These resources are reached transitively from the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`). They are typically retrieved either via direct `read` on a known id or implicitly through `_include` on the workflow root.
+These types expose no `search-type` interaction. They sit transitively below the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`) and are reached only by direct `read` on a known id or as `_include` results of the root search.
 
 ### ServiceRequest
 
@@ -67,7 +60,7 @@ Search parameters:
 | `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:requester`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the `fhirContext` graph check. |
 {: .table .table-bordered }
 
-The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` (or the equivalent `read` with `_include`) to materialise the workflow graph in one round-trip.
+The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` to materialise the workflow graph in one round-trip.
 
 ### Task
 
