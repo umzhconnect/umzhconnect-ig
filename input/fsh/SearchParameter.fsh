@@ -37,19 +37,6 @@ Usage: #definition
 * xpathUsage = #normal
 * multipleAnd = true
 
-Instance: ch-umzhconnectig-task-inputreference
-InstanceOf: SearchParameter
-Usage: #definition
-* name = "ch-umzhconnectig-task-inputreference"
-* description = "Custom search parameter for Task.input.valueReference"
-* status = #active
-* code = #input-value-reference
-* base = #Task
-* type = #reference
-* expression = "Task.input.value as Reference"
-* xpathUsage = #normal
-* multipleAnd = true
-
 Instance: ch-umzhconnectig-task-outputreference
 InstanceOf: SearchParameter
 Usage: #definition

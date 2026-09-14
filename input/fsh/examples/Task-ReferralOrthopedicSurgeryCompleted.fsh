@@ -2,7 +2,7 @@ Instance: TaskReferralOrthopedicSurgeryCompleted
 InstanceOf: ChUmzhConnectCoordinationTask
 Usage: #example
 Title: "Task for Referral Orthopedic Surgery (Completed with Results)"
-Description: "Completed Task after Fulfiller has performed the knee surgery. Carries forward the smoking-status Questionnaire (output) and the returned QuestionnaireResponse (input), and adds the results: the intermediary pre-surgery consultation Appointment, the discharge report and the discharge medication (blood thinner) in Task.output. Hosted on fulfiller."
+Description: "Completed Task after Fulfiller has performed the knee surgery. Carries forward the smoking-status Questionnaire (output) and the Placer-hosted QuestionnaireResponse referenced by absolute URL (input), and adds the results: the intermediary pre-surgery consultation Appointment, the discharge report and the discharge medication (blood thinner) in Task.output. Hosted on fulfiller."
 * status = #completed
 * intent = #order
 * priority = #routine
@@ -16,7 +16,7 @@ Description: "Completed Task after Fulfiller has performed the knee surgery. Car
 * lastModified = "2026-01-20"
 * focus = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 * input[0].type = $sct#273510007 "Health assessment questionnaire"
-* input[0].valueReference = Reference(QuestionnaireResponseSmokingStatus)
+* input[0].valueReference = Reference(http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus)
 * output[0].type = $sct#273510007 "Health assessment questionnaire"
 * output[0].valueCanonical = Canonical(QuestionnaireSmokingStatus)
 * output[1].type = $sct#11429006 "Consultation"

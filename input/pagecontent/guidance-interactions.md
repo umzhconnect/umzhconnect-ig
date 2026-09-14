@@ -20,9 +20,9 @@ Both server roles — [Placer](ActorDefinition-ch-umzh-connect-placer.html) and 
 
 Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply on every interaction:
 
-1. **SMART scope check** — the token's `scope` claim SHALL contain a SMART system scope sufficient for the requested operation (e.g. `system/ServiceRequest.rs` for ServiceRequest `read` + `search-type`, `system/Task.crus` for the full Task interaction set, `system/QuestionnaireResponse.crus` for QuestionnaireResponse interactions). See [Security — Health specifics](security.html#health-specifics---smartonfhir).
+1. **SMART scope check** — the token's `scope` claim SHALL contain a SMART system scope sufficient for the requested operation (e.g. `system/ServiceRequest.rs` for ServiceRequest `read` + `search-type`, `system/Task.crus` for the full Task interaction set). See [Security — Health specifics](security.html#health-specifics---smartonfhir).
 
-2. **`fhirContext` graph check** — for every resource type **other than `Task`, and `Questionnaire`, the requested resource SHALL be reachable from the workflow root named in the token's `fhirContext` claim (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
+2. **`fhirContext` graph check** — for every resource type **other than `Task` and `Questionnaire`**, the requested resource SHALL be reachable from the workflow root named in the token's `fhirContext` claim (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
 
 `Task`   and `Questionnaire` are **not** `fhirContext`-gated:
 
@@ -35,7 +35,7 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 ### Read-only resources
 
-Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `DiagnosticReport`, `DocumentReference`, `ImagingStudy`, `Immunization`, `Medication`, `MedicationStatement`, `Observation`, `Organization`, `Patient`, `Practitioner`, `PractitionerRole`, `Procedure`.
+Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `DiagnosticReport`, `DocumentReference`, `ImagingStudy`, `Immunization`, `Medication`, `MedicationStatement`, `Observation`, `Organization`, `Patient`, `Practitioner`, `PractitionerRole`, `Procedure`, `QuestionnaireResponse` (see [QuestionnaireResponse](#questionnaireresponse)).
 
 | Interaction | Path | Notes |
 |---|---|---|
@@ -87,7 +87,7 @@ Search parameters:
 | `owner` | reference | optional | Filter by `Task.owner`. |
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
-| `_include` | — | optional | Supported targets: `Task:input-value-reference`, `Task:output-value-reference`, `Task:output-value-canonical`. |
+| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
@@ -109,19 +109,11 @@ Search parameters:
 
 ### QuestionnaireResponse
 
-| Interaction | Path | Notes |
-|---|---|---|
-| `search-type` | `GET /QuestionnaireResponse` | Implicitly scoped to QuestionnaireResponses accessible to the calling identity. |
-| `read` | `GET /QuestionnaireResponse/{id}` | Allowed if the linked Task is accessible to the calling identity. |
-| `create` | `POST /QuestionnaireResponse` | The created resource SHALL reference an accessible ServiceRequest via `basedOn`. |
-{: .table .table-bordered }
+The QuestionnaireResponse is created and hosted by the **Placer** — following the principle of not posting sensitive data, it is not POSTed to the Fulfiller. The Placer references it from `Task.input` by **absolute URL**; the Fulfiller resolves that URL with a direct `read` against the Placer under the [Read-only resources](#read-only-resources) rules.
 
-Search parameters:
+The QuestionnaireResponse's `basedOn` (1..1, [ChUmzhConnectQuestionnaireResponse](StructureDefinition-ch-umzh-connect-questionnaireresponse.html)) SHALL reference the workflow-root ServiceRequest. That back-reference is a specifically listed exception to the forward-only graph rule (see [Security — Context-centric authorization](security.html#context-centric-authorization)); a policy engine SHALL admit the QuestionnaireResponse on that basis alone. A Placer MAY additionally list it in `ServiceRequest.supportingInfo` for forward-only enforcement — optional, and not an order amendment.
 
-| Name | Type | Cardinality | Notes |
-|---|---|---|---|
-| `based-on` | reference | **mandatory** | The Task this response fulfils. Required so that access remains anchored to a Task visible to the calling identity. |
-{: .table .table-bordered }
+The back-reference is safe only because the QuestionnaireResponse is authored **exclusively by the Placer** — the CapabilityStatement declares no `create`/`update`/`patch` for it. A Placer creates its own QuestionnaireResponses internally, not through this API, and **SHALL NOT** add a writable QuestionnaireResponse interaction to its cross-organizational surface — that would let a counter-party plant one with `basedOn` pointing at an arbitrary ServiceRequest and inject it into that order's context graph.
 
 ### Versioning and conditional operations
 

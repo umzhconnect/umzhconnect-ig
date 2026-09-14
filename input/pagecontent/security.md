@@ -89,12 +89,12 @@ Our use-cases of referrals and external service requests strongly suggest to dyn
 
 > *For a given time I authorize party X (represented by client X) to read all data referenced by my given service request.*
 
-Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access — all resources reachable (forward-referenced) from the workflow root in the FHIR reference graph:
+Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access: every resource reachable from the workflow root by forward reference, plus any resource whose own reference points back at the root through a specifically listed element — currently only `QuestionnaireResponse.basedOn`.
 
 {:class="table table-bordered"}
 | Direction | Initiator | Context resource |
 |-----------|-----------|-----------------|
-| Fulfiller → Placer | Fulfiller fetches ServiceRequest and its forward-referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
+| Fulfiller → Placer | Fulfiller fetches ServiceRequest and its referenced resources | **ServiceRequest ID** (on Placer’s FHIR server) |
 | Placer → Fulfiller | Placer creates Tasks and reads Task status and forward-referenced output resources | **Task ID** (on Fulfiller’s FHIR server) |
 
 Context as part of the authorization flow may logically not be necessary — the restricting party may check all its workflow objects and verify whether one matches the current API request. However, defining the context identification as part of the authorization flow and access token may significantly simplify the authorization enforcement. The API consumer in essence tells the API provider in which **context** the API request is executed.
@@ -237,7 +237,7 @@ UMZH-Connect therefore places the counter-party entitlement check **on the Resou
 
 1. Validate the token (signature, issuer, audience, expiry, and sender-constraint where applicable).
 2. Verify that `extensions.umzhconnect.organization_reference` is the legitimate counter-party named by the workflow object referenced in the token's `fhirContext` — for example, that `extensions.umzhconnect.organization_reference` matches `Task.requester.reference` for a placer reading Task status. This is a direct string comparison: the AS embeds the registry URL at token issuance from the onboarding record, so no live registry lookup is required.
-3. Verify that every requested resource is reachable from `fhirContext` in the FHIR reference graph.
+3. Verify that every requested resource is reachable from `fhirContext` in the FHIR reference graph — by forward reference, or by a specifically listed back-reference to it (see [Context-centric authorization](#context-centric-authorization)).
 
 Tokens whose `fhirContext` resolves to a workflow object that does not name the calling party MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. by inspecting the workflow object directly or via a local `Consent` resource keyed to it — is a local implementation concern, described in [Security Implementation](security-implementation.html#consent-based-context-enforcement).
 
