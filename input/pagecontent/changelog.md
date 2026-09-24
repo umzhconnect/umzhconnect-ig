@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#105](https://github.com/umzhconnect/umzhconnect-ig/issues/105): Make the AllergyGado example an instance of `ChEtocAllergyIntolerance`, matching the ServiceRequest `supportingInfo[allergiesIntolerances]` slice
 * [#103](https://github.com/umzhconnect/umzhconnect-ig/issues/103): Fix "Sarcome" typo on the home page
 * [#93](https://github.com/umzhconnect/umzhconnect-ig/issues/93): Replace the `TODO?` placeholder for `identifier[placerOrderIdentifier].system` with a description on both referral use-case pages, and populate `system` in the two ServiceRequest examples
 * [#89](https://github.com/umzhconnect/umzhconnect-ig/issues/89): Remove the optional `Task.for` (patient reference) from the Task examples
