@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#109](https://github.com/umzhconnect/umzhconnect-ig/issues/109): Fix the `output-value-canonical` SearchParameter expression to use the lowercase primitive type (`as canonical`)
 * [#107](https://github.com/umzhconnect/umzhconnect-ig/issues/107): Reference architecture — `Task.basedOn` points to the ServiceRequest on the Placer, not the registry; only Organization references are rooted at the registry
 * [#105](https://github.com/umzhconnect/umzhconnect-ig/issues/105): Make the AllergyGado example an instance of `ChEtocAllergyIntolerance`, matching the ServiceRequest `supportingInfo[allergiesIntolerances]` slice
 * [#103](https://github.com/umzhconnect/umzhconnect-ig/issues/103): Fix "Sarcome" typo on the home page
