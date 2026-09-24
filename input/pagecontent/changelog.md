@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#110](https://github.com/umzhconnect/umzhconnect-ig/issues/110): Workflow States — `Task.owner` stays the Fulfiller org for `rejected` and `failed` (owner is 1..1)
 * [#109](https://github.com/umzhconnect/umzhconnect-ig/issues/109): Fix the `output-value-canonical` SearchParameter expression to use the lowercase primitive type (`as canonical`)
 * [#107](https://github.com/umzhconnect/umzhconnect-ig/issues/107): Reference architecture — `Task.basedOn` points to the ServiceRequest on the Placer, not the registry; only Organization references are rooted at the registry
 * [#105](https://github.com/umzhconnect/umzhconnect-ig/issues/105): Make the AllergyGado example an instance of `ChEtocAllergyIntolerance`, matching the ServiceRequest `supportingInfo[allergiesIntolerances]` slice
