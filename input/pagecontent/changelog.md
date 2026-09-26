@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#91](https://github.com/umzhconnect/umzhconnect-ig/issues/91): Orthopedic referral sequence diagram — show the Fulfiller updating the Task to `in-progress` after retrieving the resources, and the Placer's PATCH removing `businessStatus`
 * [#111](https://github.com/umzhconnect/umzhconnect-ig/issues/111): Replace the ICD-10-CM code `I50.22` in the HeartFailureHFrEF example with the ICD-10-GM code `I50.12` (left heart failure, NYHA II)
 * [#110](https://github.com/umzhconnect/umzhconnect-ig/issues/110): Workflow States — `Task.owner` stays the Fulfiller org for `rejected` and `failed` (owner is 1..1)
 * [#109](https://github.com/umzhconnect/umzhconnect-ig/issues/109): Fix the `output-value-canonical` SearchParameter expression to use the lowercase primitive type (`as canonical`)
