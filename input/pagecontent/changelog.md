@@ -1,6 +1,13 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#91](https://github.com/umzhconnect/umzhconnect-ig/issues/91): Orthopedic referral sequence diagram — show the Fulfiller updating the Task to `in-progress` after retrieving the resources, and the Placer's PATCH removing `businessStatus`
+* [#111](https://github.com/umzhconnect/umzhconnect-ig/issues/111): Replace the ICD-10-CM code `I50.22` in the HeartFailureHFrEF example with the ICD-10-GM code `I50.12` (left heart failure, NYHA II)
+* [#110](https://github.com/umzhconnect/umzhconnect-ig/issues/110): Workflow States — `Task.owner` stays the Fulfiller org for `rejected` and `failed` (owner is 1..1)
+* [#109](https://github.com/umzhconnect/umzhconnect-ig/issues/109): Fix the `output-value-canonical` SearchParameter expression to use the lowercase primitive type (`as canonical`)
+* [#107](https://github.com/umzhconnect/umzhconnect-ig/issues/107): Reference architecture — `Task.basedOn` points to the ServiceRequest on the Placer, not the registry; only Organization references are rooted at the registry
+* [#105](https://github.com/umzhconnect/umzhconnect-ig/issues/105): Make the AllergyGado example an instance of `ChEtocAllergyIntolerance`, matching the ServiceRequest `supportingInfo[allergiesIntolerances]` slice
+* [#103](https://github.com/umzhconnect/umzhconnect-ig/issues/103): Fix "Sarcome" typo on the home page
 * [#93](https://github.com/umzhconnect/umzhconnect-ig/issues/93): Replace the `TODO?` placeholder for `identifier[placerOrderIdentifier].system` with a description on both referral use-case pages, and populate `system` in the two ServiceRequest examples
 * [#89](https://github.com/umzhconnect/umzhconnect-ig/issues/89): Remove the optional `Task.for` (patient reference) from the Task examples
 * [#82](https://github.com/umzhconnect/umzhconnect-ig/issues/82): Add `ServiceRequest:requester` as a supported `_include` target on the CapabilityStatement, so the Fulfiller can materialise the requesting PractitionerRole in one round-trip

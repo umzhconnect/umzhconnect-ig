@@ -59,6 +59,6 @@ Usage: #definition
 * code = #output-value-canonical
 * base = #Task
 * type = #reference
-* expression = "Task.output.value as Canonical"
+* expression = "Task.output.value as canonical"
 * xpathUsage = #normal
 * multipleAnd = true

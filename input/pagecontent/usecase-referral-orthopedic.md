@@ -38,6 +38,8 @@ sequenceDiagram
     deactivate Fulfiller
     deactivate Placer
 
+    Fulfiller->>Fulfiller: Update Task<br/>(status: in-progress)
+
     Note over Fulfiller: Request additional information<br/>(smoking status) via Questionnaire
     Fulfiller->>Fulfiller: Update Task<br/>(owner: Placer, businessStatus: awaiting-information<br/>output: QuestionnaireSmokingStatus)
     activate Fulfiller
@@ -49,7 +51,7 @@ sequenceDiagram
     Fulfiller-->>Placer: Return QuestionnaireSmokingStatus
     Placer-->>Placer: Practitioner fills out Questionnaire
     Placer->>Placer: POST QuestionnaireResponse<br/>(basedOn: ServiceRequest-ReferralOrthopedicSurgery)
-    Placer->>Fulfiller: PATCH Task (owner: Fulfiller,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
+    Placer->>Fulfiller: PATCH Task (owner: Fulfiller, businessStatus: removed,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
     Fulfiller-->>Placer: updated
     Fulfiller->>Placer: GET QuestionnaireResponse (absolute URL from Task.input)
     Placer-->>Fulfiller: Return QuestionnaireResponseSmokingStatus

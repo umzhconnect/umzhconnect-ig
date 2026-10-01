@@ -29,7 +29,7 @@ Description: "Synovial sarcoma of the right knee. Hosted on placer."
 
 
 Instance: AllergyGado
-InstanceOf: CHCoreAllergyIntolerance
+InstanceOf: ChEtocAllergyIntolerance
 Usage: #example
 Description: "Allergy intolerance against gadolinium-based contrast agent. Hosted on placer."
 * clinicalStatus = http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical#active "Active"

@@ -62,5 +62,5 @@ stateDiagram-v2
 | Awaiting information | `in-progress` | `awaiting-information` | Placer org | Fulfiller | Fulfiller has added Questionnaire to `Task.output`; owner shifted to Placer |
 | Information received | `in-progress` | — | Fulfiller org | Placer | Placer has PATCHed Task with QuestionnaireResponse in `Task.input`, cleared `businessStatus`, and shifted owner back to Fulfiller |
 | Completed | `completed` | — | Fulfiller org | Fulfiller | Results referenced in `Task.output` |
-| Rejected | `rejected` | — | — | Fulfiller | Fulfiller declines; Placer may approach another Fulfiller |
-| Failed | `failed` | — | — | Fulfiller | Fulfiller accepted but could not complete |
+| Rejected | `rejected` | — | Fulfiller org | Fulfiller | Fulfiller declines; Placer may approach another Fulfiller |
+| Failed | `failed` | — | Fulfiller org | Fulfiller | Fulfiller accepted but could not complete |

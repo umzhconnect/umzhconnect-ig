@@ -54,7 +54,7 @@ The detailed security concept can be found here:
 ### Use cases
 
 * [Orthopedic referral](usecase-referral-orthopedic.html)
-* [Sarcome tumorboard referral](usecase-referral-sarcoma-tumorboard.html)
+* [Sarcoma tumorboard referral](usecase-referral-sarcoma-tumorboard.html)
 
 
 
