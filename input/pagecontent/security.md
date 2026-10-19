@@ -74,7 +74,7 @@ SMART on FHIR defines a **standard way for apps to securely connect to healthcar
 - **OAuth 2.0–based authorization**
 - **FHIR as the data API**
 - **A consistent launch protocol** for apps inside or outside an EHR
-- **A unified way to authorize access** using SMART scopes (e.g. **system/Patient.r** - read patient data etc..)
+- **A unified way to authorize access** using SMART scopes (e.g. **system/Patient.rs** - read and search patient data etc..)
 
 In practice, it gives app developers and systems a predictable, interoperable method to authenticate, obtain tokens, and read/write clinical data across different EHR systems without custom integrations.
 
@@ -116,7 +116,7 @@ grant_type=client_credentials
 &client_id=fulfiller-app
 &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
 &client_assertion=<signed JWT>
-&scope=system/ServiceRequest.rs system/Patient.r system/Condition.r
+&scope=system/ServiceRequest.rs system/Patient.rs system/Condition.rs
 &authorization_details=[{
   "type": "umzh-connect-context",
   "identifier": "ServiceRequest/sr-123"
@@ -153,7 +153,7 @@ The issued token also carries an organization identity claim inside the `extensi
   "sub": "fulfiller-app",
   "aud": "https://fhir.placer.example",
   "exp": 1716470800,
-  "scope": "system/ServiceRequest.rs system/Patient.r system/Condition.r",
+  "scope": "system/ServiceRequest.rs system/Patient.rs system/Condition.rs",
   "extensions": {
     "umzhconnect": {
       "organization_reference": "https://registry.example.org/fhir/Organization/fulfiller-org"

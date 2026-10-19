@@ -1,6 +1,8 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#97](https://github.com/umzhconnect/umzhconnect-ig/issues/97): Add `search-type` (with mandatory `_id`) to the read-only resource types in the CapabilityStatement. Behavioural change: servers must offer `GET /{Type}?_id=…`; the scope examples on the Security page use `system/<Type>.rs`
+* [#108](https://github.com/umzhconnect/umzhconnect-ig/issues/108): Guidance - Interactions — remove the note implying `_include` works on the `read` interaction
 * [#91](https://github.com/umzhconnect/umzhconnect-ig/issues/91): Orthopedic referral sequence diagram — show the Fulfiller updating the Task to `in-progress` after retrieving the resources, and the Placer's PATCH removing `businessStatus`
 * [#111](https://github.com/umzhconnect/umzhconnect-ig/issues/111): Replace the ICD-10-CM code `I50.22` in the HeartFailureHFrEF example with the ICD-10-GM code `I50.12` (left heart failure, NYHA II)
 * [#110](https://github.com/umzhconnect/umzhconnect-ig/issues/110): Workflow States — `Task.owner` stays the Fulfiller org for `rejected` and `failed` (owner is 1..1)
