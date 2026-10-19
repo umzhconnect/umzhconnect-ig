@@ -8,6 +8,7 @@ In this article:
 - [Task](#task)
 - [Questionnaire](#questionnaire)
 - [QuestionnaireResponse](#questionnaireresponse)
+- [Second-level resources](#second-level-resources)
 - [Versioning and conditional operations](#versioning-and-conditional-operations)
 
 ### Overview
@@ -48,9 +49,10 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | **mandatory** | Logical id of the resource. Searches without `_id` are not supported. |
+| `_include` | — | optional | Supported targets: `DiagnosticReport:result`, `MedicationStatement:medication`, `PractitionerRole:practitioner`. Each included resource is itself subject to the `fhirContext` graph check. See [Second-level resources](#second-level-resources). |
 {: .table .table-bordered }
 
-These resources are reached transitively from the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`). They are typically retrieved either via direct `read` on a known id or implicitly through `_include` on the workflow root.
+These resources are referenced by the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`), or one level further along a listed path (see [Second-level resources](#second-level-resources)). They are typically retrieved either via direct `read` on a known id or implicitly through `_include` on the workflow root.
 
 ### ServiceRequest
 
@@ -65,7 +67,7 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | **mandatory** | Logical id. Searches without `_id` are not supported. |
-| `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:requester`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the `fhirContext` graph check. |
+| `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:requester`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the `fhirContext` graph check. `:iterate`: see [Second-level resources](#second-level-resources). |
 {: .table .table-bordered }
 
 The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` to materialise the workflow graph in one round-trip.
@@ -88,7 +90,7 @@ Search parameters:
 | `owner` | reference | optional | Filter by `Task.owner`. |
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
-| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. |
+| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
@@ -115,6 +117,34 @@ The QuestionnaireResponse is created and hosted by the **Placer** — following 
 The QuestionnaireResponse's `basedOn` (1..1, [ChUmzhConnectQuestionnaireResponse](StructureDefinition-ch-umzh-connect-questionnaireresponse.html)) SHALL reference the workflow-root ServiceRequest. That back-reference is a specifically listed exception to the forward-only graph rule (see [Security — Context-centric authorization](security.html#context-centric-authorization)); a policy engine SHALL admit the QuestionnaireResponse on that basis alone. A Placer MAY additionally list it in `ServiceRequest.supportingInfo` for forward-only enforcement — optional, and not an order amendment.
 
 The back-reference is safe only because the QuestionnaireResponse is authored **exclusively by the Placer** — the CapabilityStatement declares no `create`/`update`/`patch` for it. A Placer creates its own QuestionnaireResponses internally, not through this API, and **SHALL NOT** add a writable QuestionnaireResponse interaction to its cross-organizational surface — that would let a counter-party plant one with `basedOn` pointing at an arbitrary ServiceRequest and inject it into that order's context graph.
+
+### Second-level resources
+
+The context graph extends one level beyond the resources the workflow root references directly, along these paths only:
+
+| Path | `_include` target | Example |
+|---|---|---|
+| `DiagnosticReport.result` | `DiagnosticReport:result` | The result Observations of a report |
+| `MedicationStatement.medication` | `MedicationStatement:medication` | The Medication behind a MedicationStatement in `ServiceRequest.supportingInfo` or `Task.output` |
+| `PractitionerRole.practitioner` | `PractitionerRole:practitioner` | The Practitioner behind `ServiceRequest.requester` |
+{: .table .table-bordered }
+
+`_include` on the root search does not return these second-level resources. Besides a direct `read` of each reference, a client can:
+
+**Use `_include:iterate` on the root search.** Servers MAY support it for these targets:
+
+```
+GET /ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:requester&_include=ServiceRequest:supporting-info&_include:iterate=PractitionerRole:practitioner&_include:iterate=MedicationStatement:medication
+GET /Task?_id=TaskReferralOrthopedicSurgeryCompleted&_include=Task:output-value-reference&_include:iterate=MedicationStatement:medication
+```
+
+**Search the first-level resource with `_include`**, when it has not been retrieved yet — e.g. a DiagnosticReport referenced from `Task.output`, together with its results:
+
+```
+GET /DiagnosticReport?_id={id}&_include=DiagnosticReport:result
+```
+
+Every included or iterated resource is subject to the `fhirContext` graph check. Clients SHALL NOT rely on `:iterate`; a second-level resource missing from the Bundle is retrieved by `read`.
 
 ### Versioning and conditional operations
 

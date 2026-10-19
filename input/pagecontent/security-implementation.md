@@ -16,7 +16,7 @@ This section describes one recommended implementation pattern using a FHIR **Con
 
 When a workflow object is created — a ServiceRequest on the Placer's side, or a Task on the Fulfiller's side — the hosting party creates a corresponding FHIR Consent resource on their own FHIR server. The Consent:
 
-- References the workflow root object via `Consent.provision.data` with `meaning = "related"`, capturing the full resource graph in scope
+- References the workflow root object via `Consent.provision.data` with `meaning = "related"`, capturing the context graph in scope
 - Identifies the authorized counter-organization via `Consent.provision.actor`
 - Carries an optional expiration date via `Consent.provision.period.end`
 - Can be revoked at any time by setting `Consent.status = inactive`
@@ -44,7 +44,7 @@ When a workflow object is created — a ServiceRequest on the Placer's side, or 
 }
 ```
 
-The `meaning = "related"` value means the Consent covers the referenced ServiceRequest and all resources it transitively references — exactly the graph the policy engine must enforce. It is recommended to define a FHIR profile for these kinds of consents.
+The `meaning = "related"` value means the Consent covers the referenced ServiceRequest and the resources it references; the policy engine enforces the context graph. It is recommended to define a FHIR profile for these kinds of consents.
 
 #### Policy engine query
 

@@ -159,8 +159,8 @@ Accept: application/fhir+json
 
 
 ### Receive the ServiceRequest from the Fulfiller by _id. 
-### _include=PractitionerRole:practitioner -> does not work out of the box (maybe because indirect)
-### for reasonReference, insurance supportingInfo we need do define search parameters and configure them on the hapi-fhir server, otherwise the resources will not be returned
+# PractitionerRole:practitioner is a second-level include (via ServiceRequest:requester), see _include:iterate below
+# for reasonReference, insurance supportingInfo we need do define search parameters and configure them on the hapi-fhir server, otherwise the resources will not be returned
 
 GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:subject&_include=ServiceRequest:insurance
 Content-Type: application/fhir+json
@@ -173,6 +173,16 @@ Accept: application/fhir+json
 
 ###
 GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=*
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+### Second-level: requester's Practitioner and supportingInfo Medications via _include:iterate
+GET http://placer.example.org/fhir/ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:requester&_include=ServiceRequest:supporting-info&_include:iterate=PractitionerRole:practitioner&_include:iterate=MedicationStatement:medication
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+### Second-level resource without :iterate: direct read
+GET http://placer.example.org/fhir/Practitioner/HansMuster
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 
