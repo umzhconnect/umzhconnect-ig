@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#101](https://github.com/umzhconnect/umzhconnect-ig/issues/101): Allow `_include:iterate` (optional) on ServiceRequest and Task searches, for the new second-level `_include` targets `DiagnosticReport:result`, `MedicationStatement:medication` and `PractitionerRole:practitioner`. Security — limit the `fhirContext` context graph to the resources the workflow root references directly plus this second level (previously: every resource reachable by forward reference). Guidance - Interactions — second-level resources are retrieved by searching the first-level resource with `_include`; a direct `read` of a second-level resource is not guaranteed
 * [#97](https://github.com/umzhconnect/umzhconnect-ig/issues/97): Add `search-type` (with mandatory `_id`) to the read-only resource types in the CapabilityStatement. Behavioural change: servers must offer `GET /{Type}?_id=…`; the scope examples on the Security page use `system/<Type>.rs`
 * [#108](https://github.com/umzhconnect/umzhconnect-ig/issues/108): Guidance - Interactions — remove the note implying `_include` works on the `read` interaction
 * [#91](https://github.com/umzhconnect/umzhconnect-ig/issues/91): Orthopedic referral sequence diagram — show the Fulfiller updating the Task to `in-progress` after retrieving the resources, and the Placer's PATCH removing `businessStatus`
