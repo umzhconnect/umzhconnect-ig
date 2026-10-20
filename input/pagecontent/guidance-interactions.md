@@ -52,7 +52,7 @@ Search parameters:
 | `_include` | — | optional | Supported targets: `DiagnosticReport:result`, `MedicationStatement:medication`, `PractitionerRole:practitioner`. Each included resource is itself subject to the `fhirContext` graph check. See [Second-level resources](#second-level-resources). |
 {: .table .table-bordered }
 
-These resources are referenced by the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`), or one level further along a listed path (see [Second-level resources](#second-level-resources)). They are typically retrieved either via direct `read` on a known id or implicitly through `_include` on the workflow root.
+These resources are referenced by the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`) and are typically retrieved either via direct `read` on a known id or implicitly through `_include` on the workflow root. Resources one level further along a listed path are retrieved through `_include` (see [Second-level resources](#second-level-resources)).
 
 ### ServiceRequest
 
@@ -129,22 +129,20 @@ The context graph extends one level beyond the resources the workflow root refer
 | `PractitionerRole.practitioner` | `PractitionerRole:practitioner` | The Practitioner behind `ServiceRequest.requester` |
 {: .table .table-bordered }
 
-`_include` on the root search does not return these second-level resources. Besides a direct `read` of each reference, a client can:
+`_include` on the root search does not return these second-level resources. A client retrieves them by searching the first-level resource with `_include` — e.g. a DiagnosticReport referenced from `Task.output`, together with its results:
 
-**Use `_include:iterate` on the root search.** Servers MAY support it for these targets:
+```
+GET /DiagnosticReport?_id={id}&_include=DiagnosticReport:result
+```
+
+Servers MAY additionally support `_include:iterate` for these targets on the root search:
 
 ```
 GET /ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:requester&_include=ServiceRequest:supporting-info&_include:iterate=PractitionerRole:practitioner&_include:iterate=MedicationStatement:medication
 GET /Task?_id=TaskReferralOrthopedicSurgeryCompleted&_include=Task:output-value-reference&_include:iterate=MedicationStatement:medication
 ```
 
-**Search the first-level resource with `_include`**, when it has not been retrieved yet — e.g. a DiagnosticReport referenced from `Task.output`, together with its results:
-
-```
-GET /DiagnosticReport?_id={id}&_include=DiagnosticReport:result
-```
-
-Every included or iterated resource is subject to the `fhirContext` graph check. Clients SHALL NOT rely on `:iterate`; a second-level resource missing from the Bundle is retrieved by `read`.
+Every included or iterated resource is subject to the `fhirContext` graph check. Clients SHALL NOT rely on `:iterate` or on a direct `read` of a second-level resource.
 
 ### Versioning and conditional operations
 
