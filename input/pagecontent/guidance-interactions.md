@@ -39,6 +39,7 @@ Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `Diagn
 
 | Interaction | Path | Notes |
 |---|---|---|
+| `search-type` | `GET /{Type}?_id={id}` | Returns only resources reachable from the token's `fhirContext` graph. |
 | `read` | `GET /{Type}/{id}` | Returns the resource only if `{Type}/{id}` is reachable from the token's `fhirContext` graph. |
 {: .table .table-bordered }
 
@@ -67,7 +68,7 @@ Search parameters:
 | `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:requester`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the `fhirContext` graph check. |
 {: .table .table-bordered }
 
-The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` (or the equivalent `read` with `_include`) to materialise the workflow graph in one round-trip.
+The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` to materialise the workflow graph in one round-trip.
 
 ### Task
 
