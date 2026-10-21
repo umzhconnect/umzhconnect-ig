@@ -44,10 +44,9 @@ Usage: #definition
 - **Placer server** — hosts the ServiceRequest and all referenced clinical resources. \
 The Fulfiller queries these via `read` and `search`.
 - **Fulfiller server** — hosts the Coordination Task and related output resources. \
-The Placer creates it via `create`, applies selective updates via `patch`, and queries via `read` and `search`."""
+The Placer creates it via `create`, applies selective updates via `update`, and queries via `read` and `search`."""
 * fhirVersion = #4.0.1
 * format = #application/fhir+json
-* patchFormat = #application/json-patch+json
 
 * rest.mode = #server
 
@@ -100,17 +99,18 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].searchInclude[+] = "ServiceRequest:insurance"
 * insert MandatoryIdSearchParam
 
-// Task: search-type, patch, read, create + multiple searchParams
+// Task: search-type, update, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
-* rest.resource[=].interaction[+].code = #patch
-* rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Allowed if the calling identity is `Task.requester` and `Task.businessStatus` is `awaiting-information`. Only adding entries to `Task.input` and removing `Task.businessStatus` are allowed — other operations SHALL be rejected."
+* rest.resource[=].interaction[+].code = #update
+* rest.resource[=].interaction[=].documentation = "Update of a Task. Allowed if the calling identity is `Task.requester` and `Task.businessStatus` is `awaiting-information`. The submitted Task SHALL differ from the stored Task only by added entries in `Task.input` and a removed `Task.businessStatus` — other updates SHALL be rejected."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
 * rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller."
 * insert ResourceDefaults
+* rest.resource[=].updateCreate = false
 * rest.resource[=].searchInclude[0] = "Task:output-value-reference"
 * rest.resource[=].searchInclude[+] = "Task:output-value-canonical"
 * rest.resource[=].searchParam[0].name = "owner"

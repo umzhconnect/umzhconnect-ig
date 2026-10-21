@@ -51,7 +51,7 @@ sequenceDiagram
     Fulfiller-->>Placer: Return QuestionnaireSmokingStatus
     Placer-->>Placer: Practitioner fills out Questionnaire
     Placer->>Placer: POST QuestionnaireResponse<br/>(basedOn: ServiceRequest-ReferralOrthopedicSurgery)
-    Placer->>Fulfiller: PATCH Task (businessStatus: removed,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
+    Placer->>Fulfiller: PUT Task (businessStatus: removed,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
     Fulfiller-->>Placer: updated
     Fulfiller->>Placer: GET QuestionnaireResponse (absolute URL from Task.input)
     Placer-->>Fulfiller: Return QuestionnaireResponseSmokingStatus

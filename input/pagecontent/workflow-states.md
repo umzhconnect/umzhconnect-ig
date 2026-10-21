@@ -18,9 +18,9 @@ This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/20
 
 **Rules:**
 
-- Only the Fulfiller may change `Task.status` — it is not patchable by the Placer (see [Workflow oriented API design](core-concept-workflow-api.html))
+- Only the Fulfiller may change `Task.status`
 - `Task.owner` is always the Fulfiller organization
-- The Placer may only PATCH the Task while `Task.businessStatus` is `awaiting-information`, and only to add entries to `Task.input` and to remove `Task.businessStatus`
+- The Placer may only update the Task while `Task.businessStatus` is `awaiting-information`, and only to add entries to `Task.input` and to remove `Task.businessStatus`
 - `Task.businessStatus` must only contain domain-specific workflow codes; `Task.status` codes must never be used as `businessStatus` values
 - Cancellation by the Placer is not foreseen in this version of the IG
 - Negative terminal states use base-FHIR `rejected` (Fulfiller declines before starting) and `failed` (accepted but not completed) rather than COW's `cancelled + statusReason`; COW's `cancelled` ("not selected") pattern assumes a multi-Fulfiller selection flow that is out of scope here
@@ -60,7 +60,7 @@ stateDiagram-v2
 | Accepted | `accepted` | — | Fulfiller | Explicit acceptance; may be skipped in pre-agreed flows |
 | In progress | `in-progress` | — | Fulfiller | Fulfiller has started work |
 | Awaiting information | `in-progress` | `awaiting-information` | Fulfiller | Fulfiller has added Questionnaire to `Task.output` |
-| Information received | `in-progress` | — | Placer | Placer has PATCHed Task with QuestionnaireResponse in `Task.input` and cleared `businessStatus` |
+| Information received | `in-progress` | — | Placer | Placer has updated Task with QuestionnaireResponse in `Task.input` and cleared `businessStatus` |
 | Completed | `completed` | — | Fulfiller | Results referenced in `Task.output` |
 | Rejected | `rejected` | — | Fulfiller | Fulfiller declines; Placer may approach another Fulfiller |
 | Failed | `failed` | — | Fulfiller | Fulfiller accepted but could not complete |
