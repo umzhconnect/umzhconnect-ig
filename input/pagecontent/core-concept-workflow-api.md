@@ -55,4 +55,4 @@ sequenceDiagram
 ```
 
 
-The Task can be mutated by the Placer only via PATCH (RFC 6902, `application/json-patch+json`), and only when `Task.owner` references the Placer organization. The Placer may patch only the fields `owner`, `businessStatus`, `input`, and `focus`. See [Workflow States](workflow-states.html) for the state transitions in which this applies.
+The Task can be mutated by the Placer only via PATCH (RFC 6902, `application/json-patch+json`), and only while `Task.businessStatus` is `awaiting-information`. The Placer may only add entries to `Task.input` and remove `Task.businessStatus`. See [Workflow States](workflow-states.html) for the state transitions in which this applies.

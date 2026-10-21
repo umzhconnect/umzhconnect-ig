@@ -41,7 +41,7 @@ sequenceDiagram
     Fulfiller->>Fulfiller: Update Task<br/>(status: in-progress)
 
     Note over Fulfiller: Request additional information<br/>(smoking status) via Questionnaire
-    Fulfiller->>Fulfiller: Update Task<br/>(owner: Placer, businessStatus: awaiting-information<br/>output: QuestionnaireSmokingStatus)
+    Fulfiller->>Fulfiller: Update Task<br/>(businessStatus: awaiting-information,<br/>output: QuestionnaireSmokingStatus)
     activate Fulfiller
     Fulfiller-->>Placer: Notify Task updated
     activate Placer
@@ -51,7 +51,7 @@ sequenceDiagram
     Fulfiller-->>Placer: Return QuestionnaireSmokingStatus
     Placer-->>Placer: Practitioner fills out Questionnaire
     Placer->>Placer: POST QuestionnaireResponse<br/>(basedOn: ServiceRequest-ReferralOrthopedicSurgery)
-    Placer->>Fulfiller: PATCH Task (owner: Fulfiller, businessStatus: removed,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
+    Placer->>Fulfiller: PATCH Task (businessStatus: removed,<br/>input: absolute URL of QuestionnaireResponseSmokingStatus)
     Fulfiller-->>Placer: updated
     Fulfiller->>Placer: GET QuestionnaireResponse (absolute URL from Task.input)
     Placer-->>Fulfiller: Return QuestionnaireResponseSmokingStatus
@@ -102,7 +102,7 @@ The following table indicates the source of each field in the Task:
 | `basedOn` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task is based on |
 | `code` | Hard-coded | Fixed value `fulfill` |
 | `requester` | Referenced | The requesting organization (Placer) as an absolute URL to the registry [Organization](Organization-Placer.html), e.g. `http://registry.example.org/fhir/Organization/Placer` |
-| `owner` | Dynamic | Initial Task: Fulfiller (absolute URL to the registry [Organization](Organization-Fulfiller.html), e.g. `http://registry.example.org/fhir/Organization/Fulfiller`). When Fulfiller creates Questionnaire: changed to Placer. When QuestionnaireResponse is created: changed back to Fulfiller. |
+| `owner` | Referenced | The performing organization (Fulfiller) as an absolute URL to the registry [Organization](Organization-Fulfiller.html), e.g. `http://registry.example.org/fhir/Organization/Fulfiller` |
 | `businessStatus` | Dynamic | Initial Task: absent. When Fulfiller creates Questionnaire: set to `awaiting-information`. When QuestionnaireResponse is created: cleared (absent) |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
 | `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
