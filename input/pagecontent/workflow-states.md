@@ -18,12 +18,14 @@ This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/20
 
 **Rules:**
 
-- Only the Fulfiller may change `Task.status`
+- Only the Fulfiller may change `Task.status`, except for cancellation by the Placer
 - `Task.owner` is always the Fulfiller organization
-- The Placer may only update the Task while `Task.businessStatus` is `awaiting-information`, and only to add entries to `Task.input` and to remove `Task.businessStatus`
+- The Placer may only update the Task:
+  - while `Task.status` is `requested` or `accepted`, to set `Task.status` to `cancelled`, optionally with a `Task.statusReason`
+  - while `Task.businessStatus` is `awaiting-information`, to add entries to `Task.input` and to remove `Task.businessStatus`
 - `Task.businessStatus` must only contain domain-specific workflow codes; `Task.status` codes must never be used as `businessStatus` values
-- Cancellation by the Placer is not foreseen in this version of the IG
-- Negative terminal states use base-FHIR `rejected` (Fulfiller declines before starting) and `failed` (accepted but not completed) rather than COW's `cancelled + statusReason`; COW's `cancelled` ("not selected") pattern assumes a multi-Fulfiller selection flow that is out of scope here
+- Once the Fulfiller has started work (`in-progress`), the Placer cannot cancel the Task in this version of the IG
+- The Fulfiller ends a Task unsuccessfully with `rejected` (declines before starting) or `failed` (accepted but not completed)
 
 ### State Diagram
 
@@ -36,8 +38,10 @@ stateDiagram-v2
     requested --> in_progress   : Fulfiller accepts & starts
     requested --> accepted      : Fulfiller explicitly accepts\n(request-with-acceptance pattern)
     requested --> rejected      : Fulfiller declines
+    requested --> cancelled     : Placer cancels
 
     accepted  --> in_progress   : Fulfiller starts work
+    accepted  --> cancelled     : Placer cancels
 
     state "in-progress\n[awaiting-information]" as awaiting
     in_progress --> awaiting    : Fulfiller needs more info
@@ -49,6 +53,7 @@ stateDiagram-v2
     completed --> [*]
     rejected  --> [*]
     failed    --> [*]
+    cancelled --> [*]
 ```
 
 ### State Transition Table
@@ -64,3 +69,4 @@ stateDiagram-v2
 | Completed | `completed` | — | Fulfiller | Results referenced in `Task.output` |
 | Rejected | `rejected` | — | Fulfiller | Fulfiller declines; Placer may approach another Fulfiller |
 | Failed | `failed` | — | Fulfiller | Fulfiller accepted but could not complete |
+| Cancelled | `cancelled` | — | Placer | Placer withdraws the request before work has started and, once the update has succeeded, sets the ServiceRequest's `status` to `revoked`. To change the request, the Placer then creates a new ServiceRequest and a new Task |
