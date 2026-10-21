@@ -1,7 +1,7 @@
 <style>
 div.mermaid iframe {
   width: 100% !important;
-  height: 250px !important;
+  height: 320px !important;
   border: 0 !important;
 }
 </style>
@@ -33,17 +33,19 @@ This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/20
 stateDiagram-v2
     direction LR
 
+    state "in-progress" as in_progress
+
     [*] --> requested : Placer POSTs Task to Fulfiller
 
     requested --> in_progress   : Fulfiller accepts & starts
-    requested --> accepted      : Fulfiller explicitly accepts\n(request-with-acceptance pattern)
+    requested --> accepted      : Fulfiller explicitly accepts<br/>(request-with-acceptance pattern)
     requested --> rejected      : Fulfiller declines
     requested --> cancelled     : Placer cancels
 
     accepted  --> in_progress   : Fulfiller starts work
     accepted  --> cancelled     : Placer cancels
 
-    state "in-progress\n[awaiting-information]" as awaiting
+    state "in-progress<br/>[awaiting-information]" as awaiting
     in_progress --> awaiting    : Fulfiller needs more info
     awaiting    --> in_progress : Placer provides info
 
