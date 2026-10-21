@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#117](https://github.com/umzhconnect/umzhconnect-ig/issues/117): CapabilityStatement — replace the Task `patch` interaction with `update` (PUT) and set `updateCreate = false`. Behavioural change: the Placer sends the full Task with `If-Match`; servers reject any difference beyond added `Task.input` entries and a removed `businessStatus`
 * [#116](https://github.com/umzhconnect/umzhconnect-ig/issues/116): Workflow States — `Task.owner` is always the Fulfiller org and no longer shifts to the Placer for `awaiting-information`. Behavioural change: the Placer may change the Task only while `businessStatus` is `awaiting-information`, and only to add entries to `Task.input` and remove `businessStatus` (previously: while `Task.owner` is the Placer)
 * [#118](https://github.com/umzhconnect/umzhconnect-ig/issues/118): Workflow States — remove `Task.focus` from what the Placer may change. Behavioural change: servers reject a Placer change to `focus`
 * [#99](https://github.com/umzhconnect/umzhconnect-ig/issues/99): Add `_lastUpdated` to the Task search parameters in the CapabilityStatement and give delta-polling guidance on the Guidance - Interactions page, so a polling Placer can fetch only Tasks changed since its last poll
