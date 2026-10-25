@@ -170,7 +170,7 @@ When mTLS is used, FAPI 2.0 enforcement adds requirements to classical certifica
 
 ### Relationship to other security profiles
 
-This section positions the UMZH-Connect security concept against three reference profiles that target overlapping problem spaces. The single architectural choice that distinguishes UMZH-Connect from all three is **context-bound tokens**: every access token is issued for one specific workflow object (a `ServiceRequest` or `Task`) carried in the JWT as an [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details` claim. None of the reference profiles standardize this per-request binding.
+This section positions the UMZH-Connect security concept against three reference profiles that target overlapping problem spaces. The single architectural choice that distinguishes UMZH-Connect from all three is **context-bound tokens**: every access token for a context-gated resource is issued for one specific workflow object (a `ServiceRequest` or `Task`) carried in the JWT as an [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details` claim. None of the reference profiles standardize this per-request binding.
 
 **References:**
 

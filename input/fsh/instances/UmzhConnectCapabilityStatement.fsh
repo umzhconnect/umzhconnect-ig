@@ -109,7 +109,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
-* rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller."
+* rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization."
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "Task:output-value-reference"
 * rest.resource[=].searchInclude[+] = "Task:output-value-canonical"

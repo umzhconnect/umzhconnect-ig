@@ -27,7 +27,7 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 `Task` and `Questionnaire` are **not** context-gated:
 
-- **`Task`** is the entry-point resource on the Fulfiller — it is searched and read by the requesting identity directly. Access is constrained by [Task search scoping](#task-search-scoping) (below), not by the workflow context.
+- **`Task`** is the entry-point resource on the Fulfiller — it is created, searched and read by the requesting identity directly. Access is constrained by `Task.requester` on create and by [Task search scoping](#task-search-scoping) (below) on read and search, not by the workflow context.
 - **`Questionnaire`** is a definitional artefact shared across workflows; it carries no patient data and is reachable independent of any specific workflow context.
 
 ### Task search scoping
@@ -78,7 +78,7 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 |---|---|---|
 | `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
 | `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
-| `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. |
+| `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization. |
 | `patch` | `PATCH /Task/{id}` | JSON Patch (`application/json-patch+json`). **Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched** — other paths SHALL be rejected. |
 {: .table .table-bordered }
 
@@ -91,7 +91,7 @@ Search parameters:
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
 | `_lastUpdated` | date | optional | Filter by last modification time — the Placer polls for Task changes since the previous poll. See the polling note below. |
-| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). |
+| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). Included resources other than Questionnaires are context-gated: search with `_id={id}` and a token whose workflow context is `Task/{id}`. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
