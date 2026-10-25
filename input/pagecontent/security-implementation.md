@@ -4,17 +4,29 @@ This page is **informative** — optional guidance that adds no conformance requ
 
 </div>
 
-### Consent-based context enforcement
+### Context enforcement
 
 The [Security](security.html) page defines the UMZH-Connect authorization model: workflow context is communicated via `authorization_details` at the token endpoint and reflected as an `authorization_details` claim in the issued JWT. The actual enforcement of that context — verifying that requested resources fall within the authorized graph — is left to each party's implementation.
 
 In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such as a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in the [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway) project. Our general approach is to whitelist only the necessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
 
-This section describes one recommended implementation pattern using a FHIR **Consent** resource as a local access-control record.
+The counter-party check ([Security — Counter-party entitlement](security.html#counter-party-entitlement-is-a-resource-server-obligation), step 2) needs the RS's own record of the counter-party for each workflow root. On the Fulfiller, that record is `Task.requester`, checked at `POST /Task`. On the Placer, the ServiceRequest need not name the Fulfiller. This section describes two ways for the Placer to record it; the Consent pattern also works on the Fulfiller.
+
+#### Performer-based enforcement
+
+Before the Placer creates the Task, it adds the Fulfiller's registry Organization URL to `ServiceRequest.performer`:
+
+```json
+"performer": [
+  {"reference": "http://registry.example.org/fhir/Organization/Fulfiller"}
+]
+```
+
+The counter-party check is then the same string comparison the Fulfiller does on `Task.requester`, using the workflow's own data: it passes if one of the performer references matches. Revocation goes through the order itself: the policy engine also checks `ServiceRequest.status`, and once it is `revoked` or `entered-in-error`, access ends.
 
 #### Consent-based enforcement
 
-When a workflow object is created — a ServiceRequest on the Placer's side, or a Task on the Fulfiller's side — the hosting party creates a corresponding FHIR Consent resource on their own FHIR server. The Consent:
+When access needs an expiry or a revocation separate from the order, the counter-party can instead be recorded in a local FHIR **Consent** resource. When a workflow object is created — a ServiceRequest on the Placer's side, or a Task on the Fulfiller's side — the hosting party creates a corresponding FHIR Consent resource on their own FHIR server. The Consent:
 
 - References the workflow root object via `Consent.provision.data` with `meaning = "related"`, capturing the context graph in scope
 - Identifies the authorized counter-organization via `Consent.provision.actor`
@@ -46,7 +58,7 @@ When a workflow object is created — a ServiceRequest on the Placer's side, or 
 
 The `meaning = "related"` value means the Consent covers the referenced ServiceRequest and the resources it references; the policy engine enforces the context graph. It is recommended to define a FHIR profile for these kinds of consents.
 
-#### Policy engine query
+##### Policy engine query
 
 When the Resource Server receives an API request carrying a JWT with a workflow context, the policy engine resolves the context reference to the corresponding Consent:
 
@@ -69,17 +81,17 @@ Consent.where(
 
 where `%context` is the workflow context `identifier` from the access token and `%organization_reference` is the `extensions.umzhconnect.organization_reference` claim. The `matches('(^|/)…$')` form tolerates references stored as either relative (`ServiceRequest/sr-123`) or absolute (`https://placer.example/fhir/ServiceRequest/sr-123`) URLs. It assumes literal, non-versioned references; versioned (`/_history/…`), `urn:uuid:`, logical (`identifier`-based), or contained (`#…`) references require normalizing the stored reference on write, after which a plain `=` comparison suffices.
 
-#### Expiration
+##### Expiration
 
 Set `Consent.provision.period.end` to the date after which access should no longer be granted. The policy engine checks the period as part of its evaluation. No token invalidation is required — expired Consents simply return no results on the query.
 
-#### Revocation
+##### Revocation
 
 To revoke access immediately, set `Consent.status = inactive`. The next policy engine query for that context will find no active Consent and deny the request.
 
 Parties using short-lived token caches should ensure cache TTLs are short enough to propagate revocation in a timely manner.
 
-#### Scope notes
+##### Scope notes
 
 FHIR Consent is designed primarily for patient consent to data use. Its application here as a local inter-system access-control record is pragmatic: the semantics of `provision.data.meaning = "related"` align naturally with the graph-based enforcement model, and the lifecycle fields (expiration, status) map cleanly onto standard Consent elements. Parties are free to adopt alternative enforcement mechanisms as long as they honour the workflow context from the access token as the authoritative context identifier.
 
