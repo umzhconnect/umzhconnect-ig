@@ -22,7 +22,7 @@ Before the Placer creates the Task, it adds the Fulfiller's registry Organizatio
 ]
 ```
 
-The counter-party check is then the same string comparison the Fulfiller does on `Task.requester`, using the workflow's own data: it passes if one of the performer references matches. Revocation goes through the order itself: the policy engine also checks `ServiceRequest.status`, and once it is `revoked` or `entered-in-error`, access ends.
+The counter-party check is then the same string comparison the Fulfiller does on `Task.requester`, using the workflow's own data: it passes if one of the performer references matches. Revocation goes through the order itself: the policy engine also checks `ServiceRequest.status`, and access requires it to be `active`.
 
 #### Consent-based enforcement
 
