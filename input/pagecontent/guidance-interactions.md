@@ -78,7 +78,7 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 |---|---|---|
 | `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
 | `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
-| `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization. |
+| `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization. |
 | `patch` | `PATCH /Task/{id}` | JSON Patch (`application/json-patch+json`). Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **Only adding entries to `Task.input` and removing `Task.businessStatus` are allowed** — other operations SHALL be rejected. |
 {: .table .table-bordered }
 
@@ -96,7 +96,7 @@ Search parameters:
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
 
-`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it.
+`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` output resources across Tasks: outputs other than Questionnaires are context-gated and are retrieved per Task, with `_id={id}` and a token whose workflow context is `Task/{id}`.
 
 ### Questionnaire
 

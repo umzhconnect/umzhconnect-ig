@@ -131,7 +131,7 @@ UMZH-Connect defines one authorization details type, the **workflow context**:
 | `type` | 1..1 | `http://fhir.ch/ig/ch-umzh-connect/workflow-context` |
 | `identifier` | 1..1 | Relative reference to the workflow root: `ServiceRequest/{id}` on the Placer, `Task/{id}` on the Fulfiller |
 
-A token request carries at most one workflow context.
+A token request carries at most one workflow context; otherwise the AS MUST reject it with `invalid_authorization_details` ([RFC 9396 §5](https://www.rfc-editor.org/rfc/rfc9396#section-5)).
 
 The `<signed JWT>` placeholder above is the **client-authentication assertion** ([RFC 7523](https://datatracker.ietf.org/doc/html/rfc7523)), as profiled by [SMART App Launch — Authenticating to the token endpoint](https://hl7.org/fhir/smart-app-launch/STU2.2/client-confidential-asymmetric.html#authenticating-to-the-token-endpoint) and inherited by [SMART Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html#protocol-details) — the client constructs it itself and signs it with the private key whose public counterpart (its JWKS) was registered with the Authorization Server at onboarding. It is short-lived, single-use, and pins the request to one specific token endpoint:
 
@@ -254,7 +254,7 @@ For these requests, tokens without exactly one workflow context, or whose workfl
 
 `Task` and `Questionnaire` are not context-gated, and a token for them needs no workflow context. For `Questionnaire`, which is definitional content, token validation and the scope check suffice. For `Task`, the RS checks the calling organization against the Task instead:
 
-- `POST /Task`: `Task.requester.reference` MUST equal `extensions.umzhconnect.organization_reference`; otherwise the request is rejected with `403 Forbidden`.
+- `POST /Task`: `Task.requester.reference` MUST equal `extensions.umzhconnect.organization_reference`, and `Task.owner.reference` MUST be the Fulfiller's own organization; otherwise the request is rejected with `403 Forbidden`.
 - Read and search: the calling organization is `Task.requester` or `Task.owner` (see [Task search scoping](guidance-interactions.html#task-search-scoping)).
 - Changes to an existing Task: as defined in [Workflow States](workflow-states.html).
 
