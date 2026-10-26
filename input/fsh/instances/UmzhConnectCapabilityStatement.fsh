@@ -105,7 +105,7 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** context-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #patch
-* rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched — other paths SHALL be rejected."
+* rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Allowed if the calling identity is `Task.requester` and `Task.businessStatus` is `awaiting-information`. Only adding entries to `Task.input` and removing `Task.businessStatus` are allowed — other operations SHALL be rejected."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create

@@ -79,7 +79,7 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 | `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
 | `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
 | `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization. |
-| `patch` | `PATCH /Task/{id}` | JSON Patch (`application/json-patch+json`). **Only `Task.input`, `Task.owner`, `Task.focus`, and `Task.businessStatus` may be patched** — other paths SHALL be rejected. |
+| `patch` | `PATCH /Task/{id}` | JSON Patch (`application/json-patch+json`). Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **Only adding entries to `Task.input` and removing `Task.businessStatus` are allowed** — other operations SHALL be rejected. |
 {: .table .table-bordered }
 
 Search parameters:
