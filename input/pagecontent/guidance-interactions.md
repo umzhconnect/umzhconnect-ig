@@ -79,7 +79,7 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 | `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not `fhirContext`-gated. |
 | `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
 | `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. |
-| `update` | `PUT /Task/{id}` | Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **The submitted Task SHALL differ from the stored Task only by added entries in `Task.input` and a removed `Task.businessStatus`** — other updates SHALL be rejected. |
+| `update` | `PUT /Task/{id}` | Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **The submitted Task SHALL be identical to the stored Task except for added entries in `Task.input` and a removed `Task.businessStatus`; existing `Task.input` entries SHALL be unchanged** — other updates SHALL be rejected. `meta`, `text` and `lastModified` are not compared; the Fulfiller's server sets them. |
 {: .table .table-bordered }
 
 Search parameters:

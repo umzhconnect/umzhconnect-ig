@@ -105,7 +105,7 @@ The following table indicates the source of each field in the Task:
 | `owner` | Referenced | The performing organization (Fulfiller) as an absolute URL to the registry [Organization](Organization-Fulfiller.html), e.g. `http://registry.example.org/fhir/Organization/Fulfiller` |
 | `businessStatus` | Dynamic | Initial Task: absent. When Fulfiller creates Questionnaire: set to `awaiting-information`. When QuestionnaireResponse is created: cleared (absent) |
 | `authoredOn` | Current date | Date when the Task was created by the Placer |
-| `lastModified` | Current date | Date when the Task was last updated (only in updated Task) |
+| `lastModified` | Current date | Date when the Task was last updated (only in updated Task). Set by the Fulfiller's server; the Placer leaves it unchanged in its update |
 | `focus` | Referenced | The [ServiceRequest](ServiceRequest-ReferralOrthopedicSurgery.html) this Task focuses on |
 | `output[0].type` | Hard-coded | `273510007` (only when Fulfiller creates Questionnaire) |
 | `output[0].valueCanonical` | Referenced | Reference to the canonical [Questionnaire](Questionnaire-QuestionnaireSmokingStatus.html) to be completed (only when Fulfiller creates Questionnaire) |

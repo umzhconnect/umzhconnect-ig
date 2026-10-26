@@ -104,7 +104,7 @@ The Placer creates it via `create`, applies selective updates via `update`, and 
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #update
-* rest.resource[=].interaction[=].documentation = "Update of a Task. Allowed if the calling identity is `Task.requester` and `Task.businessStatus` is `awaiting-information`. The submitted Task SHALL differ from the stored Task only by added entries in `Task.input` and a removed `Task.businessStatus` — other updates SHALL be rejected."
+* rest.resource[=].interaction[=].documentation = "Update of a Task. Allowed if the calling identity is `Task.requester` and `Task.businessStatus` is `awaiting-information`. The submitted Task SHALL be identical to the stored Task except for added entries in `Task.input` and a removed `Task.businessStatus`; existing `Task.input` entries SHALL be unchanged — other updates SHALL be rejected. `meta`, `text` and `Task.lastModified` are not compared; the Fulfiller's server sets them."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
