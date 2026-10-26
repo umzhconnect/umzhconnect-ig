@@ -9,7 +9,7 @@ Description: "Updated Task after Fulfiller has accepted the initial Task and add
 * priority = #routine
 * basedOn = Reference(http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery)
 * requester = Reference(http://registry.example.org/fhir/Organization/Placer)
-* owner = Reference(http://registry.example.org/fhir/Organization/Placer)
+* owner = Reference(http://registry.example.org/fhir/Organization/Fulfiller)
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
 * code = http://hl7.org/fhir/CodeSystem/task-code#fulfill "Fulfill the focal request"
