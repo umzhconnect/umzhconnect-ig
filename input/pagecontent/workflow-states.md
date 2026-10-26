@@ -25,6 +25,7 @@ This IG follows the [COW Workflow State Overview](https://hl7.org/fhir/uv/cow/20
   - while `Task.businessStatus` is `awaiting-information`, to add entries to `Task.input` and to remove `Task.businessStatus`
 - `Task.businessStatus` must only contain domain-specific workflow codes; `Task.status` codes must never be used as `businessStatus` values
 - Once the Fulfiller has started work (`in-progress`), the Placer cannot cancel the Task in this version of the IG
+- If the cancellation fails with `412 Precondition Failed` because the Task has changed in the meantime, the Placer re-reads the Task: while it is still `requested` or `accepted`, the Placer may retry; once it is `in-progress`, it can no longer be cancelled and the ServiceRequest stays `active`
 - The Fulfiller ends a Task unsuccessfully with `rejected` (declines before starting) or `failed` (accepted but not completed)
 
 ### State Diagram

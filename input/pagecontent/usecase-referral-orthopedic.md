@@ -11,6 +11,8 @@ Comorbidities: The patient is already being treated for heart problems in cardio
 
 [Example Task (Completed - with Results)](Task-TaskReferralOrthopedicSurgeryCompleted.html)
 
+[Example Task (Cancelled - by Placer before work started)](Task-TaskReferralOrthopedicSurgeryCancelled.html)
+
 [Example Questionnaire (Smoking Status)](Questionnaire-QuestionnaireSmokingStatus.html)
 
 [Example QuestionnaireResponse (Smoking Status)](QuestionnaireResponse-QuestionnaireResponseSmokingStatus.html)
