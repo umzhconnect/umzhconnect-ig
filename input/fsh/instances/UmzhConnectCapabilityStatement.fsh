@@ -20,9 +20,9 @@ RuleSet: MandatoryIdSearchParam
 RuleSet: ReadOnlyResource(type)
 * rest.resource[+].type = #{type}
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for {type} resources. Returns only resources within the authorized context graph of the token's `fhirContext` claim."
+* rest.resource[=].interaction[=].documentation = "Search for {type} resources. Returns only resources within the authorized context graph of the token's workflow context."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the authorized context graph of the token's `fhirContext` claim. Requests for resources outside the context graph are rejected with `403 Forbidden`."
+* rest.resource[=].interaction[=].documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the authorized context graph of the token's workflow context. Requests for resources outside the context graph are rejected with `403 Forbidden`."
 * insert ResourceDefaults
 * insert MandatoryIdSearchParam
 
@@ -75,9 +75,9 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // Questionnaire: read + search-type
 * rest.resource[+].type = #Questionnaire
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for Questionnaire definitions. Questionnaire is a definitional artefact shared across workflows; it carries no patient data and is **not** `fhirContext`-gated."
+* rest.resource[=].interaction[=].documentation = "Search for Questionnaire definitions. Questionnaire is a definitional artefact shared across workflows; it carries no patient data and is **not** context-gated."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id or by canonical URL (url). Definitional content — **not** `fhirContext`-gated."
+* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id or by canonical URL (url). Definitional content — **not** context-gated."
 * insert ResourceDefaults
 * insert IdSearchParam
 * insert UrlSearchParam
@@ -88,9 +88,9 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // ServiceRequest: search-type, read + searchIncludes
 * rest.resource[+].type = #ServiceRequest
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for ServiceRequests. Returns only ServiceRequests reachable from the token's `fhirContext` claim — in practice, the single ServiceRequest named by the token. `_id` is mandatory; `_include` is supported to materialise the workflow graph in one round-trip, and each included resource is itself subject to the `fhirContext` graph check. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
+* rest.resource[=].interaction[=].documentation = "Search for ServiceRequests. Returns only ServiceRequests reachable from the token's workflow context — in practice, the single ServiceRequest named by the token. `_id` is mandatory; `_include` is supported to materialise the workflow graph in one round-trip, and each included resource is itself subject to the context graph check. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a ServiceRequest by logical id. Returns the resource only if `{id}` matches the token's `fhirContext` claim."
+* rest.resource[=].interaction[=].documentation = "Read a ServiceRequest by logical id. Returns the resource only if `{id}` matches the token's workflow context."
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
@@ -103,13 +103,13 @@ The Placer creates it via `create`, applies selective updates via `patch`, and q
 // Task: search-type, patch, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** `fhirContext`-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
+* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** context-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #patch
 * rest.resource[=].interaction[=].documentation = "JSON Patch (`application/json-patch+json`) update of a Task. Allowed if the calling identity is `Task.requester` and `Task.businessStatus` is `awaiting-information`. Only adding entries to `Task.input` and removing `Task.businessStatus` are allowed — other operations SHALL be rejected."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
-* rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller."
+* rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization."
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "Task:output-value-reference"
 * rest.resource[=].searchInclude[+] = "Task:output-value-canonical"
