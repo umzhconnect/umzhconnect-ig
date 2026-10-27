@@ -10,7 +10,7 @@ The [Security](security.html) page defines the UMZH-Connect authorization model:
 
 In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such as a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in the [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway) project. Our general approach is to whitelist only the necessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
 
-The counter-party check ([Security — Counter-party entitlement](security.html#counter-party-entitlement-is-a-resource-server-obligation), step 2) needs the RS's own record of the counter-party for each workflow root. On the Fulfiller, that record is `Task.requester`, checked at `POST /Task`. On the Placer, the ServiceRequest need not name the Fulfiller. This section describes two ways for the Placer to record it; the Consent pattern also works on the Fulfiller.
+The counter-party check ([Security — Counter-party entitlement](security.html#counter-party-entitlement-is-a-resource-server-obligation), step 2) needs the RS's own record of the counter-party for each workflow root. On the Fulfiller, that record is `Task.requester`, checked at `POST /Task`. On the Placer, the ServiceRequest need not name the Fulfiller. This section describes two ways for the Placer to record it; the Consent pattern also works on the Fulfiller. With either pattern, access on the Placer requires `ServiceRequest.status` to be `active`, and when a Task ends as `rejected`, the Placer removes that Fulfiller from its record before approaching another.
 
 #### Performer-based enforcement
 
@@ -22,7 +22,7 @@ Before the Placer creates the Task, it adds the Fulfiller's registry Organizatio
 ]
 ```
 
-The counter-party check is then the same string comparison the Fulfiller does on `Task.requester`, using the workflow's own data: it passes if one of the performer references matches. Revocation goes through the order itself: the policy engine also checks `ServiceRequest.status`, and access requires it to be `active`.
+The counter-party check is then the same string comparison the Fulfiller does on `Task.requester`, using the workflow's own data: it passes if one of the performer references matches.
 
 #### Consent-based enforcement
 
