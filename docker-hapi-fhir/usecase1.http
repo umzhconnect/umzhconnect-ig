@@ -133,17 +133,60 @@ Accept: application/fhir+json
 < ./../fsh-generated/resources/Task-TaskReferralOrthopedicSurgery.json
 
 
-### Updated the status
-PATCH http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgery
-Content-Type: application/json-patch+json
+### Read the Task to get its current version (ETag)
+# @name getTaskInitial
+GET http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgery
+Accept: application/fhir+json
 
-[
-  {
-    "op": "replace",
-    "path": "/status",
-    "value": "accepted"
+
+### Fulfiller accepts the Task: update (PUT) with status accepted
+PUT http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgery
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+If-Match: {{getTaskInitial.response.headers.ETag}}
+
+{
+  "resourceType": "Task",
+  "id": "TaskReferralOrthopedicSurgery",
+  "meta": {
+    "profile": [
+      "http://fhir.ch/ig/ch-umzh-connect/StructureDefinition/ch-umzh-connect-coordinationtask"
+    ]
+  },
+  "basedOn": [
+    {
+      "reference": "http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery"
+    }
+  ],
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
+    }
+  ],
+  "status": "accepted",
+  "intent": "order",
+  "priority": "routine",
+  "code": {
+    "coding": [
+      {
+        "code": "fulfill",
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "display": "Fulfill the focal request"
+      }
+    ]
+  },
+  "requester": {
+    "reference": "http://registry.example.org/fhir/Organization/Placer"
+  },
+  "owner": {
+    "reference": "http://registry.example.org/fhir/Organization/Fulfiller"
+  },
+  "authoredOn": "2025-12-15",
+  "focus": {
+    "reference": "http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery"
   }
-]
+}
 
 
 ### Receive the ServiceRequest from the Fulfiller
@@ -226,44 +269,92 @@ Accept: application/fhir+json
 
 < ./../fsh-generated/resources/QuestionnaireResponse-QuestionnaireResponseSmokingStatus.json
 
-### Add QuestionnaireResponseSmokingStatus to Task.input and hand ownership back to Fulfiller
-# using json PATCH (rfc6902)
-PATCH http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
-Content-Type: application/json-patch+json
+### Placer reads the Task to get its current version (ETag)
+# @name getTaskUpdated
+GET http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
+Accept: application/fhir+json
 
-[
-  {
-    "op": "add",
-    "path": "/input",
-    "value": [
+
+### Placer adds QuestionnaireResponseSmokingStatus to Task.input and removes businessStatus
+# update (PUT) of the full Task with If-Match; otherwise identical to the stored Task (see Workflow States)
+PUT http://fulfiller.example.org/fhir/Task/TaskReferralOrthopedicSurgeryUpdated
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+If-Match: {{getTaskUpdated.response.headers.ETag}}
+
+{
+  "resourceType": "Task",
+  "id": "TaskReferralOrthopedicSurgeryUpdated",
+  "meta": {
+    "profile": [
+      "http://fhir.ch/ig/ch-umzh-connect/StructureDefinition/ch-umzh-connect-coordinationtask"
+    ]
+  },
+  "basedOn": [
+    {
+      "reference": "http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery"
+    }
+  ],
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:uuid:a8b9cb16-dea5-4e5e-bda1-33f0c5858097"
+    }
+  ],
+  "status": "in-progress",
+  "intent": "order",
+  "priority": "routine",
+  "code": {
+    "coding": [
       {
-        "type": {
-          "coding": [
-            {
-              "code": "273510007",
-              "system": "http://snomed.info/sct",
-              "display": "Health assessment questionnaire"
-            }
-          ]
-        },
-        "valueReference": {
-          "reference": "http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus"
-        }
+        "code": "fulfill",
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "display": "Fulfill the focal request"
       }
     ]
   },
-  {
-    "op": "replace",
-    "path": "/owner",
-    "value": {
-      "reference": "http://registry.example.org/fhir/Organization/Fulfiller"
-    }
+  "requester": {
+    "reference": "http://registry.example.org/fhir/Organization/Placer"
   },
-  {
-    "op": "remove",
-    "path": "/businessStatus"
-  }
-]
+  "owner": {
+    "reference": "http://registry.example.org/fhir/Organization/Fulfiller"
+  },
+  "authoredOn": "2025-12-15",
+  "lastModified": "2025-12-16",
+  "focus": {
+    "reference": "http://placer.example.org/fhir/ServiceRequest/ReferralOrthopedicSurgery"
+  },
+  "input": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "273510007",
+            "system": "http://snomed.info/sct",
+            "display": "Health assessment questionnaire"
+          }
+        ]
+      },
+      "valueReference": {
+        "reference": "http://placer.example.org/fhir/QuestionnaireResponse/QuestionnaireResponseSmokingStatus"
+      }
+    }
+  ],
+  "output": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "273510007",
+            "system": "http://snomed.info/sct",
+            "display": "Health assessment questionnaire"
+          }
+        ]
+      },
+      "valueCanonical": "http://fulfiller.example.org/ch-umzh-connect/QuestionnaireSmokingStatus"
+    }
+  ]
+}
 
 
 ### Fulfiller resolves the QuestionnaireResponse from the Placer (absolute URL from Task.input)
