@@ -13,7 +13,7 @@ In this article:
 
 ### Overview
 
-The [CapabilityStatement](CapabilityStatement-ChUmzhConnectCapabilityStatement.html) is the normative source for the interactions exposed by a UMZH-Connect REST server. This page complements it with usage guidance: which search parameters are mandatory vs. optional, how SMART scopes map to each interaction, and how the per-request `fhirContext` claim restricts the resources a caller may reach.
+The [CapabilityStatement](CapabilityStatement-ChUmzhConnectCapabilityStatement.html) is the normative source for the interactions exposed by a UMZH-Connect REST server. This page complements it with usage guidance: which search parameters are mandatory vs. optional, how SMART scopes map to each interaction, and how the per-request workflow context restricts the resources a caller may reach.
 
 Both server roles — [Placer](ActorDefinition-ch-umzh-connect-placer.html) and [Fulfiller](ActorDefinition-ch-umzh-connect-fulfiller.html) — implement the same `CapabilityStatement`; the applicable subset depends on the role. The Placer hosts the `ServiceRequest` graph; the Fulfiller hosts the `Task` graph.
 
@@ -23,11 +23,11 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 1. **SMART scope check** — the token's `scope` claim SHALL contain a SMART system scope sufficient for the requested operation (e.g. `system/ServiceRequest.rs` for ServiceRequest `read` + `search-type`, `system/Task.crus` for the full Task interaction set). See [Security — Health specifics](security.html#health-specifics---smartonfhir).
 
-2. **`fhirContext` graph check** — for every resource type **other than `Task` and `Questionnaire`**, the requested resource SHALL be reachable from the workflow root named in the token's `fhirContext` claim (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
+2. **Context graph check** — for every resource type **other than `Task` and `Questionnaire`**, the requested resource SHALL be reachable from the workflow root named in the token's workflow context (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
 
-`Task`   and `Questionnaire` are **not** `fhirContext`-gated:
+`Task` and `Questionnaire` are **not** context-gated:
 
-- **`Task`** is the entry-point resource on the Fulfiller — it is searched and read by the requesting identity directly. Access is constrained by [Task search scoping](#task-search-scoping) (below), not by `fhirContext`.
+- **`Task`** is the entry-point resource on the Fulfiller — it is created, searched and read by the requesting identity directly. Access is constrained by `Task.requester` on create and by [Task search scoping](#task-search-scoping) (below) on read and search, not by the workflow context.
 - **`Questionnaire`** is a definitional artefact shared across workflows; it carries no patient data and is reachable independent of any specific workflow context.
 
 ### Task search scoping
@@ -40,8 +40,8 @@ Applies to: `AllergyIntolerance`, `Appointment`, `Condition`, `Coverage`, `Diagn
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /{Type}?_id={id}` | Returns only resources reachable from the token's `fhirContext` graph. |
-| `read` | `GET /{Type}/{id}` | Returns the resource only if `{Type}/{id}` is reachable from the token's `fhirContext` graph. |
+| `search-type` | `GET /{Type}?_id={id}` | Returns only resources reachable from the token's context graph. |
+| `read` | `GET /{Type}/{id}` | Returns the resource only if `{Type}/{id}` is reachable from the token's context graph. |
 {: .table .table-bordered }
 
 Search parameters:
@@ -49,7 +49,7 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | **mandatory** | Logical id of the resource. Searches without `_id` are not supported. |
-| `_include` | — | optional | Supported targets: `DiagnosticReport:result`, `MedicationStatement:medication`, `PractitionerRole:practitioner`. Each included resource is itself subject to the `fhirContext` graph check. See [Second-level resources](#second-level-resources). |
+| `_include` | — | optional | Supported targets: `DiagnosticReport:result`, `MedicationStatement:medication`, `PractitionerRole:practitioner`. Each included resource is itself subject to the context graph check. See [Second-level resources](#second-level-resources). |
 {: .table .table-bordered }
 
 These resources are referenced by the workflow root (e.g. `ServiceRequest.subject → Patient`, `ServiceRequest.reasonReference → Condition`) and are typically retrieved either via direct `read` on a known id or implicitly through `_include` on the workflow root. Resources one level further along a listed path are retrieved through `_include` (see [Second-level resources](#second-level-resources)).
@@ -58,8 +58,8 @@ These resources are referenced by the workflow root (e.g. `ServiceRequest.subjec
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /ServiceRequest?_id={id}&...` | Returns only ServiceRequests reachable from `fhirContext` (in practice, the single ServiceRequest named by the token). |
-| `read` | `GET /ServiceRequest/{id}` | Returns the ServiceRequest only if `{id}` matches `fhirContext`. |
+| `search-type` | `GET /ServiceRequest?_id={id}&...` | Returns only ServiceRequests reachable from the workflow context (in practice, the single ServiceRequest named by the token). |
+| `read` | `GET /ServiceRequest/{id}` | Returns the ServiceRequest only if `{id}` matches the workflow context. |
 {: .table .table-bordered }
 
 Search parameters:
@@ -67,7 +67,7 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | **mandatory** | Logical id. Searches without `_id` are not supported. |
-| `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:requester`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the `fhirContext` graph check. `:iterate`: see [Second-level resources](#second-level-resources). |
+| `_include` | — | optional | Supported targets: `ServiceRequest:patient`, `ServiceRequest:subject`, `ServiceRequest:requester`, `ServiceRequest:reason-reference`, `ServiceRequest:supporting-info`, `ServiceRequest:insurance`. Each included resource is itself subject to the context graph check. `:iterate`: see [Second-level resources](#second-level-resources). |
 {: .table .table-bordered }
 
 The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=...` to materialise the workflow graph in one round-trip.
@@ -76,9 +76,9 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not `fhirContext`-gated. |
+| `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
 | `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
-| `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. |
+| `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization. |
 | `update` | `PUT /Task/{id}` | Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **The submitted Task SHALL be identical to the stored Task except for added entries in `Task.input` and a removed `Task.businessStatus`; existing `Task.input` entries SHALL be unchanged** — other updates SHALL be rejected. `meta`, `text` and `lastModified` are not compared; the Fulfiller's server sets them. |
 {: .table .table-bordered }
 
@@ -91,19 +91,19 @@ Search parameters:
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
 | `_lastUpdated` | date | optional | Filter by last modification time — the Placer polls for Task changes since the previous poll. See the polling note below. |
-| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). |
+| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). Included resources other than Questionnaires are context-gated: search with `_id={id}` and a token whose workflow context is `Task/{id}`. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
 
-`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it.
+`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` context-gated outputs across Tasks; see `_include` above.
 
 ### Questionnaire
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /Questionnaire?...` | Definitional content — not `fhirContext`-gated. |
-| `read` | `GET /Questionnaire/{id}` | Definitional content — not `fhirContext`-gated. |
+| `search-type` | `GET /Questionnaire?...` | Definitional content — not context-gated. |
+| `read` | `GET /Questionnaire/{id}` | Definitional content — not context-gated. |
 {: .table .table-bordered }
 
 Search parameters:
@@ -145,7 +145,7 @@ GET /ServiceRequest?_id=ReferralOrthopedicSurgery&_include=ServiceRequest:reques
 GET /Task?_id=TaskReferralOrthopedicSurgeryCompleted&_include=Task:output-value-reference&_include:iterate=MedicationStatement:medication
 ```
 
-Every included or iterated resource is subject to the `fhirContext` graph check. Clients SHALL NOT rely on `:iterate` or on a direct `read` of a second-level resource.
+Every included or iterated resource is subject to the context graph check. Clients SHALL NOT rely on `:iterate` or on a direct `read` of a second-level resource.
 
 ### Versioning and conditional operations
 
