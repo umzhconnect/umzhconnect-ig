@@ -96,7 +96,7 @@ Search parameters:
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
 
-`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` output resources across Tasks: outputs other than Questionnaires are context-gated and are retrieved per Task, with `_id={id}` and a token whose workflow context is `Task/{id}`.
+`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` context-gated outputs across Tasks; see `_include` above.
 
 ### Questionnaire
 
