@@ -102,22 +102,18 @@ The Placer creates it via `create`, applies selective updates via `update`, and 
 // Task: search-type, update, read, create + multiple searchParams
 * rest.resource[+].type = #Task
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting `owner`/`requester` parameters. Task is **not** context-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
+* rest.resource[=].interaction[=].documentation = "Search for Tasks. Implicitly scoped to Tasks where the calling identity is `Task.requester` — the server SHALL enforce this filter regardless of the parameters supplied by the client. A client cannot widen the result set by omitting the `requester` parameter. Task is **not** context-gated; it is the entry-point resource on the Fulfiller. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #update
 * rest.resource[=].interaction[=].documentation = "Update of a Task. Allowed if the calling identity is `Task.requester`. The submitted Task SHALL be identical to the stored Task except for `Task.status` set to `cancelled`, optionally with an added `Task.statusReason` (while `requested` or `accepted`), or added entries in `Task.input` and a removed `Task.businessStatus` (while `Task.businessStatus` is `awaiting-information`); existing `Task.input` entries SHALL be unchanged — other updates SHALL be rejected. `meta`, `text` and `Task.lastModified` are not compared; the Fulfiller's server sets them."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.owner` or `Task.requester`."
+* rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
 * rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization."
 * insert ResourceDefaults
 * rest.resource[=].updateCreate = false
 * rest.resource[=].searchInclude[0] = "Task:output-value-reference"
 * rest.resource[=].searchInclude[+] = "Task:output-value-canonical"
-* rest.resource[=].searchParam[0].name = "owner"
-* rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-owner"
-* rest.resource[=].searchParam[=].type = #reference
-* rest.resource[=].searchParam[=].documentation = "Search by task owner"
-* rest.resource[=].searchParam[+].name = "requester"
+* rest.resource[=].searchParam[0].name = "requester"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Task-requester"
 * rest.resource[=].searchParam[=].type = #reference
 * rest.resource[=].searchParam[=].documentation = "Search by task requester"

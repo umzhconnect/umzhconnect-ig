@@ -32,7 +32,7 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 ### Task search scoping
 
-`GET /Task` and `GET /Task?...` SHALL return only those Tasks for which the authenticated identity is either the **requester** (`Task.requester`) or the **owner** (`Task.owner`). The server enforces this implicit filter on every Task search regardless of the parameters supplied by the client; a client cannot widen the result set by omitting `owner`/`requester` parameters. This makes `Task` the safe entry point on the Fulfiller: the Placer organisation polls for Tasks it raised, the Fulfiller organisation polls for Tasks assigned to it, and neither sees the other's unrelated workflows.
+`GET /Task` and `GET /Task?...` SHALL return only those Tasks for which the authenticated identity is the **requester** (`Task.requester`). The server enforces this implicit filter on every Task search regardless of the parameters supplied by the client; a client cannot widen the result set by omitting the `requester` parameter. This makes `Task` the safe entry point on the Fulfiller: a Placer polls for the Tasks it raised and does not see those of other Placers.
 
 ### Read-only resources
 
@@ -76,8 +76,8 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
-| `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
+| `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
+| `read` | `GET /Task/{id}` | Allowed if the calling identity is `requester` of the Task. |
 | `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization. |
 | `update` | `PUT /Task/{id}` | Allowed if the calling identity is `requester` of the Task. **The submitted Task SHALL be identical to the stored Task except for `Task.status` set to `cancelled`, optionally with an added `Task.statusReason` (while `requested` or `accepted`), or added entries in `Task.input` and a removed `Task.businessStatus` (while `Task.businessStatus` is `awaiting-information`); existing `Task.input` entries SHALL be unchanged** — other updates SHALL be rejected. `meta`, `text` and `lastModified` are not compared; the Fulfiller's server sets them. |
 {: .table .table-bordered }
@@ -87,14 +87,13 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | optional | Logical id. |
-| `owner` | reference | optional | Filter by `Task.owner`. |
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
 | `_lastUpdated` | date | optional | Filter by last modification time — the Placer polls for Task changes since the previous poll. See the polling note below. |
 | `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). Included resources other than Questionnaires are context-gated: search with `_id={id}` and a token whose workflow context is `Task/{id}`. |
 {: .table .table-bordered }
 
-A search with no parameters returns all Tasks visible to the calling identity (i.e. owned or requested by it).
+A search with no parameters returns all Tasks visible to the calling identity (i.e. requested by it).
 
 `_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` context-gated outputs across Tasks; see `_include` above.
 

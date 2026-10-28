@@ -255,7 +255,7 @@ For these requests, tokens without exactly one workflow context, or whose workfl
 `Task` and `Questionnaire` are not context-gated, and a token for them needs no workflow context. For `Questionnaire`, which is definitional content, token validation and the scope check suffice. For `Task`, the RS checks the calling organization against the Task instead:
 
 - `POST /Task`: `Task.requester.reference` MUST equal `extensions.umzhconnect.organization_reference`, and `Task.owner.reference` MUST be the Fulfiller's own organization; otherwise the request is rejected with `403 Forbidden`.
-- Read and search: the calling organization is `Task.requester` or `Task.owner` (see [Task search scoping](guidance-interactions.html#task-search-scoping)).
+- Read and search: the calling organization is `Task.requester` (see [Task search scoping](guidance-interactions.html#task-search-scoping)).
 - Changes to an existing Task: as defined in [Workflow States](workflow-states.html).
 
 ### Client authentication
