@@ -79,7 +79,7 @@ The Fulfiller typically issues a single `GET /ServiceRequest?_id={id}&_include=.
 | `search-type` | `GET /Task?...` | Implicitly scoped to Tasks where the calling identity is `Task.owner` or `Task.requester` (see [Task search scoping](#task-search-scoping)). Not context-gated. |
 | `read` | `GET /Task/{id}` | Allowed if the calling identity is `owner` or `requester` of the Task. |
 | `create` | `POST /Task` | Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization. |
-| `patch` | `PATCH /Task/{id}` | JSON Patch (`application/json-patch+json`). Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **Only adding entries to `Task.input` and removing `Task.businessStatus` are allowed** — other operations SHALL be rejected. |
+| `update` | `PUT /Task/{id}` | Allowed if the calling identity is `requester` of the Task and `Task.businessStatus` is `awaiting-information`. **The submitted Task SHALL be identical to the stored Task except for added entries in `Task.input` and a removed `Task.businessStatus`; existing `Task.input` entries SHALL be unchanged** — other updates SHALL be rejected. `meta`, `text` and `lastModified` are not compared; the Fulfiller's server sets them. |
 {: .table .table-bordered }
 
 Search parameters:
@@ -149,4 +149,4 @@ Every included or iterated resource is subject to the context graph check. Clien
 
 ### Versioning and conditional operations
 
-For every resource in the CapabilityStatement: `versioning = versioned-update`, `conditionalCreate = false`, `conditionalUpdate = false`. Clients performing `update` or `patch` SHALL supply the current version via `If-Match` and SHALL NOT rely on conditional create/update semantics.
+For every resource in the CapabilityStatement: `versioning = versioned-update`, `conditionalCreate = false`, `conditionalUpdate = false`; for Task also `updateCreate = false`. Clients performing `update` SHALL supply the current version via `If-Match` and SHALL NOT rely on conditional create/update semantics.

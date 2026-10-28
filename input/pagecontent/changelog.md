@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#117](https://github.com/umzhconnect/umzhconnect-ig/issues/117): CapabilityStatement — replace the Task `patch` interaction with `update` (PUT) and set `updateCreate = false`. Behavioural change: the Placer sends the full Task with `If-Match`; servers reject any difference beyond added `Task.input` entries and a removed `businessStatus`
 * [#122](https://github.com/umzhconnect/umzhconnect-ig/issues/122): Security — explain why the access token carries a workflow context in addition to SMART Backend Services scopes: it tells the Resource Server which of several open orders a request belongs to, for access control and audit
 * [#106](https://github.com/umzhconnect/umzhconnect-ig/issues/106): Security — the counter-party check compares the calling organization with the counter-party the Resource Server has recorded for the workflow root: `Task.requester` on the Fulfiller; on the Placer, the Fulfiller as recorded by the Placer itself, since the ServiceRequest need not name it. Behavioural change: the Placer records the Fulfiller before it creates the Task
 * [#123](https://github.com/umzhconnect/umzhconnect-ig/issues/123): Security Implementation — rename "Consent-based context enforcement" to "Context enforcement" and lead with recording the Fulfiller in `ServiceRequest.performer`; a local Consent remains an option for expiry or revocation separate from the order

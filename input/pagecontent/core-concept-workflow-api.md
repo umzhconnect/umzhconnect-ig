@@ -55,4 +55,4 @@ sequenceDiagram
 ```
 
 
-The Task can be mutated by the Placer only via PATCH (RFC 6902, `application/json-patch+json`), and only while `Task.businessStatus` is `awaiting-information`. The Placer may only add entries to `Task.input` and remove `Task.businessStatus`. See [Workflow States](workflow-states.html) for the state transitions in which this applies.
+The Task can be mutated by the Placer only via `update` (PUT), within the rules in [Workflow States](workflow-states.html).
