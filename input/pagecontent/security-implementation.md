@@ -6,7 +6,7 @@ This page is **informative** — optional guidance that adds no conformance requ
 
 ### Context enforcement
 
-The [Security](security.html) page defines the UMZH-Connect authorization model: workflow context is communicated via `authorization_details` at the token endpoint and reflected as an `authorization_details` claim in the issued JWT. The actual enforcement of that context — verifying that requested resources fall within the authorized graph — is left to each party's implementation.
+The [Security](security.html) page defines the UMZH-Connect authorization model: the context is communicated via `authorization_details` at the token endpoint and reflected as an `authorization_details` claim in the issued JWT. The actual enforcement of that context — verifying that requested resources fall within the authorized graph — is left to each party's implementation.
 
 In general it should be mentioned that fine-grained authorization may be a very complex task to perform on the standard FHIR API due to a variety of factors, such as a broad range of search parameters covered by standard FHIR APIs. This is quite well covered in the [Google FHIR Info Gateway](https://developers.google.com/open-health-stack/fhir-info-gateway) project. Our general approach is to whitelist only the necessary endpoints and parameters required to enable our use case. The complexity of the authorization enforcement is therefore essentially reduced.
 
@@ -60,7 +60,7 @@ The `meaning = "related"` value means the Consent covers the referenced ServiceR
 
 ##### Policy engine query
 
-When the Resource Server receives an API request carrying a JWT with a workflow context, the policy engine resolves the context reference to the corresponding Consent:
+When the Resource Server receives a request for a context-gated resource, the policy engine resolves the token's context to the corresponding Consent:
 
 ```http
 GET /Consent?data=ServiceRequest/sr-123&status=active
@@ -79,7 +79,7 @@ Consent.where(
 ).exists()
 ```
 
-where `%context` is the workflow context `identifier` from the access token and `%organization_reference` is the `extensions.umzhconnect.organization_reference` claim. The `matches('(^|/)…$')` form tolerates references stored as either relative (`ServiceRequest/sr-123`) or absolute (`https://placer.example/fhir/ServiceRequest/sr-123`) URLs. It assumes literal, non-versioned references; versioned (`/_history/…`), `urn:uuid:`, logical (`identifier`-based), or contained (`#…`) references require normalizing the stored reference on write, after which a plain `=` comparison suffices.
+where `%context` is the context `identifier` from the access token and `%organization_reference` is the `extensions.umzhconnect.organization_reference` claim. The `matches('(^|/)…$')` form tolerates references stored as either relative (`ServiceRequest/sr-123`) or absolute (`https://placer.example/fhir/ServiceRequest/sr-123`) URLs. It assumes literal, non-versioned references; versioned (`/_history/…`), `urn:uuid:`, logical (`identifier`-based), or contained (`#…`) references require normalizing the stored reference on write, after which a plain `=` comparison suffices.
 
 ##### Expiration
 
@@ -93,7 +93,7 @@ Parties using short-lived token caches should ensure cache TTLs are short enough
 
 ##### Scope notes
 
-FHIR Consent is designed primarily for patient consent to data use. Its application here as a local inter-system access-control record is pragmatic: the semantics of `provision.data.meaning = "related"` align naturally with the graph-based enforcement model, and the lifecycle fields (expiration, status) map cleanly onto standard Consent elements. Parties are free to adopt alternative enforcement mechanisms as long as they honour the workflow context from the access token as the authoritative context identifier.
+FHIR Consent is designed primarily for patient consent to data use. Its application here as a local inter-system access-control record is pragmatic: the semantics of `provision.data.meaning = "related"` align naturally with the graph-based enforcement model, and the lifecycle fields (expiration, status) map cleanly onto standard Consent elements. Parties are free to adopt alternative enforcement mechanisms as long as they honour the context from the access token as the authoritative context identifier.
 
 ### Staged client-authentication model
 
@@ -193,11 +193,11 @@ This section positions the UMZH-Connect security concept against three reference
 {:class="table table-bordered"}
 | Aspect | UMZH-Connect | [SMART Backend Services v2](https://hl7.org/fhir/smart-app-launch/backend-services.html) | [HL7 FAST UDAP](https://hl7.org/fhir/us/udap-security/) | [CH EPR ITI-71 (IUA)](https://www.fhir.ch/ig/ch-epr-fhir/iti-71.html) |
 |---|---|---|---|---|
-| Primary scope | M2M, per-workflow context | M2M, pre-authorized scopes | M2M + user via Tiered OAuth | M2M + healthcare professional / assistant |
+| Primary scope | M2M, per-request context | M2M, pre-authorized scopes | M2M + user via Tiered OAuth | M2M + healthcare professional / assistant |
 | Trust onboarding | Bilateral JWKS at onboarding; mTLS w/ open CA for high assurance | Out-of-band pre-registration | UDAP Dynamic Client Reg + community X.509 CA | Per-CH-EPR policy; registered actors |
 | Client auth | `private_key_jwt` (JWKS at onboarding); sender-constrained tokens (mTLS or DPoP) for high assurance | `private_key_jwt` mandatory | `private_key_jwt` w/ UDAP cert; mTLS option | `private_key_jwt` + HTTP Message Signatures ([RFC 9421](https://datatracker.ietf.org/doc/html/rfc9421)) |
 | Scope vocabulary | SMART `system/*` in `scope` | SMART `system/*` in `scope` | SMART-compatible + UDAP extensions | Profile-specific (`launch`, EPR scopes) |
-| Per-request workflow context | **[RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details` JWT claim** | Not addressed | Not addressed | Not addressed |
+| Per-request context | **[RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details` JWT claim** | Not addressed | Not addressed | Not addressed |
 | Caller-organization identity | `extensions.umzhconnect.organization_reference` (registry URL) — follows [IHE IUA](https://profiles.ihe.net/ITI/IUA/index.html) `extensions` container pattern | Not standardized | UDAP B2B `hl7-b2b` extension (`organization_id`, `organization_name`, `purpose_of_use`) | `extensions.ihe_iua` + `extensions.ch_epr` |
 | User identity in M2M | Not in scope | Out-of-band for `user/`/`patient/` | Tiered OAuth → user's OIDC IdP | Mandatory `subject_name`, `subject_role`, `purpose_of_use` |
 | Token format | JWT | JWT | JWT | JWT only (JWE forbidden) |

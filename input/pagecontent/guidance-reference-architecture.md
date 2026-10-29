@@ -24,7 +24,7 @@ The end-to-end request and enforcement flow across these components is illustrat
 
 **Registry** — a directory of `Organization` and `Endpoint` resources. Endpoint addresses point to each party's external API. Cross-party references use absolute URLs, matching the [inter-linked systems](https://hl7.org/fhir/managing.html#using) pattern required by this IG: Organization references (e.g. `Task.owner`, `Task.requester`) are rooted at the registry, while `Task.basedOn` points to the ServiceRequest on the Placer's FHIR API.
 
-**Authorization Server** — issues OAuth 2.0 / OIDC tokens and carries the workflow context and organization identity into the token claims that the policy engine later evaluates.
+**Authorization Server** — issues OAuth 2.0 / OIDC tokens and carries the context and organization identity into the token claims that the policy engine later evaluates.
 
 #### Workflow in action
 
