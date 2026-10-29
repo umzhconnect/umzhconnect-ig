@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#139](https://github.com/umzhconnect/umzhconnect-ig/issues/139): Security, Guidance - Interactions — Task read and search require the calling organization to be `Task.requester` (previously also `Task.owner`, which since [#116](https://github.com/umzhconnect/umzhconnect-ig/issues/116) is always the Fulfiller's own organization). Drop the Task `owner` search parameter from the CapabilityStatement
 * [#119](https://github.com/umzhconnect/umzhconnect-ig/issues/119): Workflow States — new state `cancelled`: the Placer may cancel the Task while it is `requested` or `accepted`, optionally with a `statusReason`, and sets the ServiceRequest to `revoked`. Behavioural change: servers accept a Placer update that sets `Task.status` to `cancelled` in these states. Adds a cancelled Task example
 * [#120](https://github.com/umzhconnect/umzhconnect-ig/issues/120): Workflow States — reword the rule on `rejected` and `failed`, which implied that COW supports them only for Fulfiller selection
 * [#117](https://github.com/umzhconnect/umzhconnect-ig/issues/117): CapabilityStatement — replace the Task `patch` interaction with `update` (PUT) and set `updateCreate = false`. Behavioural change: the Placer sends the full Task with `If-Match`; servers reject any difference beyond added `Task.input` entries and a removed `businessStatus`; for cancellation see [#119](https://github.com/umzhconnect/umzhconnect-ig/issues/119)
