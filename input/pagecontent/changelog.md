@@ -1,7 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
-* [#138](https://github.com/umzhconnect/umzhconnect-ig/issues/138): Security — rename the authorization details type `http://fhir.ch/ig/ch-umzh-connect/workflow-context` to `http://fhir.ch/ig/ch-umzh-connect/context`, and "workflow context" to "context" in the text
+* [#138](https://github.com/umzhconnect/umzhconnect-ig/issues/138): Security — rename the authorization details type `http://fhir.ch/ig/ch-umzh-connect/workflow-context` to `http://fhir.ch/ig/ch-umzh-connect/context`, and "workflow context" to "context" in the text, and define the term on the home page and the Security page
 * [#139](https://github.com/umzhconnect/umzhconnect-ig/issues/139): Security, Guidance - Interactions — Task read and search require the calling organization to be `Task.requester` (previously also `Task.owner`, which since [#116](https://github.com/umzhconnect/umzhconnect-ig/issues/116) is always the Fulfiller's own organization). Drop the Task `owner` search parameter from the CapabilityStatement
 * [#119](https://github.com/umzhconnect/umzhconnect-ig/issues/119): Workflow States — new state `cancelled`: the Placer may cancel the Task while it is `requested` or `accepted`, optionally with a `statusReason`, and sets the ServiceRequest to `revoked`. Behavioural change: servers accept a Placer update that sets `Task.status` to `cancelled` in these states. Adds a cancelled Task example
 * [#120](https://github.com/umzhconnect/umzhconnect-ig/issues/120): Workflow States — reword the rule on `rejected` and `failed`, which implied that COW supports them only for Fulfiller selection
