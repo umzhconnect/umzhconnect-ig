@@ -89,7 +89,7 @@ Our use-cases of referrals and external service requests strongly suggest to dyn
 
 > *For a given time I authorize party X (represented by client X) to read all data referenced by my given service request.*
 
-Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request, except for requests for `Task` and `Questionnaire` resources (see [Authorization enforcement](#authorization-enforcement)), is executed in the context of a specific FHIR resource. This context determines which resources the requester is permitted to access: every resource the workflow root references directly, the resources these reference along a listed second-level path (see [Second-level resources](guidance-interactions.html#second-level-resources)), plus any resource whose own reference points back at the root through a specifically listed element — currently only `QuestionnaireResponse.basedOn`.
+Rather than minting a separate consent record and communicating its identifier through the authorization flow, UMZH-Connect binds the access token directly to the workflow object that triggered the interaction. Each cross-organizational API request, except for requests for `Task` and `Questionnaire` resources (see [Authorization enforcement](#authorization-enforcement)), is executed in the **context** of a specific FHIR resource, the workflow root. This context determines which resources the requester is permitted to access: every resource the workflow root references directly, the resources these reference along a listed second-level path (see [Second-level resources](guidance-interactions.html#second-level-resources)), plus any resource whose own reference points back at the root through a specifically listed element — currently only `QuestionnaireResponse.basedOn`.
 
 {:class="table table-bordered"}
 | Direction | Initiator | Context resource |
@@ -101,9 +101,9 @@ With SMART Backend Services scopes and local access rules alone, the restricting
 
 #### Communicating context at the token endpoint
 
-The client communicates the workflow context to the Authorization Server using the **`authorization_details`** parameter defined in [RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396). This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
+The client communicates the context to the Authorization Server using the **`authorization_details`** parameter defined in [RFC 9396 (Rich Authorization Requests)](https://www.rfc-editor.org/rfc/rfc9396). This is the standard OAuth extension point for structured, instance-specific authorization requests — purpose-built for cases where resource-type scopes alone are insufficient.
 
-> **Note:** `authorization_details` is the same extension point used by [OpenID for Verifiable Credential Issuance (OID4VCI)](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) to carry credential requests (`type: "openid_credential"`). UMZH-Connect follows the identical pattern with its own type (`"http://fhir.ch/ig/ch-umzh-connect/workflow-context"`), making the approach consistent with emerging identity standards and leveraging the same AS infrastructure — for example Keycloak's RAR support — that OID4VCI relies on.
+> **Note:** `authorization_details` is the same extension point used by [OpenID for Verifiable Credential Issuance (OID4VCI)](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) to carry credential requests (`type: "openid_credential"`). UMZH-Connect follows the identical pattern with its own type (`"http://fhir.ch/ig/ch-umzh-connect/context"`), making the approach consistent with emerging identity standards and leveraging the same AS infrastructure — for example Keycloak's RAR support — that OID4VCI relies on.
 
 The `scope` parameter continues to carry the SMART resource-type permission; `authorization_details` carries the instance-level context. The `type` URI identifies this as a UMZH-Connect extension; `identifier` follows RFC 9396 semantics — a plain string identifying a specific resource at the API:
 
@@ -118,20 +118,20 @@ grant_type=client_credentials
 &client_assertion=<signed JWT>
 &scope=system/ServiceRequest.rs system/Patient.rs system/Condition.rs
 &authorization_details=[{
-  "type": "http://fhir.ch/ig/ch-umzh-connect/workflow-context",
+  "type": "http://fhir.ch/ig/ch-umzh-connect/context",
   "identifier": "ServiceRequest/sr-123"
 }]
 ```
 
-UMZH-Connect defines one authorization details type, the **workflow context**:
+UMZH-Connect defines one authorization details type, the **context**:
 
 {:class="table table-bordered"}
 | Field | Cardinality | Content |
 |---|---|---|
-| `type` | 1..1 | `http://fhir.ch/ig/ch-umzh-connect/workflow-context` |
+| `type` | 1..1 | `http://fhir.ch/ig/ch-umzh-connect/context` |
 | `identifier` | 1..1 | Relative reference to the workflow root: `ServiceRequest/{id}` on the Placer, `Task/{id}` on the Fulfiller |
 
-A token request carries at most one workflow context; otherwise the AS MUST reject it with `invalid_authorization_details` ([RFC 9396 §5](https://www.rfc-editor.org/rfc/rfc9396#section-5)).
+A token request carries at most one context; otherwise the AS MUST reject it with `invalid_authorization_details` ([RFC 9396 §5](https://www.rfc-editor.org/rfc/rfc9396#section-5)).
 
 The `<signed JWT>` placeholder above is the **client-authentication assertion** ([RFC 7523](https://datatracker.ietf.org/doc/html/rfc7523)), as profiled by [SMART App Launch — Authenticating to the token endpoint](https://hl7.org/fhir/smart-app-launch/STU2.2/client-confidential-asymmetric.html#authenticating-to-the-token-endpoint) and inherited by [SMART Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html#protocol-details) — the client constructs it itself and signs it with the private key whose public counterpart (its JWKS) was registered with the Authorization Server at onboarding. It is short-lived, single-use, and pins the request to one specific token endpoint:
 
@@ -149,7 +149,7 @@ The Authorization Server validates this assertion (signature against the registe
 
 #### Issued access token — context and organization claims
 
-The Authorization Server returns the granted `authorization_details` in the token response ([RFC 9396 §7](https://www.rfc-editor.org/rfc/rfc9396#section-7)) and carries them as a top-level `authorization_details` claim in the issued JWT access token ([RFC 9396 §9.1](https://www.rfc-editor.org/rfc/rfc9396#section-9.1)). The workflow context therefore has the same structure in the token request, the token response and the access token, and resource servers can enforce it without an extra introspection call.
+The Authorization Server returns the granted `authorization_details` in the token response ([RFC 9396 §7](https://www.rfc-editor.org/rfc/rfc9396#section-7)) and carries them as a top-level `authorization_details` claim in the issued JWT access token ([RFC 9396 §9.1](https://www.rfc-editor.org/rfc/rfc9396#section-9.1)). The context therefore has the same structure in the token request, the token response and the access token, and resource servers can enforce it without an extra introspection call.
 
 The issued token also carries an organization identity claim inside the `extensions` object, following the [IHE IUA](https://profiles.ihe.net/ITI/IUA/index.html)-defined container for custom JWT claims — the same approach [CH EPR ITI-71](https://www.fhir.ch/ig/ch-epr-fhir/iti-71.html) uses in its issued access token. UMZH-Connect uses `umzhconnect` as its extension key:
 
@@ -171,7 +171,7 @@ The issued token also carries an organization identity claim inside the `extensi
   },
   "authorization_details": [
     {
-      "type": "http://fhir.ch/ig/ch-umzh-connect/workflow-context",
+      "type": "http://fhir.ch/ig/ch-umzh-connect/context",
       "identifier": "ServiceRequest/sr-123"
     }
   ]
@@ -199,7 +199,7 @@ sequenceDiagram
   C->>AG: API request + Authorization: Bearer <token>
   AG->>AG: Validate token (sig, iss, aud, exp, scope)<br/>(+ sender-constraint if FAPI)
   Note right of AG: The following interactions are logical <br> and can be split between services or embedded within the FHIR Server (Placer)
-  AG->>PE: AuthZ request: client, operation, resource, workflow context
+  AG->>PE: AuthZ request: client, operation, resource, context
   PE->>FHIR: Evaluate whether requested resource(s)<br/>are within ServiceRequest/sr-123 graph
   PE-->>AG: Permit / Deny
   alt Permit
@@ -235,10 +235,10 @@ We can think of a 3 step process to enforce security:
 - Authentication - token extraction and validation -> we know the identity
 - Scope Authorization - ensure that scope parameters match the requested parameters
 - Context enforcement & fine-grained authorization, comprising two distinct checks:
-  - **Counter-party entitlement** — is the calling party allowed to invoke this workflow context at all?
-  - **Graph membership** — is each requested resource reachable from the workflow context root?
+  - **Counter-party entitlement** — is the calling party allowed to act in this context at all?
+  - **Graph membership** — is each requested resource reachable from the workflow root?
 
-A common approach would be to handle the first (and optionally the second) step in the API gateway and the second and third step by the policy engine. In our case it would mean to ensure that all requested resources are part of the 'child graph' of the service request, which is the authorized workflow context (the `identifier` of the access token's workflow context).
+A common approach would be to handle the first (and optionally the second) step in the API gateway and the second and third step by the policy engine. In our case it would mean to ensure that all requested resources are part of the 'child graph' of the service request, which is the authorized context (the `identifier` of the access token's context).
 
 #### Counter-party entitlement is a Resource Server obligation
 
@@ -246,13 +246,13 @@ The `authorization_details` parameter is a **client-asserted** statement of cont
 
 UMZH-Connect therefore places the counter-party entitlement check **on the Resource Server's policy engine**, alongside the graph-walk. For every request the RS MUST validate the token (signature, issuer, audience, expiry, and sender-constraint where applicable). For every request for a context-gated resource — any resource type other than `Task` and `Questionnaire`, including resources returned by `_include` — the RS MUST additionally:
 
-1. Verify that the token carries exactly one workflow context: an `authorization_details` entry of type `http://fhir.ch/ig/ch-umzh-connect/workflow-context`, whose `identifier` names the workflow root. Entries of other types are ignored.
+1. Verify that the token carries exactly one context: an `authorization_details` entry of type `http://fhir.ch/ig/ch-umzh-connect/context`, whose `identifier` names the workflow root. Entries of other types are ignored.
 2. Verify that `extensions.umzhconnect.organization_reference` is the counter-party the RS has recorded for the workflow root, not one taken from data the caller hosts. On the Fulfiller, the workflow root names it: `Task.requester`, checked at `POST /Task`. On the Placer, the ServiceRequest need not name the Fulfiller, so the Placer records the Fulfiller itself before it creates the Task. This is a direct string comparison: the AS embeds the registry URL at token issuance from the onboarding record, so no live registry lookup is required.
 3. Verify that every requested resource, including each `_include` result, is in the context graph of the workflow root: referenced by the root, referenced along a listed second-level path, or pointing back at the root through a listed element (see [Context-centric authorization](#context-centric-authorization)).
 
-For these requests, tokens without exactly one workflow context, or whose workflow context resolves to a workflow root for which the RS has not recorded the calling party, MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. via `ServiceRequest.performer`, a local `Consent` resource keyed to the workflow root, or internal workflow state — is a local implementation concern, described in [Security Implementation](security-implementation.html#context-enforcement).
+For these requests, tokens without exactly one context, or whose context resolves to a workflow root for which the RS has not recorded the calling party, MUST be rejected with `403 Forbidden`, regardless of whether the AS issued a syntactically valid token for that context. The AS issues context-bound assertions; the Resource Server remains the sole arbiter of whether a given party is entitled to act within that context. How this check is realized internally — e.g. via `ServiceRequest.performer`, a local `Consent` resource keyed to the workflow root, or internal workflow state — is a local implementation concern, described in [Security Implementation](security-implementation.html#context-enforcement).
 
-`Task` and `Questionnaire` are not context-gated, and a token for them needs no workflow context. For `Questionnaire`, which is definitional content, token validation and the scope check suffice. For `Task`, the RS checks the calling organization against the Task instead:
+`Task` and `Questionnaire` are not context-gated, and a token for them needs no context. For `Questionnaire`, which is definitional content, token validation and the scope check suffice. For `Task`, the RS checks the calling organization against the Task instead:
 
 - `POST /Task`: `Task.requester.reference` MUST equal `extensions.umzhconnect.organization_reference`, and `Task.owner.reference` MUST be the Fulfiller's own organization; otherwise the request is rejected with `403 Forbidden`.
 - Read and search: the calling organization is `Task.requester` (see [Task search scoping](guidance-interactions.html#task-search-scoping)).
@@ -262,6 +262,6 @@ For these requests, tokens without exactly one workflow context, or whose workfl
 
 UMZH-Connect authenticates clients to the token endpoint with **`private_key_jwt`**: each client generates its own key pair and registers the **public key / JWKS** with the Authorization Server at onboarding, then signs the client-authentication assertion (shown above) with the matching private key. No shared secrets are exchanged, and key rotation is handled by updating the registered JWKS.
 
-This aligns UMZH-Connect with **[SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)**: clients authenticate to the token endpoint with `private_key_jwt` against a JWKS registered at onboarding, and SMART system scopes (`system/<Resource>.<perms>`) are carried in the standard `scope` parameter — not in a custom claim. No `openid` scope is requested, since these are pure machine-to-machine exchanges with no user identity. The only addition to the Backend Services token request is the per-request **workflow context** (see [Context-centric authorization](#context-centric-authorization)), which binds a token to a specific workflow object. It is carried in [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details`, the OAuth extension point defined for this purpose, both in the token request and as a claim in the issued JWT access token.
+This aligns UMZH-Connect with **[SMART App Launch v2 — Backend Services](https://hl7.org/fhir/smart-app-launch/backend-services.html)**: clients authenticate to the token endpoint with `private_key_jwt` against a JWKS registered at onboarding, and SMART system scopes (`system/<Resource>.<perms>`) are carried in the standard `scope` parameter — not in a custom claim. No `openid` scope is requested, since these are pure machine-to-machine exchanges with no user identity. The only addition to the Backend Services token request is the per-request **context** (see [Context-centric authorization](#context-centric-authorization)), which binds a token to a specific workflow object. It is carried in [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396) `authorization_details`, the OAuth extension point defined for this purpose, both in the token request and as a claim in the issued JWT access token.
 
 For a comparison of the UMZH-Connect security model against related profiles (SMART Backend Services, UDAP, CH EPR ITI-71), see [Security Implementation — Relationship to other security profiles](security-implementation.html#relationship-to-other-security-profiles).

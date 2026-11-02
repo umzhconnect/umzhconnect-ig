@@ -13,7 +13,7 @@ In this article:
 
 ### Overview
 
-The [CapabilityStatement](CapabilityStatement-ChUmzhConnectCapabilityStatement.html) is the normative source for the interactions exposed by a UMZH-Connect REST server. This page complements it with usage guidance: which search parameters are mandatory vs. optional, how SMART scopes map to each interaction, and how the per-request workflow context restricts the resources a caller may reach.
+The [CapabilityStatement](CapabilityStatement-ChUmzhConnectCapabilityStatement.html) is the normative source for the interactions exposed by a UMZH-Connect REST server. This page complements it with usage guidance: which search parameters are mandatory vs. optional, how SMART scopes map to each interaction, and how the per-request context restricts the resources a caller may reach.
 
 Both server roles — [Placer](ActorDefinition-ch-umzh-connect-placer.html) and [Fulfiller](ActorDefinition-ch-umzh-connect-fulfiller.html) — implement the same `CapabilityStatement`; the applicable subset depends on the role. The Placer hosts the `ServiceRequest` graph; the Fulfiller hosts the `Task` graph.
 
@@ -23,12 +23,12 @@ Every request SHALL carry a bearer JWT access token. Two orthogonal checks apply
 
 1. **SMART scope check** — the token's `scope` claim SHALL contain a SMART system scope sufficient for the requested operation (e.g. `system/ServiceRequest.rs` for ServiceRequest `read` + `search-type`, `system/Task.crus` for the full Task interaction set). See [Security — Health specifics](security.html#health-specifics---smartonfhir).
 
-2. **Context graph check** — for every resource type **other than `Task` and `Questionnaire`**, the requested resource SHALL be reachable from the workflow root named in the token's workflow context (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
+2. **Context graph check** — for every resource type **other than `Task` and `Questionnaire`**, the requested resource SHALL be reachable from the workflow root named in the token's context (a `ServiceRequest/{id}` on the Placer, a `Task/{id}` on the Fulfiller). Requests for resources outside the context graph SHALL be rejected with `403 Forbidden`. See [Security — Context-centric authorization](security.html#context-centric-authorization).
 
 `Task` and `Questionnaire` are **not** context-gated:
 
-- **`Task`** is the entry-point resource on the Fulfiller — it is created, searched and read by the requesting identity directly. Access is constrained by `Task.requester` on create and by [Task search scoping](#task-search-scoping) (below) on read and search, not by the workflow context.
-- **`Questionnaire`** is a definitional artefact shared across workflows; it carries no patient data and is reachable independent of any specific workflow context.
+- **`Task`** is the entry-point resource on the Fulfiller — it is created, searched and read by the requesting identity directly. Access is constrained by `Task.requester` on create and by [Task search scoping](#task-search-scoping) (below) on read and search, not by the context.
+- **`Questionnaire`** is a definitional artefact shared across workflows; it carries no patient data and is reachable independent of any specific context.
 
 ### Task search scoping
 
@@ -58,8 +58,8 @@ These resources are referenced by the workflow root (e.g. `ServiceRequest.subjec
 
 | Interaction | Path | Notes |
 |---|---|---|
-| `search-type` | `GET /ServiceRequest?_id={id}&...` | Returns only ServiceRequests reachable from the workflow context (in practice, the single ServiceRequest named by the token). |
-| `read` | `GET /ServiceRequest/{id}` | Returns the ServiceRequest only if `{id}` matches the workflow context. |
+| `search-type` | `GET /ServiceRequest?_id={id}&...` | Returns only ServiceRequests reachable from the token's context (in practice, the single ServiceRequest named by the token). |
+| `read` | `GET /ServiceRequest/{id}` | Returns the ServiceRequest only if `{id}` matches the token's context. |
 {: .table .table-bordered }
 
 Search parameters:
@@ -90,7 +90,7 @@ Search parameters:
 | `requester` | reference | optional | Filter by `Task.requester`. |
 | `status` | token | optional | Filter by `Task.status`. |
 | `_lastUpdated` | date | optional | Filter by last modification time — the Placer polls for Task changes since the previous poll. See the polling note below. |
-| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). Included resources other than Questionnaires are context-gated: search with `_id={id}` and a token whose workflow context is `Task/{id}`. |
+| `_include` | — | optional | Supported targets: `Task:output-value-reference`, `Task:output-value-canonical`. `Task.input` is not an `_include` target — the QuestionnaireResponse it carries is a cross-server absolute URL, resolved by a direct `read` against the Placer. `:iterate`: see [Second-level resources](#second-level-resources). Included resources other than Questionnaires are context-gated: search with `_id={id}` and a token whose context is `Task/{id}`. |
 {: .table .table-bordered }
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. requested by it).

@@ -20,9 +20,9 @@ RuleSet: MandatoryIdSearchParam
 RuleSet: ReadOnlyResource(type)
 * rest.resource[+].type = #{type}
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for {type} resources. Returns only resources within the authorized context graph of the token's workflow context."
+* rest.resource[=].interaction[=].documentation = "Search for {type} resources. Returns only resources within the token's context graph."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the authorized context graph of the token's workflow context. Requests for resources outside the context graph are rejected with `403 Forbidden`."
+* rest.resource[=].interaction[=].documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the token's context graph. Requests for resources outside the context graph are rejected with `403 Forbidden`."
 * insert ResourceDefaults
 * insert MandatoryIdSearchParam
 
@@ -87,9 +87,9 @@ The Placer creates it via `create`, applies selective updates via `update`, and 
 // ServiceRequest: search-type, read + searchIncludes
 * rest.resource[+].type = #ServiceRequest
 * rest.resource[=].interaction[0].code = #search-type
-* rest.resource[=].interaction[=].documentation = "Search for ServiceRequests. Returns only ServiceRequests reachable from the token's workflow context — in practice, the single ServiceRequest named by the token. `_id` is mandatory; `_include` is supported to materialise the workflow graph in one round-trip, and each included resource is itself subject to the context graph check. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
+* rest.resource[=].interaction[=].documentation = "Search for ServiceRequests. Returns only ServiceRequests reachable from the token's context — in practice, the single ServiceRequest named by the token. `_id` is mandatory; `_include` is supported to materialise the workflow graph in one round-trip, and each included resource is itself subject to the context graph check. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a ServiceRequest by logical id. Returns the resource only if `{id}` matches the token's workflow context."
+* rest.resource[=].interaction[=].documentation = "Read a ServiceRequest by logical id. Returns the resource only if `{id}` matches the token's context."
 * insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
