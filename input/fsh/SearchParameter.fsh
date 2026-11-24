@@ -8,7 +8,6 @@ Usage: #definition
 * base = #ServiceRequest
 * type = #reference
 * expression = "ServiceRequest.reasonReference"
-* xpathUsage = #normal
 * multipleAnd = true
 
 Instance: ch-umzhconnectig-servicerequest-supportinginfo
@@ -21,7 +20,6 @@ Usage: #definition
 * base = #ServiceRequest
 * type = #reference
 * expression = "ServiceRequest.supportingInfo"
-* xpathUsage = #normal
 * multipleAnd = true
 
 Instance: ch-umzhconnectig-servicerequest-insurance
@@ -34,7 +32,6 @@ Usage: #definition
 * base = #ServiceRequest
 * type = #reference
 * expression = "ServiceRequest.insurance"
-* xpathUsage = #normal
 * multipleAnd = true
 
 Instance: ch-umzhconnectig-task-outputreference
@@ -47,7 +44,6 @@ Usage: #definition
 * base = #Task
 * type = #reference
 * expression = "Task.output.value.ofType(Reference)"
-* xpathUsage = #normal
 * multipleAnd = true
 
 Instance: ch-umzhconnectig-task-outputcanonical
@@ -60,5 +56,4 @@ Usage: #definition
 * base = #Task
 * type = #reference
 * expression = "Task.output.value.ofType(canonical)"
-* xpathUsage = #normal
 * multipleAnd = true
