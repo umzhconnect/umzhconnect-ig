@@ -46,7 +46,7 @@ Usage: #definition
 * code = #output-value-reference
 * base = #Task
 * type = #reference
-* expression = "Task.output.value as Reference"
+* expression = "Task.output.value.ofType(Reference)"
 * xpathUsage = #normal
 * multipleAnd = true
 
@@ -59,6 +59,6 @@ Usage: #definition
 * code = #output-value-canonical
 * base = #Task
 * type = #reference
-* expression = "Task.output.value as canonical"
+* expression = "Task.output.value.ofType(canonical)"
 * xpathUsage = #normal
 * multipleAnd = true
