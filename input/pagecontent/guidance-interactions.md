@@ -95,7 +95,7 @@ Search parameters:
 
 A search with no parameters returns all Tasks visible to the calling identity (i.e. requested by it).
 
-`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` context-gated outputs across Tasks; see `_include` above.
+`_lastUpdated` changes on every write to a Task, not only on workflow transitions. For delta polling, the Placer SHOULD query `_lastUpdated=gt{t}`, where `t` is the start time of its previous poll minus a safety margin (to absorb clock skew and in-flight writes). The Placer SHOULD add `_sort=-_lastUpdated` (newest first, so a Task changing during paging cannot shift an unchanged one onto a page already read) and MAY add `_count`. Because of this overlap a Task may be returned again unchanged; its `meta.versionId` tells whether it changed since the last poll. Polling is the baseline change-detection mechanism; notifications may complement it. A poll cannot `_include` context-gated outputs across Tasks; see `_include` above.
 
 ### Questionnaire
 
@@ -110,6 +110,7 @@ Search parameters:
 | Name | Type | Cardinality | Notes |
 |---|---|---|---|
 | `_id` | token | optional | Logical id. |
+| `url` | uri | optional | Canonical URL; resolves a Questionnaire referenced by canonical. |
 {: .table .table-bordered }
 
 ### QuestionnaireResponse
@@ -148,4 +149,4 @@ Every included or iterated resource is subject to the context graph check. Clien
 
 ### Versioning and conditional operations
 
-For every resource in the CapabilityStatement: `versioning = versioned-update`, `conditionalCreate = false`, `conditionalUpdate = false`; for Task also `updateCreate = false`. Clients performing `update` SHALL supply the current version via `If-Match` and SHALL NOT rely on conditional create/update semantics.
+For Task: `versioning = versioned-update`, `conditionalCreate = false`, `conditionalUpdate = false`, `updateCreate = false`. Clients performing `update` SHALL supply the current version via `If-Match` and SHALL NOT rely on conditional create/update semantics.

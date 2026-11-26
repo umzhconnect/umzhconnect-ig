@@ -1,6 +1,7 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
 ### Unreleased
+* [#146](https://github.com/umzhconnect/umzhconnect-ig/issues/146): Guidance - Interactions, CapabilityStatement — Task polling: the Placer SHOULD add `_sort=-_lastUpdated` and MAY add `_count`. Questionnaire `read` is by logical id only. `versioning`, `conditionalCreate` and `conditionalUpdate` are set only on Task
 * [#148](https://github.com/umzhconnect/umzhconnect-ig/pull/148): SearchParameters — drop `xpathUsage` from the five custom SearchParameters, which set it without an `xpath`
 * [#138](https://github.com/umzhconnect/umzhconnect-ig/issues/138): Security — rename the authorization details type `http://fhir.ch/ig/ch-umzh-connect/workflow-context` to `http://fhir.ch/ig/ch-umzh-connect/context`, and "workflow context" to "context" in the text, and define the term on the home page and the Security page
 * [#139](https://github.com/umzhconnect/umzhconnect-ig/issues/139): Security, Guidance - Interactions — Task read and search require the calling organization to be `Task.requester` (previously also `Task.owner`, which since [#116](https://github.com/umzhconnect/umzhconnect-ig/issues/116) is always the Fulfiller's own organization). Drop the Task `owner` search parameter from the CapabilityStatement

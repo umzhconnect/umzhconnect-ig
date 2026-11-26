@@ -1,10 +1,5 @@
 // RuleSets for CapabilityStatement resource definitions
 
-RuleSet: ResourceDefaults
-* rest.resource[=].versioning = #versioned-update
-* rest.resource[=].conditionalCreate = false
-* rest.resource[=].conditionalUpdate = false
-
 RuleSet: IdSearchParam
 * rest.resource[=].searchParam[+].name = "_id"
 * rest.resource[=].searchParam[=].definition = "http://hl7.org/fhir/SearchParameter/Resource-id"
@@ -23,7 +18,6 @@ RuleSet: ReadOnlyResource(type)
 * rest.resource[=].interaction[=].documentation = "Search for {type} resources. Returns only resources within the token's context graph."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Returns the {type} resource by logical id. The resource is returned only if it is within the token's context graph. Requests for resources outside the context graph are rejected with `403 Forbidden`."
-* insert ResourceDefaults
 * insert MandatoryIdSearchParam
 
 RuleSet: UrlSearchParam
@@ -76,8 +70,7 @@ The Placer creates it via `create`, applies selective updates via `update`, and 
 * rest.resource[=].interaction[0].code = #search-type
 * rest.resource[=].interaction[=].documentation = "Search for Questionnaire definitions. Questionnaire is a definitional artefact shared across workflows; it carries no patient data and is **not** context-gated."
 * rest.resource[=].interaction[+].code = #read
-* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id or by canonical URL (url). Definitional content — **not** context-gated."
-* insert ResourceDefaults
+* rest.resource[=].interaction[=].documentation = "Read a Questionnaire by logical id. Definitional content — **not** context-gated."
 * insert IdSearchParam
 * insert UrlSearchParam
 
@@ -90,7 +83,6 @@ The Placer creates it via `create`, applies selective updates via `update`, and 
 * rest.resource[=].interaction[=].documentation = "Search for ServiceRequests. Returns only ServiceRequests reachable from the token's context — in practice, the single ServiceRequest named by the token. `_id` is mandatory; `_include` is supported to materialise the workflow graph in one round-trip, and each included resource is itself subject to the context graph check. `_include:iterate` MAY be supported for the `_include` targets of the included resource types."
 * rest.resource[=].interaction[+].code = #read
 * rest.resource[=].interaction[=].documentation = "Read a ServiceRequest by logical id. Returns the resource only if `{id}` matches the token's context."
-* insert ResourceDefaults
 * rest.resource[=].searchInclude[0] = "ServiceRequest:patient"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:subject"
 * rest.resource[=].searchInclude[+] = "ServiceRequest:requester"
@@ -109,7 +101,9 @@ The Placer creates it via `create`, applies selective updates via `update`, and 
 * rest.resource[=].interaction[=].documentation = "Read a Task by logical id. Allowed if the calling identity is `Task.requester`."
 * rest.resource[=].interaction[+].code = #create
 * rest.resource[=].interaction[=].documentation = "Create a Task. Used by the Placer to raise a coordination Task on the Fulfiller. `Task.requester` SHALL be the calling organization and `Task.owner` the Fulfiller's own organization."
-* insert ResourceDefaults
+* rest.resource[=].versioning = #versioned-update
+* rest.resource[=].conditionalCreate = false
+* rest.resource[=].conditionalUpdate = false
 * rest.resource[=].updateCreate = false
 * rest.resource[=].searchInclude[0] = "Task:output-value-reference"
 * rest.resource[=].searchInclude[+] = "Task:output-value-canonical"
